@@ -11,6 +11,7 @@
 ```bash
 npm ci
 node bin/component-catalog.mjs --help
+node bin/component-catalog.mjs doctor --installation --expect-version 0.2.0
 node bin/component-catalog.mjs scan examples/basic/src
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json check
@@ -23,6 +24,30 @@ npm run build
 `build` 检查 npm 打包清单；本工具直接运行 ESM，不需要编译。示例 Button 是验证 API 提取的普通 TypeScript 函数，无 UI 运行依赖。
 
 从其他项目调用可使用本地工具入口的绝对路径，或将本仓库作为本地开发依赖安装，再使用 `component-catalog` bin。路径保存在消费方的配置或 package script 中，工具源码不需要修改。不建议以尚未发布的包名直接运行 `npx`。
+
+## 安装、版本与就绪诊断
+
+CLI 与 skill 应来自同一个固定提交或本地安装包。本版为 0.2.0，尚无已发布的 npm 包；请使用明确来源的 checkout，不根据包名自动下载。下面的路径和 commit-sha 需替换为实际选择：
+
+```bash
+git clone https://github.com/AleFlyX/react-component-atlas.git <tool-directory>
+cd <tool-directory>
+git checkout --detach <commit-sha>
+npm ci
+node bin/component-catalog.mjs --version
+node bin/component-catalog.mjs doctor --installation --expect-version 0.2.0
+```
+
+工具目录放在消费项目外。可直接用绝对路径调用 CLI；若希望作为开发依赖集成，在工具目录执行 `npm pack --pack-destination <external-directory>`，再在消费项目使用现有包管理器安装这个明确的本地 tarball，例如 `npm install --save-dev <external-directory>/component-catalog-0.2.0.tgz`。同一 checkout 的 skills/component-catalog 整个目录复制到 Agent 支持的 skill 位置。升级时同步更新 CLI 与 skill，不凭空假定存在版本标签。
+
+```bash
+component-catalog doctor --installation --expect-version 0.2.0
+component-catalog doctor --config ./component-catalog.config.json --expect-version 0.2.0
+```
+
+doctor 只读检查 Node、CLI 版本、工具的 TypeScript 依赖，以及项目配置、路径、tsconfig 和静态模块/类型依赖解析。不安装依赖、不执行消费项目脚本、不生成目录。`--installation` 用于尚未配置项目时，不能与 --config 同用；`--expect-version` 为精确版本，不接受范围，用于发现 skill/CLI 混用。
+
+退出码 0 表示已检查项目无失败，1 表示诊断发现问题，2 表示调用无效或命令无法完成。stdout 为最多 8 KiB 的 JSON，超长消息按字段省略并标明 omitted；每项检查的状态始终保留。首次没有目录时 catalog 为 not_run，仍可判定就绪；doctor 通过不表示完成收录、无漂移、所有类型检查通过或日常检查入口已接好。继续执行 audit、generate、check 和项目检查。Node/CLI 本身不存在时须先安装，doctor 无法在进程启动前诊断。
 
 ## 第一次接入：用户选范围，AI 完成配置与标记
 
@@ -116,9 +141,9 @@ scan 默认最多 20 项，上限 50 项，每页最多 8 KiB UTF-8（含换行�
 export function BusinessForm(props: { disabled?: boolean }) { /* implementation */ }
 ```
 
-summary、status、至少一个 task/constraint/example 必填。首个 task 表示主要任务。status 为 experimental/stable/deprecated；stable 必须有 production 或 preview 示例，deprecated 必须提供 `@catalogReplacement <id>`。示例路径相对 projectRoot，并且必须在 sourceRoot 内真实引用该导出；kind 可选 production/preview/test/story，需与配置分类一致。
+summary、status、至少一个 task/constraint/example 必填。首个 task 表示主要任务。status 为 experimental/stable/deprecated；stable 必须有 production 或 preview 示例。deprecated 至少提供 `@catalogDeprecatedReason 原因` 或 `@catalogReplacement <id>`：没有继任组件时填写真实弃用原因即可，不虚构替代 ID；原有只填写替代 ID 的注释继续兼容。原因只能用于 deprecated 状态，有替代 ID 时仍检查其存在性和循环。get 始终保留弃用原因与替代 ID，单 Prop 查询也不丢失这些信息。示例路径相对 projectRoot，并且必须在 sourceRoot 内真实引用该导出；kind 可选 production/preview/test/story，需与配置分类一致。
 
-支持命名/default 的顶层具名函数、单个 const 函数表达式，以及成员引用构成的对象 namespace。当前不支持直接标记 memo/forwardRef/HOC 调用结果，也不支持匿名 default 声明；会明确报错，不生成假数据。泛型类型、继承类型上下文保留为文本，复杂函数/对象/元组的 valueSchema 可能 partial/unsupported，不能当完整 JSON Schema 验证器。示例真实绑定与使用量由静态引用分析判定，不表示浏览器行为验证。
+支持命名/default 的顶层具名函数、单个 const 函数表达式，以及成员引用构成的对象 namespace；支持同文件同名 `export { Button }` 导出，注释仍写在声明处。支持直接从 React 导入的 `forwardRef`（含导入别名、React 命名空间）调用，参数必须是内联箭头/函数表达式；Props 从导出的可调用类型提取，保留 ref 与回调中的默认值。当前不支持任意 memo/HOC 组合、第三方组件别名、仅重命名导出的本地声明或匿名 default；会明确报错，不改写运行时代码。泛型类型、继承类型上下文保留为文本，复杂函数/对象/元组的 valueSchema 可能 partial/unsupported，不能当完整 JSON Schema 验证器。示例真实绑定与使用量由静态引用分析判定，不表示浏览器行为验证。
 
 ## 新增到删除的维护闭环
 
@@ -133,6 +158,8 @@ export function FieldAdapter() { /* existing implementation */ }
 
 类别为 `internal: 原因`、`non-component: 原因`、`unsupported: 原因`。原因不能为空，与 @componentCatalog 互斥；unsupported 表示提取器暂不支持，检查通过也不表示该组件已可检索。工具校验格式，理由是否真实仍需 Agent/开发者审查。不得把已收录组件悄悄改成 ignore 来消除报错。
 
+当原本标记 unsupported 的声明变成可支持形式时，audit/check 报 `IGNORE_REVIEW_REQUIRED`，generate 也会阻止直接跳过。Agent 应重新检查源码与归属，补齐公共组件元数据，或记录真正的私有/非组件理由；不自动删标记或改写理由来绕过。语法形式可支持不保证类型或完整提取成功，其他提取限制仍需具体报告。internal/non-component 的业务归属无法由 CLI 自动判断是否过期。
+
 ```bash
 component-catalog audit
 # 完成标记、元数据和真实示例；确认预期的删除/迁移
@@ -143,6 +170,8 @@ component-catalog check
 audit 只读检查完整配置范围的导出候选、收录决定、元数据/示例、替代关系和旧目录中的失效 ID。首次接入允许尚无目录；check 在此基础上还要求目录存在且无漂移。v2 generate 先检查源码决定，再生成；可以修复已确认过时或损坏的快照。Props 变化后重新生成；移动/改名时检查 ID、导入和示例；删除时清理失效替代关系。最后一个组件删除后允许生成空目录，但存在未处理候选时仍失败。
 
 audit/check 默认显示 20 条问题、最多请求 50 条，单页最多 8 KiB UTF-8（含换行）。沿 nextOffset 翻页，status/counts 始终依据全部问题判定；截断或空页不会掩盖失败。错误信息超长时完整省略 message 并列入 omitted.fields。退出码：0 无问题；1 有发现（stdout JSON）；2 参数/配置错误或命令无法完成（stderr）。这两个命令均不修改目录。
+
+`discovery` 单独报告当前源码生成的可检索条目数和 unsupported 排除数：有问题时为 needs-attention，无问题但存在 unsupported 排除时为 partial，否则按生成数量为 available/empty。它不代表磁盘快照已更新，也不替代代表性搜索验证。合法忽略不会导致非零退出，但检查通过不等于接入完成：完整接入还需验证所选范围的常见任务能找到预期组件、提供持久 CLI 入口，并让日常检查实际调用目录 check。只完成试用或部分收录时须明确说明范围，保留源码搜索兜底。
 
 范围是配置根内的 TS/TSX PascalCase 值导出、default 导出和显式标记/忽略声明。别名和星号重导出解析到原声明并去重，纯类型导出不算组件；无法解析、歧义或指向范围外的值导出会报告。JS/Vue 等未支持文件和子级符号链接会报告覆盖缺口，可在确认边界后配置排除。检查不保证识别任意框架、动态导出或小写未标记组件，也不代替项目类型检查和运行测试。
 
@@ -179,7 +208,7 @@ get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、�
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
 
-查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。目录格式版本为 **3**；不兼容的旧目录应重新生成，不直接修改版本号。
+查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。本版生成目录格式 **4**，增加 deprecationReason；查询仍支持 v3 快照。迁移通过重新生成完成，不直接修改版本号。旧版 CLI 无法读取 v4，需与 skill 同步升级；配置版本仍为 1/2。
 
 ## Agent skill
 
@@ -196,6 +225,9 @@ get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、�
 | 看到的情况 | 下一步 |
 | --- | --- |
 | 只有 skill，找不到 CLI | 使用本地工具 checkout 或安装明确来源的本地包；skill 不附带独立二进制 |
+| doctor 报 cli-version 不匹配 | 从同一固定提交/安装包更新 CLI 和 skill，不修改期望版本来掩盖混用 |
+| doctor 报依赖缺失 | 工具依赖在工具安装目录恢复；消费项目模块/类型依赖在消费项目恢复 |
+| IGNORE_REVIEW_REQUIRED | 原 unsupported 声明现在有可支持的形式，按真实归属复查决定并补元数据 |
 | init 后没有文件 | init 只输出模板；让 Agent 适配路径并保存配置 |
 | Config missing | 先 scan 盘点，再配置；已有配置则显式传 --config |
 | No @componentCatalog declarations | 仅设置 componentRoots 不会收录；让 Agent 在选定范围补齐真实元数据 |
@@ -206,6 +238,6 @@ get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、�
 | scan 找到但 search 找不到 | scan 是候选；检查是否已标记、生成、位于配置范围，或尝试实际任务标签/导出名 |
 | 中文查不到 | vocabulary 需要映射到实际 task 标签；也可先查导出名 |
 | namespace 没有 props | 用 --include members,constraints；单 Prop 查询只适用于组件 |
-| 不支持 memo/forwardRef/HOC | 报告未收录原因，保留运行时代码，等待提取器支持 |
+| 不支持的 wrapper/组件别名 | 仅支持直接 React forwardRef 内联回调；其他形式报告未收录原因，保留运行时代码 |
 
 直接运行 CLI 不带参数会显示上手流程；每个子命令支持 `--help`。正常数据输出保持 JSON，错误输出到 stderr 并非零退出。

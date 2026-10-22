@@ -197,6 +197,25 @@ test("missing, damaged, duplicate and incompatible catalogs fail clearly", (t) =
   fails(f.run(["search", "button"]), /Catalog missing.*generate/);
 });
 
+test("legacy v3 snapshots remain queryable while v4 preserves retirement reasons", (t) => {
+  const f = fixture(t);
+  const legacy = structuredClone(baseCatalog);
+  legacy.schemaVersion = 3;
+  f.write(f.config.catalog, legacy);
+  assert.equal(ok(f.run(["get", "demo.ui.Button"])).schemaVersion, 3);
+  assert.equal(ok(f.run(["search", "Button"])).items[0].exportName, "Button");
+  legacy.components[0].deprecationReason = "A v4-only field";
+  f.write(f.config.catalog, legacy);
+  fails(f.run(["get", "demo.ui.Button"]), /unexpected property/);
+  legacy.schemaVersion = 4;
+  legacy.components[0].status = "deprecated";
+  f.write(f.config.catalog, legacy);
+  assert.equal(
+    ok(f.run(["get", "demo.ui.Button", "--prop", "label"])).component.deprecationReason,
+    "A v4-only field",
+  );
+});
+
 test("config validation rejects mistakes and ambiguous roots", (t) => {
   const f = fixture(t);
   const mutations = [

@@ -113,6 +113,42 @@ test("scan pagination stays bounded and visits all candidates deterministically"
   assert.equal(last.nextOffset, null);
 });
 
+test("scan deduplicates local exports without accepting aliases, private declarations or fake wrappers", (t) => {
+  const f = fixture(t);
+  f.write(
+    "forms.ts",
+    `import { forwardRef as ref } from "react";
+const Button = ref((props: { label: string }, reference) => null);
+const Header = () => null;
+interface Header { title: string }
+function Private() {}
+const Renamed = () => null;
+const forwardRef = (value: unknown) => value;
+const Fake = forwardRef(() => null);
+export { Button, Header, Renamed as Public, Fake };
+export type { Private };
+`,
+  );
+  const result = scan(f.root);
+  assert.equal(result.counts.candidates, 4);
+  assert.deepEqual(
+    result.items.filter((item) => item.supportedShape).map((item) => item.exportName),
+    ["Button", "Header"],
+  );
+  assert.deepEqual(
+    result.items.filter((item) => !item.supportedShape).map((item) => item.exportName),
+    ["Public", "Fake"],
+  );
+  f.write(
+    "ignored.ts",
+    `const Internal = () => null;
+/** @componentCatalogIgnore internal: private export bridge */
+export { Internal };
+`,
+  );
+  assert.doesNotThrow(() => scan(f.root));
+});
+
 test("directory summary enables scope selection without reading every candidate", (t) => {
   const f = fixture(t);
   f.write("ui/Button.ts", "export function Button() {}\n");

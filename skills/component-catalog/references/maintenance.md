@@ -24,13 +24,15 @@ export function FieldAdapter() { /* existing implementation */ }
 
 Allowed categories are `internal: reason`, `non-component: reason`, and `unsupported: reason`. Each requires a substantive reason. A declaration cannot be both marked and ignored, or have repeated decision tags. CLI validation checks the form, not the truth of ownership or rationale; inspect source and usage. Explicit ignore does not enroll the entry. `ignoredUnsupported` is an acknowledged coverage limitation even if check passes. Do not exclude arbitrary folders or demote status to suppress failures.
 
+Audit reports `IGNORE_REVIEW_REQUIRED` when an unsupported ignore now sits on a supported declaration shape, for example after replacing a wrapper with a direct function. Re-read the source and ownership: enroll a public supported component with real metadata/examples; use internal/non-component only when that is its actual role. A supported shape does not prove full extraction or type validity. If another extraction limitation remains, report that concrete blocker rather than rewording unsupported to silence the finding. Check/generate remain blocked until the decision is resolved. Internal/non-component ownership is not automatically reclassified by the tool.
+
 For new metadata, follow [setup.md](setup.md#annotate-selected-components). Props, defaults, imports, usage and schema context come from source; the Agent maintains summary/tasks/status/constraints/example references. Reuse actual examples, never fabricate paths or caller obligations. If required evidence is missing, report pending work; adding a production page or unrelated runtime refactor is not catalog maintenance.
 
 ## Changes, moves and removals
 
 - API/default changes: review related description, constraints and examples. Regenerate derived Props; do not edit generated JSON.
 - Move or rename: IDs depend on root-relative directories and export names, and import paths depend on filenames. Review consumer imports, example paths, project documentation and deprecated replacement IDs. There is no automatic ID migration map.
-- Deprecation: point @catalogReplacement to an existing catalog ID. Replacement chains may not cycle. Do not invent a successor merely to satisfy a required field.
+- Deprecation: use @catalogDeprecatedReason for a real retirement with no successor; when a successor exists, @catalogReplacement must point to an existing catalog ID and chains may not cycle. At least a reason or replacement is required; old replacement-only entries remain valid. A reason may accompany a replacement, but cannot make a broken replacement valid. Review reasons when status changes back to active. get retains the reason/replacement even when selecting one Prop or other fields.
 - Delete: remove obsolete consumers/examples and replacement references within authorized scope, then regenerate. Deleting the final entry is valid in v2; retain an empty catalog only after audit finds no unresolved candidates.
 - Barrel aliases: annotate the canonical declaration once. Audit resolves named/star aliases and ignores type-only exports. It reports unresolved, ambiguous and out-of-scope value exports. Review explicit external reexport ignores; they do not make the external API searchable.
 
@@ -51,6 +53,8 @@ Audit checks enrollment decisions, extractable metadata/examples, replacement re
 audit/check exit codes: 0 means no findings, 1 means findings exist, 2 means invalid input or unable to complete the command. JSON status/counts cover all findings even when output is truncated. Default 20 findings, maximum 50 requested, 8 KiB per page. Follow nextOffset with the same command/config and unchanged sources; pages may contain fewer than the requested count. Check omitted.fields when a diagnostic message itself is too long. Do not report success from an empty page or a subset of findings.
 
 Run applicable consumer typechecks/tests/build as well: catalog check does not replace TypeScript or runtime validation. Verify affected search/get results and ID removal where relevant. If pre-existing findings are outside the requested change, disclose them and the scope needed to resolve them; do not silently expand the task. A read-only review may run audit/check but must not annotate or generate.
+
+On tool upgrades, run doctor with this skill's expected CLI version before maintenance. CLI 0.2.0 generates schemaVersion 4 (deprecationReason support), while queries can still read v3 snapshots. Regenerate through the CLI to migrate; old CLI readers cannot consume v4. Do not hand-edit schemaVersion. Configuration versions remain 1/2 and are independent of catalog format versions. Doctor pass is not a substitute for audit/check.
 
 ## Integrate into the consumer workflow
 

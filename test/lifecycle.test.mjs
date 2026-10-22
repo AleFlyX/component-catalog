@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { loadConfig } from "../lib/config.mjs";
 import { auditProject, auditResponse } from "../lib/audit.mjs";
+import { scan } from "../lib/scan.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
 const run = (args, cwd = os.tmpdir()) =>
@@ -115,6 +116,58 @@ test("public omissions fail independently of freshness; enrolling fixes the comp
   assert.equal(fs.existsSync(path.join(f.root, ".git")), false);
 });
 
+test("local export lists and imported React forwardRef preserve public Props, defaults and examples", (t) => {
+  const f = fixture(t);
+  f.write(
+    "client/react.d.ts",
+    `declare module "react" {
+    export function forwardRef<T, P = {}>(render: (props: P, ref: T | null) => unknown):
+      (props: P & { ref?: T | null }) => unknown;
+  }`,
+  );
+  const forms = [
+    ['import * as React from "react";', "React.forwardRef"],
+    ['import { forwardRef as withRef } from "react";', "withRef"],
+  ];
+  for (const [i, [imp, call]] of forms.entries()) {
+    const name = `Control${i}`;
+    f.add(name);
+    const metadata = f.component(name).split("export function")[0];
+    f.write(
+      `client/ui/${name}.ts`,
+      `${imp}\n${metadata}
+const ${name} = ${call}<string, { label: string; disabled?: boolean }>(
+  ({ label, disabled = false }, ref) => label);
+export { ${name} };
+`,
+    );
+  }
+  f.add("Header");
+  f.write(
+    "client/ui/Header.ts",
+    f.component("Header").replace("export function", "function") + "\nexport { Header };\n",
+  );
+  const before = scan(path.join(f.root, "client/ui"));
+  assert.equal(before.counts.candidates, 3);
+  assert.equal(before.counts.unsupported, 0);
+  assert.equal(json(f.run(["generate"])).components, 3);
+  const checked = json(f.run(["check"]));
+  assert.equal(checked.discovery.status, "available");
+  for (let i = 0; i < 2; i++) {
+    const entry = json(f.run(["get", `library.Control${i}`])).component;
+    assert.equal(entry.exportName, `Control${i}`);
+    assert.equal(entry.props.items.find((p) => p.name === "label").required, true);
+    assert.equal(entry.props.items.find((p) => p.name === "disabled").defaultValue, "false");
+    assert.equal(entry.props.items.find((p) => p.name === "ref").required, false);
+    assert.equal(entry.examples.length, 1);
+  }
+  f.write(
+    "client/ui/Header.ts",
+    "/** @componentCatalogIgnore unsupported: local export */\nfunction Header() {}\nexport { Header };\n",
+  );
+  assert.ok(auditProject(f.config()).issues.some((item) => item.code === "IGNORE_REVIEW_REQUIRED"));
+});
+
 test("review policy, explicit ignores, conflicts and unsupported exclusions remain visible", (t) => {
   const f = fixture(t, "review");
   f.write("client/ui/Internal.ts", "export function Internal() {}\n");
@@ -135,6 +188,11 @@ test("review policy, explicit ignores, conflicts and unsupported exclusions rema
   assert.deepEqual(accepted.issues, []);
   assert.equal(accepted.counts.ignored, 3);
   assert.equal(accepted.counts.ignoredUnsupported, 1);
+  const coverage = auditResponse(accepted);
+  assert.equal(coverage.status, "pass");
+  assert.equal(coverage.discovery.status, "partial");
+  assert.equal(coverage.discovery.excludedUnsupported, 1);
+  assert.equal(coverage.discovery.searchable, 0);
   json(f.run(["generate"]));
   assert.equal(json(f.run(["check"])).counts.generated, 0);
   assert.deepEqual(json(f.run(["search", "anything"])).items, []);
@@ -240,6 +298,122 @@ test("metadata, missing examples and replacement graphs are audited", (t) => {
   );
   const bad = auditProject(f.config());
   assert.equal(bad.issues.filter((item) => item.code === "METADATA_INVALID").length, 2);
+});
+
+test("deprecation without a successor keeps its reason in all detail selections", (t) => {
+  const f = fixture(t);
+  f.add(
+    "Old",
+    "* @catalogDeprecatedReason This workflow is retired; use the native browser control.",
+    "deprecated",
+  );
+  assert.deepEqual(auditProject(f.config()).issues, []);
+  json(f.run(["generate"]));
+  json(f.run(["check"]));
+  for (const args of [[], ["--include", "usage"], ["--prop", "label"]]) {
+    const result = json(f.run(["get", "library.Old", ...args]));
+    assert.equal(result.schemaVersion, 4);
+    assert.equal(
+      result.component.deprecationReason,
+      "This workflow is retired; use the native browser control.",
+    );
+    assert.equal(result.component.replacement, undefined);
+  }
+  f.add("Old", "", "deprecated");
+  assert.ok(
+    auditProject(f.config()).issues.some((item) => /catalogDeprecatedReason or/.test(item.message)),
+  );
+  f.add("Old", "* @catalogDeprecatedReason", "deprecated");
+  assert.ok(
+    auditProject(f.config()).issues.some((item) =>
+      /empty @catalogDeprecatedReason/.test(item.message),
+    ),
+  );
+  f.add(
+    "Old",
+    "* @catalogDeprecatedReason Retired.\n * @catalogDeprecatedReason Duplicate.",
+    "deprecated",
+  );
+  assert.ok(
+    auditProject(f.config()).issues.some((item) =>
+      /duplicate @catalogDeprecatedReason/.test(item.message),
+    ),
+  );
+  f.add("Old", "* @catalogDeprecatedReason Retired.");
+  assert.ok(
+    auditProject(f.config()).issues.some((item) => /requires deprecated status/.test(item.message)),
+  );
+  f.add(
+    "Old",
+    "* @catalogDeprecatedReason Retired.\n * @catalogReplacement library.Absent",
+    "deprecated",
+  );
+  assert.ok(auditProject(f.config()).issues.some((item) => item.code === "REPLACEMENT_INVALID"));
+});
+
+test("a resolved unsupported ignore blocks generation until ownership is reviewed", (t) => {
+  const f = fixture(t);
+  f.write(
+    "client/ui/Wrapped.ts",
+    "/** @componentCatalogIgnore unsupported: wrapper result */\nexport const Wrapped = memo(() => null);\n",
+  );
+  json(f.run(["generate"]));
+  const before = fs.readFileSync(path.join(f.root, f.raw.catalog));
+  f.write(
+    "client/ui/Wrapped.ts",
+    "/** @componentCatalogIgnore unsupported: wrapper result */\nexport function Wrapped() {}\n",
+  );
+  for (const command of ["audit", "check"]) {
+    const report = json(f.run([command]), 1);
+    assert.ok(
+      report.issues.some(
+        (item) => item.code === "IGNORE_REVIEW_REQUIRED" && item.exportName === "Wrapped",
+      ),
+    );
+    assert.equal(report.counts.ignoredUnsupported, 1);
+  }
+  assert.equal(f.run(["generate"]).status, 1);
+  assert.deepEqual(fs.readFileSync(path.join(f.root, f.raw.catalog)), before);
+  f.add("Wrapped");
+  json(f.run(["generate"]));
+  assert.equal(json(f.run(["check"])).counts.generated, 1);
+});
+
+test("doctor diagnoses project readiness without requiring enrollment or changing files", (t) => {
+  const f = fixture(t);
+  f.write("client/ui/Card.ts", "export function Card() {}\n");
+  const before = fs.readFileSync(f.configPath);
+  const timestamp = fs.statSync(f.configPath).mtimeMs;
+  const report = json(f.run(["doctor", "--expect-version", "0.2.0"]));
+  assert.equal(report.scope, "project");
+  assert.equal(report.checks.find((item) => item.id === "catalog").status, "not_run");
+  assert.equal(fs.existsSync(path.join(f.root, f.raw.catalog)), false);
+  assert.deepEqual(fs.readFileSync(f.configPath), before);
+  assert.equal(fs.statSync(f.configPath).mtimeMs, timestamp);
+  assert.equal(f.run(["audit"]).status, 1); // readiness must not claim enrollment coverage
+  f.write("client/ui/Card.ts", "import { Card } from 'missing-ui-package';\nexport { Card };\n");
+  const missing = json(f.run(["doctor"]), 1);
+  assert.equal(missing.checks.find((item) => item.id === "project-dependencies").status, "fail");
+  f.write("client/ui/Card.ts", "export function Card() {}\n");
+  f.raw.componentRoots[0].path = "client/absent";
+  f.write("component-catalog.config.json", f.raw);
+  assert.equal(
+    json(f.run(["doctor"]), 1).checks.find((item) => item.id === "paths").status,
+    "fail",
+  );
+  f.raw.componentRoots[0].path = "client/ui";
+  f.raw.configVersion = 1;
+  delete f.raw.componentRoots[0].enrollment;
+  f.write("component-catalog.config.json", f.raw);
+  assert.equal(
+    json(f.run(["doctor"]), 1).checks.find((item) => item.id === "enrollment-policy").status,
+    "fail",
+  );
+  f.write("tsconfig.json", "{broken");
+  assert.equal(
+    json(f.run(["doctor"]), 1).checks.find((item) => item.id === "project-dependencies").status,
+    "fail",
+  );
 });
 
 test("export coverage includes named defaults, broken aliases and ambiguous barrels", (t) => {

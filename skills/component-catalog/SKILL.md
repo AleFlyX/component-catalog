@@ -7,6 +7,8 @@ description: Configure, query and maintain a local TypeScript component catalog.
 
 Use the project's catalog as a discovery aid. Project architecture and runtime source remain authoritative. This skill does not provide the CLI binary: locate the existing package script, local dependency bin, or user-provided tool checkout before invoking it. Do not run an unrelated registry package by guessing its name.
 
+This skill targets CLI 0.2.0. On setup, upgrade, or an unfamiliar installation, run `component-catalog doctor --installation --expect-version 0.2.0` using the bare local bin. CLI and skill must come from the same pinned checkout/package; do not edit the expected version just to hide a mismatch. Then run `doctor --config <config-path> --expect-version 0.2.0` to check project readiness. Doctor is read-only and does not verify enrollment or freshness. See [references/setup.md](references/setup.md) for installation and recovery.
+
 Report validation results in the conversation. Keep ad hoc test fixtures, trial reports and local extraction notes outside the consumer repository; do not create or commit extra validation documents unless the user requests them or the project requires them. This does not exclude maintainable automated tests or requested product documentation.
 
 ## Existing configuration
@@ -36,6 +38,8 @@ With configVersion 2, each root records enrollment policy. In `public` roots, an
 
 Finish authorized changes with `audit` → resolve findings → `generate` → `check`, plus representative queries and applicable project checks. These commands apply to the complete configured scope, independently of displayed pages. `audit/check` report exit 1 for findings and 2 when unable to complete; neither modifies sources or the catalog. Never suppress failures by removing existing markers or inventing metadata. v1 queries/generation still work, but lifecycle auditing requires explicit migration; see the maintenance reference.
 
+`IGNORE_REVIEW_REQUIRED` means an unsupported declaration ignore may be obsolete: inspect the current source and ownership, then enroll or record the actual justified exclusion. Do not automatically enroll, remove the tag, or merely reword its reason. For deprecated entries without successors, supply a truthful `@catalogDeprecatedReason`; do not invent a replacement ID.
+
 ## First-time setup or migration
 
 Installing this skill alone does not scan or enroll anything. When the user requests setup, read [references/setup.md](references/setup.md) and take responsibility for discovery, configuration, metadata edits in the selected scope, and verification. The user chooses scope, not individual JSDoc fields.
@@ -53,3 +57,5 @@ Start broad discovery with --summary: it groups counts under each immediate chil
 When the user has already selected directories/components for enrollment, proceed within that scope without another confirmation. Providing only the frontend location identifies where to inspect; it does not make every export public. If scope remains unclear, present a short directory/count/reason recommendation and ask one focused question with choices: recommended public directories, a user-specified subset, or inventory only. Do the read-only discovery before asking. Do not request permission per component.
 
 After scope is settled, the Agent adds truthful annotations and verifies all selected supported entries. A first successful example is a checkpoint, not completion of a larger requested scope. Report discovered candidates, selected scope, enrolled entries, skipped entries and pending evidence with reasons; do not claim all components are searchable when only some are enrolled.
+
+Audit success validates enrollment decisions, not search usefulness. Review `discovery` separately, test representative queries chosen from the selected scope, and verify the persistent CLI and routine-check integration before calling full setup complete. See the setup reference for acceptance criteria; unsupported exclusions remain unavailable to search even when explicitly justified.

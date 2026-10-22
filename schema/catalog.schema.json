@@ -6,7 +6,7 @@
   "required": ["schemaVersion", "sourceDigest", "typescriptVersion", "components"],
   "properties": {
     "schemaVersion": {
-      "const": 3
+      "const": 4
     },
     "sourceDigest": {
       "type": "string",
@@ -98,6 +98,10 @@
         "replacement": {
           "type": "string",
           "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?:\\.[A-Za-z][A-Za-z0-9_-]*)+$"
+        },
+        "deprecationReason": {
+          "type": "string",
+          "minLength": 1
         },
         "documentationStatus": {
           "enum": ["complete", "incomplete"]
