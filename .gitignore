@@ -15,6 +15,12 @@ coverage/
 # Regenerable example catalog; keep its configuration and source
 examples/basic/component-catalog.json
 
+# Internal development records, not user-facing documentation
+/VALIDATION.md
+/UX-VALIDATION.md
+/LIFECYCLE-VALIDATION.md
+/PROVENANCE.md
+
 # Local environment values; keep documented templates
 .env
 .env.*

@@ -7,6 +7,8 @@ description: Configure, query and maintain a local TypeScript component catalog.
 
 Use the project's catalog as a discovery aid. Project architecture and runtime source remain authoritative. This skill does not provide the CLI binary: locate the existing package script, local dependency bin, or user-provided tool checkout before invoking it. Do not run an unrelated registry package by guessing its name.
 
+Report validation results in the conversation. Keep ad hoc test fixtures, trial reports and local extraction notes outside the consumer repository; do not create or commit extra validation documents unless the user requests them or the project requires them. This does not exclude maintainable automated tests or requested product documentation.
+
 ## Existing configuration
 
 Find the nearest `component-catalog.config.json` from the working directory, or use the project's explicit `--config` path. Read that small configuration and the relevant package scripts. Paths other than projectRoot are relative to projectRoot; projectRoot itself is relative to the config file. Avoid inventing `web/src/shared/ui` or other project-specific paths.

@@ -11,8 +11,7 @@
     "lib",
     "schema",
     "skills",
-    "README.md",
-    "PROVENANCE.md"
+    "README.md"
   ],
   "type": "module",
   "scripts": {

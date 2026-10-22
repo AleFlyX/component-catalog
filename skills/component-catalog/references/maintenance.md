@@ -1,6 +1,6 @@
 # Maintain the component lifecycle
 
-Use for authorized changes to components or their catalog inputs. No OJ layout, Git repository or CI provider is required. The consumer's configuration, architecture and current task determine scope.
+Use for authorized changes to components or their catalog inputs. No specific project layout, Git repository or CI provider is required. The consumer's configuration, architecture and current task determine scope.
 
 ## Decide once, maintain within scope
 

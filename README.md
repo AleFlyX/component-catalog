@@ -2,7 +2,7 @@
 
 本地组件发现 CLI，面向编码 Agent 和开发者。由 TypeScript 声明与就地 JSDoc 生成完整目录，查询时只输出所需组件或单个 Prop。不启动服务，不进入浏览器运行时。
 
-当前是从 CodeCampus 提取的独立原型，使用 Node >=22、TypeScript 5.9.3（唯一运行依赖）。GitHub 仓库名为 `react-component-atlas`，CLI 和本地包名保留 `component-catalog`。尚未发布 npm 包或选择开源许可证。
+使用 Node >=22、TypeScript 5.9.3（唯一运行依赖）。GitHub 仓库名为 `react-component-atlas`，CLI 和本地包名为 `component-catalog`。尚未发布 npm 包或选择开源许可证。
 
 ## 运行
 
@@ -158,7 +158,7 @@ v1 的 search/get/generate 及 generate --check 继续兼容，但不具备新�
 }
 ```
 
-路径和命令按实际安装位置调整；无需 Git、OJ 的 Makefile 或额外服务。skill 的[维护流程](skills/component-catalog/references/maintenance.md)包含项目 AGENTS 入口示例、迁移及异常处理。
+路径和命令按实际安装位置调整；无需 Git 或额外服务。skill 的[维护流程](skills/component-catalog/references/maintenance.md)包含项目 AGENTS 入口示例、迁移及异常处理。
 
 ## 查询与漂移
 
@@ -179,11 +179,11 @@ get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、�
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
 
-查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。独立格式版本为 **3**，与 OJ 原有专用 v2 分开；重新生成后使用，不直接修改旧目录版本号。
+查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。目录格式版本为 **3**；不兼容的旧目录应重新生成，不直接修改版本号。
 
 ## Agent skill
 
-将 [skills/component-catalog](skills/component-catalog/SKILL.md) 整个目录复制到消费项目的 `.agents/skills/component-catalog/` 或所用 Agent 支持的 skill 目录。入口为通用配置/发现工作流，不带 CodeCampus 架构规则。
+将 [skills/component-catalog](skills/component-catalog/SKILL.md) 整个目录复制到消费项目的 `.agents/skills/component-catalog/` 或所用 Agent 支持的 skill 目录。入口提供通用配置、发现和维护工作流。
 
 初次接入可对 Agent 说：
 
