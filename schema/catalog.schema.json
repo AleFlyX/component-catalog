@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Portable component catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceDigest", "typescriptVersion", "components"],
+  "properties": {
+    "schemaVersion": {
+      "const": 3
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "typescriptVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/component"
+      }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportName",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "kind",
+        "exportKind",
+        "constraints",
+        "examples",
+        "usage"
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["props"],
+          "properties": {
+            "kind": {
+              "const": "component"
+            },
+            "members": false
+          }
+        },
+        {
+          "type": "object",
+          "required": ["members"],
+          "properties": {
+            "kind": {
+              "const": "namespace"
+            },
+            "props": false
+          }
+        }
+      ],
+      "properties": {
+        "kind": {
+          "enum": ["component", "namespace"]
+        },
+        "exportKind": {
+          "enum": ["named", "default"]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?:\\.[A-Za-z][A-Za-z0-9_-]*)+$"
+        },
+        "exportName": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z0-9]*$"
+        },
+        "importPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourcePath": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.(ts|tsx)$"
+        },
+        "layer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": ["experimental", "stable", "deprecated"]
+        },
+        "replacement": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?:\\.[A-Za-z][A-Za-z0-9_-]*)+$"
+        },
+        "documentationStatus": {
+          "enum": ["complete", "incomplete"]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tasks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "props": {
+          "$ref": "#/$defs/props"
+        },
+        "members": {
+          "$ref": "#/$defs/members"
+        },
+        "constraints": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "examples": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/example"
+          }
+        },
+        "usage": {
+          "$ref": "#/$defs/usage"
+        }
+      }
+    },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "target"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9]*$"
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "props": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["displayType", "typeParameters", "inheritedTypes", "items"],
+      "properties": {
+        "displayType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "typeParameters": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "inheritedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/prop"
+          }
+        }
+      }
+    },
+    "prop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "displayType", "required", "schemaStatus"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "displayType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "defaultValue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schemaStatus": {
+          "enum": ["complete", "partial", "unsupported"]
+        },
+        "valueSchema": {
+          "type": "object"
+        }
+      }
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "purpose"],
+      "properties": {
+        "kind": {
+          "enum": ["production", "preview", "test", "story"]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.(ts|tsx)$"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["production", "preview", "test"],
+      "properties": {
+        "production": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "preview": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "test": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

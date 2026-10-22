@@ -1,0 +1,30 @@
+# Dependencies and package-manager caches
+node_modules/
+.npm/
+.pnpm-store/
+
+# Build, test and packaging output
+dist/
+coverage/
+.nyc_output/
+.cache/
+*.tsbuildinfo
+*.tgz
+*.log
+
+# Regenerable example catalog; keep its configuration and source
+examples/basic/component-catalog.json
+
+# Local environment values; keep documented templates
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Editor and operating-system files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

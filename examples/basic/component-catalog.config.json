@@ -1,0 +1,20 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": "src",
+  "tsconfig": "tsconfig.json",
+  "catalog": "component-catalog.json",
+  "componentRoots": [
+    {
+      "path": "src/components",
+      "idPrefix": "demo.ui",
+      "importPrefix": "@demo/ui",
+      "layer": "shared",
+      "enrollment": "public"
+    }
+  ],
+  "exclude": [],
+  "previewRoots": ["src/previews"],
+  "testRoots": [],
+  "vocabulary": { "按钮": { "primary": "button", "related": [] } }
+}
