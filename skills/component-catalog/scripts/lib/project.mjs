@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 import { inside } from "./config.mjs";
+import { isJavaScript, isSourceFile } from "./files.mjs";
 
 export function filesBelow(directory, config, predicate = () => true, onSymlink = () => {}) {
   const result = [];
@@ -48,11 +49,21 @@ export function createProject(config) {
     (error) => !(config.configVersion === 2 && [18002, 18003].includes(error.code)),
   );
   if (configErrors.length) throw new Error(ts.formatDiagnostics(configErrors, diagnosticHost));
-  const files = filesBelow(
-    config.sourceRoot,
-    config,
-    (file) => /\.tsx?$/.test(file) && !file.endsWith(".d.ts"),
-  );
+  if (parsed.projectReferences?.length && !parsed.fileNames.length)
+    throw new Error(
+      `Solution-style compiler config ${path.relative(workspace, config.tsconfig)} contains references but no source files. Set the catalog's tsconfig to the owning application config (referenced: ${parsed.projectReferences.map((ref) => path.relative(workspace, ref.path)).join(", ")}); references do not inherit compiler options or aliases.`,
+    );
+  const discovered = filesBelow(config.sourceRoot, config, isSourceFile);
+  const allowJs = parsed.options.allowJs ?? parsed.options.checkJs ?? false;
+  const disabled = !allowJs && discovered.find((file) =>
+    isJavaScript(file) && config.componentRoots.some((root) => inside(root.path, file)));
+  if (disabled)
+    throw new Error(
+      `${path.relative(workspace, disabled)}: JavaScript component sources require allowJs. Point tsconfig at the project's jsconfig.json or a catalog-specific config with allowJs: true; preserve the application's compiler policy.`,
+    );
+  const files = discovered.filter((file) => allowJs || !isJavaScript(file));
+  // This tool never emits compiler output, including when the consumer config normally does.
+  parsed.options = { ...parsed.options, noEmit: true };
   const program = ts.createProgram([...new Set([...parsed.fileNames, ...files])], parsed.options);
   const checker = program.getTypeChecker();
   const sources = files.map((file) => program.getSourceFile(file));

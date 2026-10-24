@@ -1,3 +1,5 @@
+import { callerPath, relativeImport } from "./imports.mjs";
+
 const encode = (value) => JSON.stringify(value) + "\n";
 const size = (value) => Buffer.byteLength(encode(value), "utf8");
 const normalize = (value) => value.normalize("NFKC").toLowerCase();
@@ -6,8 +8,12 @@ const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 export function search(catalog, input, limit = 5, vocabulary = {}) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
-  const concepts = Object.entries(vocabulary)
-    .filter(([term]) => query.includes(normalize(term)))
+  const matchedTerms = Object.entries(vocabulary)
+    .map(([term, values]) => [normalize(term), values])
+    .filter(([term]) => query.includes(term));
+  // A specific phrase owns its contained terms; unrelated concepts still combine.
+  const concepts = matchedTerms
+    .filter(([term]) => !matchedTerms.some(([other]) => other !== term && other.includes(term)))
     .map(([, values]) => values);
   const ranked = catalog.components
     .map((item) => {
@@ -47,13 +53,14 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
     );
   const items = ranked
     .slice(0, limit)
-    .map(({ item: { id, exportName, kind, summary, tasks, status } }) => ({
+    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse } }) => ({
       id,
       exportName,
       kind,
       summary,
       tasks,
       status,
+      reuse: reuse ?? { scope: "unspecified" },
     }));
   const response = {
     schemaVersion: catalog.schemaVersion,
@@ -71,7 +78,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
   return response;
 }
 
-export function get(catalog, id, include, propName) {
+export function get(catalog, id, include, propName, from) {
   const item = catalog.components.find((component) => component.id === id);
   if (!item) throw new Error("Unknown component ID; use search to find an exact ID");
   let selectedProp;
@@ -102,7 +109,16 @@ export function get(catalog, id, include, propName) {
     ].map((key) => [key, item[key]]),
   );
   if (item.replacement) component.replacement = item.replacement;
+  component.reuse = item.reuse ?? { scope: "unspecified" };
   if (item.deprecationReason) component.deprecationReason = item.deprecationReason;
+  if (from !== undefined) from = callerPath(from);
+  if (item.importPath === null) {
+    component.importContext = { kind: "relative", from: from ?? null, extension: item.importExtension };
+    if (from !== undefined) {
+      const relative = relativeImport(item.sourcePath, from, item.importExtension);
+      component.importPath = relative.specifier;
+    }
+  }
   for (const field of include) {
     if (Object.hasOwn(item, field))
       component[field] = field === "examples" ? item.examples.slice(0, 2) : item[field];

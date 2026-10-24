@@ -5,9 +5,9 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { loadConfig } from "../lib/config.mjs";
-import { auditProject, auditResponse } from "../lib/audit.mjs";
-import { scan } from "../lib/scan.mjs";
+import { loadConfig } from "../skills/component-catalog/scripts/lib/config.mjs";
+import { auditProject, auditResponse } from "../skills/component-catalog/scripts/lib/audit.mjs";
+import { scan } from "../skills/component-catalog/scripts/lib/scan.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
 const run = (args, cwd = os.tmpdir()) =>
@@ -86,6 +86,73 @@ export function ${name}({ label }: { label: string }) { return label; }
     run: (args) => run(["--config", configPath, ...args]),
   };
 }
+
+test("reuse boundaries flow from root policy into all queries and changes invalidate snapshots", (t) => {
+  const f = fixture(t);
+  f.add("Selector");
+  json(f.run(["generate"]));
+  assert.deepEqual(json(f.run(["search", "Selector"])).items[0].reuse, { scope: "unspecified" });
+  f.raw.componentRoots[0].reuse = { scope: "module", owner: "billing" };
+  f.write("component-catalog.config.json", f.raw);
+  assert.ok(json(f.run(["check"]), 1).issues.some((i) => i.code === "CATALOG_STALE"));
+  json(f.run(["generate"]));
+  assert.deepEqual(
+    json(f.run(["search", "Selector"])).items[0].reuse,
+    f.raw.componentRoots[0].reuse,
+  );
+  for (const args of [[], ["--include", "usage"], ["--prop", "label"]])
+    assert.deepEqual(
+      json(f.run(["get", "library.Selector", ...args])).component.reuse,
+      f.raw.componentRoots[0].reuse,
+    );
+  f.raw.componentRoots[0].reuse = { scope: "project", owner: "billing" };
+  f.write("component-catalog.config.json", f.raw);
+  json(f.run(["generate"]));
+  assert.equal(json(f.run(["get", "library.Selector"])).component.reuse.scope, "project");
+  for (const reuse of [
+    { scope: "module" },
+    { scope: "global" },
+    { scope: "module", owner: "../billing" },
+    { scope: "project", owner: "" },
+    { scope: "project", allowed: ["all"] },
+  ]) {
+    f.raw.componentRoots[0].reuse = reuse;
+    f.write("component-catalog.config.json", f.raw);
+    assert.throws(f.config, /reuse|owner/);
+  }
+});
+
+test("component reuse metadata represents mixed ownership without splitting source directories", (t) => {
+  const f = fixture(t);
+  f.raw.componentRoots[0].reuse = { scope: "module", owner: "controls" };
+  f.write("component-catalog.config.json", f.raw);
+  f.add("Inherited");
+  f.add("Public", "* @catalogReuse project");
+  f.add("Internal", "* @catalogReuse module:controls.internal");
+  f.add("Unknown", "* @catalogReuse unspecified");
+  assert.deepEqual(auditProject(f.config()).issues, []);
+  json(f.run(["generate"]));
+  for (const [name, expected] of [
+    ["Inherited", { scope: "module", owner: "controls" }],
+    ["Public", { scope: "project" }],
+    ["Internal", { scope: "module", owner: "controls.internal" }],
+    ["Unknown", { scope: "unspecified" }],
+  ]) {
+    assert.deepEqual(json(f.run(["search", name])).items[0].reuse, expected);
+    assert.deepEqual(json(f.run(["get", `library.${name}`, "--prop", "label"])).component.reuse, expected);
+  }
+  const snapshot = fs.readFileSync(path.join(f.root, f.raw.catalog));
+  f.write("client/ui/Public.ts", f.component("Public", "* @catalogReuse module:controls.public"));
+  assert.ok(auditProject(f.config(), { freshness: true }).issues.some((item) => item.code === "CATALOG_STALE"));
+  assert.deepEqual(fs.readFileSync(path.join(f.root, f.raw.catalog)), snapshot);
+  for (const value of ["", "global", "module", "module:", "module:../billing", "project:billing"]) {
+    f.write("client/ui/Public.ts", f.component("Public", `* @catalogReuse ${value}`));
+    assert.ok(auditProject(f.config()).issues.some((item) =>
+      item.code === "METADATA_INVALID" && /catalogReuse/.test(item.message)));
+  }
+  f.write("client/ui/Public.ts", f.component("Public", "* @catalogReuse project\n * @catalogReuse unspecified"));
+  assert.ok(auditProject(f.config()).issues.some((item) => /duplicate @catalogReuse/.test(item.message)));
+});
 
 test("public omissions fail independently of freshness; enrolling fixes the complete check", (t) => {
   const f = fixture(t);
@@ -166,6 +233,250 @@ export { ${name} };
     "/** @componentCatalogIgnore unsupported: local export */\nfunction Header() {}\nexport { Header };\n",
   );
   assert.ok(auditProject(f.config()).issues.some((item) => item.code === "IGNORE_REVIEW_REQUIRED"));
+});
+
+test("React memo preserves public Props, defaults, ref and lifecycle review without runtime edits", (t) => {
+  const f = fixture(t);
+  f.write(
+    "client/react.d.ts",
+    `declare module "react" {
+      interface Exotic<P> { (props: P): unknown; readonly marker: symbol }
+      export function memo(component: () => unknown): (props: unknown) => unknown;
+      export function memo<P extends object>(component: (props: P) => unknown,
+        compare?: (previous: Readonly<P>, next: Readonly<P>) => boolean): Exotic<P>;
+      type ComponentProps<T> = T extends (props: infer P) => unknown ? P : never;
+      export function memo<T extends (props: any) => unknown>(component: T,
+        compare?: (previous: Readonly<ComponentProps<T>>, next: Readonly<ComponentProps<T>>) => boolean): Exotic<ComponentProps<T>>;
+      export function forwardRef<T, P = {}>(render: (props: P, ref: T | null) => unknown):
+        (props: P & { ref?: T | null }) => unknown;
+      const React: { memo: typeof memo; forwardRef: typeof forwardRef };
+      export default React;
+    }`,
+  );
+  const forms = [
+    [
+      'import { memo } from "react";',
+      'memo(({ label, disabled = false }: { label: string; disabled?: boolean }) => label)',
+    ],
+    [
+      'import { memo as cache } from "react";',
+      'cache(function Control({ label, disabled = false }: { label: string; disabled?: boolean }) { return label; })',
+    ],
+    [
+      'import * as React from "react";',
+      'React.memo(({ label, disabled = false }: { label: string; disabled?: boolean }) => label, (a, b) => a.label === b.label && a.disabled === b.disabled)',
+    ],
+    [
+      'import React from "react";',
+      'React.memo(React.forwardRef<string, { label: string; disabled?: boolean }>(({ label, disabled = false }, ref) => label))',
+    ],
+    [
+      'import { memo as cache, forwardRef as ref } from "react";',
+      'cache(ref<string, { label: string; disabled?: boolean }>(({ label, disabled = false }, reference) => label), (a, b) => a.label === b.label && a.disabled === b.disabled && a.ref === b.ref)',
+    ],
+  ];
+  const originals = [];
+  for (const [i, [imp, expression]] of forms.entries()) {
+    const name = `Memo${i}`;
+    f.add(name);
+    const content = `${imp}\n${f.component(name).split("export function")[0]}const ${name} = ${expression};\nexport { ${name} };\n`;
+    const file = f.write(`client/ui/${name}.ts`, content);
+    originals.push([file, content]);
+  }
+  f.write(
+    "client/ui/Empty.ts",
+    'import { memo } from "react";\n' + f.component("Empty").split("export function")[0] +
+      'export const Empty = memo(() => null);',
+  );
+  f.write(
+    "client/demo/Empty.ts",
+    'import { Empty } from "@widgets/Empty"; export const example = Empty({});',
+  );
+  f.write(
+    "client/ui/Generic.ts",
+    'import { memo } from "react";\n' + f.component("Generic").split("export function")[0] +
+      'export const Generic = memo(function Generic<T>({ value }: { value: T }) { return value; });',
+  );
+  f.write(
+    "client/demo/Generic.ts",
+    'import { Generic } from "@widgets/Generic"; export const example = Generic({ value: "Example" });',
+  );
+  assert.equal(scan(path.join(f.root, "client/ui")).counts.unsupported, 0);
+  assert.deepEqual(auditProject(f.config()).issues, []);
+  assert.equal(json(f.run(["generate"])).components, 7);
+  assert.equal(json(f.run(["check"])).discovery.status, "available");
+  for (let i = 0; i < forms.length; i++) {
+    const name = `Memo${i}`;
+    assert.equal(json(f.run(["search", name])).items[0].id, `library.${name}`);
+    const entry = json(f.run(["get", `library.${name}`, "--include", "props,examples,usage"])).component;
+    assert.equal(entry.props.items.find((p) => p.name === "label").required, true);
+    assert.equal(entry.props.items.find((p) => p.name === "disabled").defaultValue, "false");
+    assert.equal(entry.props.items.some((p) => p.name === "ref"), i >= 3);
+    assert.equal(entry.examples.length, 1);
+    assert.equal(entry.usage.preview, 1);
+  }
+  const emptyProps = json(f.run(["get", "library.Empty"])).component.props;
+  assert.deepEqual(emptyProps.items, []);
+  assert.equal(emptyProps.displayType, "unknown");
+  const genericProps = json(f.run(["get", "library.Generic"])).component.props;
+  assert.deepEqual(genericProps.typeParameters, []);
+  assert.equal(genericProps.items.find((p) => p.name === "value").displayType, "unknown");
+  for (const [file, content] of originals) assert.equal(fs.readFileSync(file, "utf8"), content);
+  const [file, content] = originals[0];
+  fs.writeFileSync(
+    file,
+    content.replace(
+      /\/\*\*[\s\S]*?\*\//,
+      "/** @componentCatalogIgnore unsupported: React memo could not be extracted previously */",
+    ),
+  );
+  assert.ok(auditProject(f.config()).issues.some((item) => item.code === "IGNORE_REVIEW_REQUIRED"));
+  const snapshot = fs.readFileSync(path.join(f.root, f.raw.catalog));
+  assert.equal(f.run(["generate"]).status, 1);
+  assert.deepEqual(fs.readFileSync(path.join(f.root, f.raw.catalog)), snapshot);
+});
+
+test("referenced React renders and wrapped defaults retain public identity, Props, defaults and lifecycle", (t) => {
+  const f = fixture(t);
+  f.write("client/react.d.ts", `declare module "react" {
+    interface Exotic<P> { (props: P): unknown; readonly marker: symbol }
+    export function memo<P>(component: (props: P) => unknown,
+      compare?: (a: Readonly<P>, b: Readonly<P>) => boolean): Exotic<P>;
+    export function forwardRef<R, P>(render: (props: P, ref: R | null) => unknown):
+      Exotic<P & { ref?: R | null }>;
+  }`);
+  const forms = [
+    ["Named", 'function Render({ label, disabled = false }: Props) { return label; }', 'export const Named = memo(Render);', "named"],
+    ["Arrow", 'const Render = ({ label, disabled = false }: Props) => label;', 'export const Arrow = memo(Render, (a, b) => a.label === b.label);', "named"],
+    ["Ref", 'function Render({ label, disabled = false }: Props, ref: string | null) { return label; }', 'export const Ref = forwardRef(Render);', "named"],
+    ["MemoRef", 'function Render({ label, disabled = false }: Props, ref: string | null) { return label; }\nconst Inner = forwardRef(Render);', 'export const MemoRef = memo(Inner);', "named"],
+    ["DefaultView", 'function DefaultView({ label, disabled = false }: Props) { return label; }', 'export default memo(DefaultView);', "default"],
+    ["DefaultArrow", 'const DefaultArrow = ({ label, disabled = false }: Props) => label;', 'export default memo(DefaultArrow);', "default"],
+    ["InlineDefault", '', 'export default memo(function InlineDefault({ label, disabled = false }: Props) { return label; });', "default"],
+    ["GenericDefault", 'function GenericDefault<T extends string = string>({ label, disabled = false }: Props & { label: T }) { return label; }', 'export default memo(GenericDefault) as typeof GenericDefault;', "default"],
+  ];
+  const originals = new Map();
+  for (const [name, implementation, exported, kind] of forms) {
+    const metadata = f.component(name).split("export function")[0];
+    const source = 'import { memo, forwardRef } from "react";\ntype Props = { label: string; disabled?: boolean };\n' +
+      implementation + "\n" + metadata + exported;
+    originals.set(f.write(`client/ui/${name}.ts`, source), source);
+    f.write(`client/demo/${name}.ts`, `import ${kind === "default" ? name : `{ ${name} }`} from '@widgets/${name}'; export const sample = ${name}({ label: 'Example' });`);
+  }
+  assert.equal(scan(path.join(f.root, "client/ui")).counts.unsupported, 0);
+  const audit = auditProject(f.config());
+  assert.deepEqual(audit.issues, []);
+  assert.equal(audit.counts.candidates, forms.length);
+  json(f.run(["generate"]));
+  json(f.run(["check"]));
+  for (const [name, , , kind] of forms) {
+    const component = json(f.run(["get", `library.${name}`])).component;
+    assert.equal(component.exportKind, kind);
+    assert.equal(component.importPath, `@widgets/${name}`);
+    assert.ok(component.summary.startsWith(`Display ${name}`));
+    assert.equal(component.props.items.find((item) => item.name === "disabled").defaultValue, "false");
+    assert.equal(component.props.items.find((item) => item.name === "label").required, true);
+    if (name.includes("Ref")) assert.ok(component.props.items.some((item) => item.name === "ref"));
+    if (name === "GenericDefault") assert.deepEqual(component.props.typeParameters, ["T extends string = string"]);
+  }
+  for (const [file, source] of originals) assert.equal(fs.readFileSync(file, "utf8"), source);
+  const file = path.join(f.root, "client/ui/DefaultView.ts");
+  f.write("client/ui/DefaultView.ts", originals.get(file).replace("disabled = false", "disabled = true"));
+  assert.ok(auditProject(f.config(), { freshness: true }).issues.some((item) => item.code === "CATALOG_STALE"));
+  json(f.run(["generate"]));
+  assert.equal(json(f.run(["get", "library.DefaultView", "--prop", "disabled"])).component.prop.defaultValue, "true");
+  f.write("client/ui/DefaultView.ts", originals.get(file).replace(/\/\*\*[\s\S]*?\*\//,
+    "/** @componentCatalogIgnore unsupported: wrapped default was not extractable */"));
+  assert.ok(auditProject(f.config()).issues.some((item) => item.code === "IGNORE_REVIEW_REQUIRED"));
+});
+
+test("typed default references retain declaration metadata and the actual public contract", (t) => {
+  const f = fixture(t);
+  f.write("client/react.d.ts", `declare module "react" {
+    export function memo<P>(component: (props: P) => unknown): (props: P) => unknown;
+  }`);
+  const cases = [
+    ["AsDefault", "memo(Render)", "as (props: Public) => unknown", false],
+    ["SatisfiesDefault", "memo(Render)", "satisfies (props: Public) => unknown", true],
+    ["ParensDefault", "memo(Render)", "", true],
+    ["FunctionDefault", "Render", "as (props: Public) => unknown", false],
+  ];
+  for (const [name, value, suffix] of cases) {
+    // FunctionDefault uses an actual named declaration, keeping metadata on that declaration.
+    const implementation = value === "Render"
+      ? `function ${name}({ label, disabled = false, debug = true }: Internal) { return label; }`
+      : `const ${name} = ${value};`;
+    f.write(`client/ui/${name}.ts`, 'import { memo } from "react";\n' +
+      'type Internal = { label: string; disabled?: boolean; debug?: boolean };\n' +
+      'type Public = Omit<Internal, "debug">;\n' +
+      'function Render({ label, disabled = false, debug = true }: Internal) { return label; }\n' +
+      f.component(name).split("export function")[0] + implementation + `\nexport default (${name} ${suffix});`);
+    f.write(`client/demo/${name}.ts`, `import ${name} from '@widgets/${name}'; export const sample = ${name}({ label: 'Example' });`);
+  }
+  f.write("client/ui/EmptyDefault.ts", f.component("EmptyDefault").split("export function")[0] +
+    'function EmptyDefault() { return null; }\nexport default (EmptyDefault as typeof EmptyDefault);');
+  f.write("client/demo/EmptyDefault.ts", "import EmptyDefault from '@widgets/EmptyDefault'; export const sample = EmptyDefault();");
+  const scanned = scan(path.join(f.root, "client/ui"));
+  assert.equal(scanned.counts.candidates, 5);
+  assert.equal(scanned.counts.marked, 5);
+  assert.equal(scanned.counts.unsupported, 0);
+  const audit = auditProject(f.config());
+  assert.deepEqual(audit.issues, []);
+  assert.equal(audit.counts.candidates, 5);
+  for (const [name, , , debugIsPublic] of cases) {
+    const entry = audit.catalog.components.find((item) => item.id === `library.${name}`);
+    assert.equal(entry.exportKind, "default");
+    assert.match(entry.summary, new RegExp(`Display ${name}`));
+    assert.equal(entry.props.items.some((item) => item.name === "debug"), debugIsPublic);
+    assert.equal(entry.props.items.find((item) => item.name === "disabled").defaultValue, "false");
+    assert.equal(entry.usage.preview, 1);
+  }
+  assert.deepEqual(audit.catalog.components.find((item) => item.id === "library.EmptyDefault").props.items, []);
+});
+
+test("wrapped public generics retain substituted constraints, defaults and inferred parameters", (t) => {
+  const f = fixture(t);
+  f.write(
+    "client/react.d.ts",
+    `declare module "react" {
+      export function memo<P>(render: (props: P) => unknown): (props: P) => unknown;
+      export function forwardRef<R, P>(render: (props: P, ref: R | null) => unknown):
+        (props: P & { ref?: R | null }) => unknown;
+    }`,
+  );
+  const forms = [
+    ["AliasMemo", ": PublicComponent<string>", "memo", ""],
+    ["AliasRef", ": PublicComponent<string>", "forwardRef", ", ref: unknown"],
+    ["InferredMemo", "", "memo", ""],
+    ["InferredRef", "", "forwardRef", ", ref: unknown"],
+    ["ConstAliasMemo", ": PublicConst<string>", "memo", ""],
+    ["ConstAliasRef", ": PublicConst<string>", "forwardRef", ", ref: unknown"],
+    ["ConstInferredMemo", "", "memo", ""],
+    ["ConstInferredRef", "", "forwardRef", ", ref: unknown"],
+  ];
+  for (const [name, annotation, wrapper, ref] of forms) {
+    f.write(
+      `client/ui/${name}.ts`,
+      'import { memo, forwardRef } from "react";\n' +
+        'type PublicComponent<U> = <T extends U = U>(props: { value: T }) => unknown;\n' +
+        'type PublicConst<U> = <const T extends U = U>(props: { value: T }) => unknown;\n' +
+        f.component(name).split("export function")[0] +
+        `export const ${name}${annotation} = ${wrapper}(<${name.startsWith("Const") ? "const " : ""}T extends string = string>(props: { value: T }${ref}) => props.value);`,
+    );
+    f.write(
+      `client/demo/${name}.ts`,
+      `import { ${name} } from '@widgets/${name}'; export const example = ${name}({ value: 'Example' });`,
+    );
+  }
+  const report = auditProject(f.config());
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.catalog.components.length, forms.length);
+  for (const entry of report.catalog.components) {
+    assert.deepEqual(entry.props.typeParameters, [
+      `${entry.exportName.startsWith("Const") ? "const " : ""}T extends string = string`,
+    ]);
+    assert.equal(entry.props.items.find((p) => p.name === "value").displayType, "T");
+  }
 });
 
 test("review policy, explicit ignores, conflicts and unsupported exclusions remain visible", (t) => {
@@ -312,7 +623,7 @@ test("deprecation without a successor keeps its reason in all detail selections"
   json(f.run(["check"]));
   for (const args of [[], ["--include", "usage"], ["--prop", "label"]]) {
     const result = json(f.run(["get", "library.Old", ...args]));
-    assert.equal(result.schemaVersion, 4);
+    assert.equal(result.schemaVersion, 7);
     assert.equal(
       result.component.deprecationReason,
       "This workflow is retired; use the native browser control.",
@@ -384,7 +695,7 @@ test("doctor diagnoses project readiness without requiring enrollment or changin
   f.write("client/ui/Card.ts", "export function Card() {}\n");
   const before = fs.readFileSync(f.configPath);
   const timestamp = fs.statSync(f.configPath).mtimeMs;
-  const report = json(f.run(["doctor", "--expect-version", "0.2.0"]));
+  const report = json(f.run(["doctor", "--expect-version", "0.3.0"]));
   assert.equal(report.scope, "project");
   assert.equal(report.checks.find((item) => item.id === "catalog").status, "not_run");
   assert.equal(fs.existsSync(path.join(f.root, f.raw.catalog)), false);
@@ -502,16 +813,40 @@ test("v1 remains usable and cannot silently claim enrollment coverage", (t) => {
   assert.equal(f.run(["audit"]).status, 2); // policy choice is required, not inferred from folder names
 });
 
+test("solution configs point to the owning app and composite analysis retains declared file membership", (t) => {
+  const f = fixture(t);
+  const original = JSON.parse(fs.readFileSync(path.join(f.root, "tsconfig.json"), "utf8"));
+  original.compilerOptions.composite = true;
+  f.write("tsconfig.app.json", original);
+  f.write("tsconfig.json", { files: [], references: [{ path: "./tsconfig.app.json" }] });
+  f.add("Button");
+  f.write("client/model/Props.ts", "export interface Props { label: string }\n");
+  f.write("client/ui/Button.ts", 'import type { Props } from "../model/Props";\n' +
+    f.component("Button").replace("{ label: string }", "Props"));
+  assert.throws(() => auditProject(f.config()), /Solution-style.*tsconfig.app.json/);
+  const diagnostic = json(f.run(["doctor"]), 1);
+  assert.match(diagnostic.checks.find((c) => c.id === "project-dependencies").message, /Solution-style/);
+  f.raw.tsconfig = "tsconfig.app.json";
+  f.write("component-catalog.config.json", f.raw);
+  const before = fs.readFileSync(path.join(f.root, "tsconfig.app.json"));
+  assert.deepEqual(auditProject(f.config()).issues, []);
+  assert.equal(json(f.run(["generate"])).components, 1);
+  json(f.run(["check"]));
+  assert.deepEqual(fs.readFileSync(path.join(f.root, "tsconfig.app.json")), before);
+  assert.equal(fs.existsSync(path.join(f.root, "tsconfig.app.tsbuildinfo")), false);
+  assert.equal(fs.existsSync(path.join(f.root, "client/model/Props.js")), false);
+});
+
 test("unsupported files, symlinks and syntax failures cannot become an empty pass", (t) => {
   const f = fixture(t);
-  f.write("client/ui/Card.jsx", "export function Card() { return <div/>; }\n");
+  f.write("client/ui/Card.vue", "<template><div /></template>\n");
   assert.ok(
     auditProject(f.config()).issues.some((item) => item.code === "UNSUPPORTED_SOURCE_FILE"),
   );
-  f.raw.exclude = ["client/ui/Card.jsx"];
+  f.raw.exclude = ["client/ui/Card.vue"];
   f.write("component-catalog.config.json", f.raw);
   assert.deepEqual(auditProject(f.config()).issues, []);
-  fs.symlinkSync(path.join(f.root, "client/ui/Card.jsx"), path.join(f.root, "client/ui/Link.ts"));
+  fs.symlinkSync(path.join(f.root, "client/ui/Card.vue"), path.join(f.root, "client/ui/Link.ts"));
   assert.ok(auditProject(f.config()).issues.some((item) => item.code === "UNSCANNED_SYMLINK"));
   fs.unlinkSync(path.join(f.root, "client/ui/Link.ts"));
   f.write("client/ui/Broken.ts", "export function Broken( {\n");

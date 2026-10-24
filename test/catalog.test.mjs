@@ -5,9 +5,9 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { loadConfig, template } from "../lib/config.mjs";
-import { generateCatalog } from "../lib/generate.mjs";
-import { search, get } from "../lib/query.mjs";
+import { loadConfig, template } from "../skills/component-catalog/scripts/lib/config.mjs";
+import { generateCatalog } from "../skills/component-catalog/scripts/lib/generate.mjs";
+import { search, get } from "../skills/component-catalog/scripts/lib/query.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
 const basic = fileURLToPath(new URL("../examples/basic/", import.meta.url));
@@ -125,6 +125,41 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   );
 });
 
+test("specific vocabulary phrases override contained terms without losing independent concepts", () => {
+  const base = baseCatalog.components[0];
+  const catalog = {
+    ...baseCatalog,
+    components: [
+      { id: "ui.ADialog", exportName: "Dialog", tasks: ["dialog"] },
+      { id: "ui.ZConfirm", exportName: "Confirm", tasks: ["confirmation"] },
+      { id: "ui.Drawer", exportName: "Drawer", tasks: ["drawer"] },
+    ].map((item) => ({ ...base, summary: "Unrelated", ...item })),
+  };
+  const vocabulary = {
+    弹窗: { primary: "dialog", related: [] },
+    确认弹窗: { primary: "confirmation", related: ["dialog"] },
+    抽屉: { primary: "drawer", related: [] },
+  };
+  for (const query of ["确认弹窗", "需要一个确认弹窗"]) {
+    assert.deepEqual(
+      search(catalog, query, 5, vocabulary).items.map((x) => x.exportName),
+      ["Confirm", "Dialog"],
+    );
+  }
+  assert.deepEqual(
+    search(catalog, "弹窗和抽屉", 5, vocabulary).items.map((x) => x.exportName),
+    ["Dialog", "Drawer"],
+  );
+  assert.deepEqual(
+    search(catalog, "弹窗", 5, vocabulary).items.map((x) => x.exportName),
+    ["Dialog"],
+  );
+  assert.deepEqual(
+    search(catalog, "确认弹窗", 5, Object.fromEntries(Object.entries(vocabulary).reverse())),
+    search(catalog, "确认弹窗", 5, vocabulary),
+  );
+});
+
 test("bounded UTF-8 JSON, omissions and mandatory focused context", () => {
   const base = structuredClone(baseCatalog.components[0]);
   const huge = "大".repeat(10000);
@@ -201,8 +236,13 @@ test("legacy v3 snapshots remain queryable while v4 preserves retirement reasons
   const f = fixture(t);
   const legacy = structuredClone(baseCatalog);
   legacy.schemaVersion = 3;
+  for (const entry of legacy.components) {
+    delete entry.reuse;
+    delete entry.importExtension;
+  }
   f.write(f.config.catalog, legacy);
   assert.equal(ok(f.run(["get", "demo.ui.Button"])).schemaVersion, 3);
+  assert.deepEqual(ok(f.run(["search", "Button"])).items[0].reuse, { scope: "unspecified" });
   assert.equal(ok(f.run(["search", "Button"])).items[0].exportName, "Button");
   legacy.components[0].deprecationReason = "A v4-only field";
   f.write(f.config.catalog, legacy);
@@ -214,6 +254,24 @@ test("legacy v3 snapshots remain queryable while v4 preserves retirement reasons
     ok(f.run(["get", "demo.ui.Button", "--prop", "label"])).component.deprecationReason,
     "A v4-only field",
   );
+});
+
+test("reuse boundary is validated in stored snapshots and preserved under output limits", (t) => {
+  const f = fixture(t);
+  const catalog = structuredClone(baseCatalog);
+  const item = catalog.components[0];
+  item.reuse = { scope: "module", owner: "billing" };
+  item.constraints = ["large ".repeat(4000)];
+  f.write(f.config.catalog, catalog);
+  const detail = ok(f.run(["get", item.id]));
+  assert.ok(size(detail) <= 16384);
+  assert.deepEqual(detail.component.reuse, item.reuse);
+  assert.equal(detail.truncated, true);
+  for (const reuse of [undefined, { scope: "module" }, { scope: "project", owner: "../billing" }]) {
+    item.reuse = reuse;
+    f.write(f.config.catalog, catalog);
+    fails(f.run(["get", item.id]), /Invalid catalog/);
+  }
 });
 
 test("config validation rejects mistakes and ambiguous roots", (t) => {
@@ -305,7 +363,7 @@ test("generation works across custom layouts, multiple roots, aliases and explic
       target: "ES2022",
       module: "ESNext",
       moduleResolution: "Bundler",
-      paths: { "@acme/widgets/*": ["./code/widgets/*"] },
+      paths: { "@acme/widgets/*": ["./code/widgets/*"], "~controls/*": ["./code/controls/*"] },
     },
     include: ["code"],
   });
@@ -339,7 +397,7 @@ export const Fields = { Picker: Picker };
   );
   f.write(
     "packages/client/code/previews/picker.ts",
-    "import { Picker } from '@acme/widgets/forms/Picker';\nimport { Fields } from '../controls/Fields';\nexport const demo = Picker({ value: { id: 1 }, rowKey: 'id' });\nexport const helpers = Fields;\n",
+    "import { Picker } from '@acme/widgets/forms/Picker';\nimport { Fields } from '~controls/Fields';\nexport const demo = Picker({ value: { id: 1 }, rowKey: 'id' });\nexport const helpers = Fields;\n",
   );
   f.write(
     "packages/client/code/generated/Bad.ts",

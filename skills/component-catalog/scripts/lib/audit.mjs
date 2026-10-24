@@ -103,7 +103,7 @@ export function auditResponse(result, { command = "audit", offset = 0, limit = 2
     truncated: false,
     omitted: { before: offset, after: 0, fields: [] },
     coverage:
-      "Configured TS/TSX PascalCase value/default exports and explicit decisions. Ignored entries are not enrolled; unsupported exclusions are counted separately.",
+      "Configured JS/JSX/TS/TSX PascalCase value/default exports and explicit decisions. Ignored entries are not enrolled; unsupported exclusions are counted separately.",
   };
   const size = () => Buffer.byteLength(JSON.stringify(response) + "\n");
   const update = () => {

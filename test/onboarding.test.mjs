@@ -5,7 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { scan } from "../lib/scan.mjs";
+import { scan } from "../skills/component-catalog/scripts/lib/scan.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
 function run(args, cwd = os.tmpdir()) {
@@ -85,6 +85,119 @@ export default function() { return null; }
   assert.equal(fs.existsSync(path.join(f.root, "component-catalog.json")), false);
 });
 
+test("filtered discovery finds unmarked, ignored and unsupported candidates without enrolling them", (t) => {
+  const f = fixture(t);
+  f.write("ui/Dialog.ts", "export function DialogContent() {}\nexport function Dialog() {}\n");
+  f.write(
+    "features/billing/Picker.ts",
+    `/** Choose an account. */
+export const AccountPicker = memo(() => null);
+export { AccountPicker as BillingSelector };
+function PrivatePicker() {}
+`,
+  );
+  f.write(
+    "ui/Feedback.ts",
+    `/** 加载状态提示 */
+export function Spinner() {}
+/** @componentCatalogIgnore unsupported: third-party component alias */
+export const Overlay = Primitive.Overlay;
+/**
+ * An annotated candidate whose metadata is not validated here.
+ * @componentCatalog
+ * @catalogTask confirm-action
+ */
+export function Confirm() {}
+`,
+  );
+  const catalog = f.write("component-catalog.json", "existing snapshot must remain untouched\n");
+  const files = [
+    catalog,
+    path.join(f.root, "ui/Dialog.ts"),
+    path.join(f.root, "ui/Feedback.ts"),
+    path.join(f.root, "features/billing/Picker.ts"),
+  ];
+  const before = files.map((file) => [fs.readFileSync(file), fs.statSync(file).mtimeMs]);
+  const query = (text) => ok(run(["scan", f.root, "--query", text]));
+  const dialog = query("ＤＩＡＬＯＧ");
+  assert.deepEqual(
+    dialog.items.map((x) => x.exportName),
+    ["Dialog", "DialogContent"],
+  );
+  assert.equal(dialog.items[0].marked, false);
+  assert.ok(dialog.items[0].missingMetadata.includes("componentCatalog"));
+  assert.equal(dialog.counts.candidates, 7);
+  assert.equal(dialog.matchingCandidates, 2);
+  const picker = query("billing AccountPicker");
+  assert.equal(picker.matchingCandidates, 1);
+  assert.equal(picker.items[0].supportedShape, false);
+  assert.deepEqual(picker.items[0].matchedFields, ["exportName", "sourcePath"]);
+  assert.equal(query("BillingSelector").items[0].kind, "unsupported");
+  assert.equal(query("加载").items[0].exportName, "Spinner");
+  assert.equal(query("choose account").items[0].exportName, "AccountPicker");
+  assert.deepEqual(query("confirm-action").items[0].matchedFields, ["tasks"]);
+  const ignored = query("Overlay");
+  assert.equal(ignored.items[0].ignored, true);
+  assert.match(ignored.items[0].ignoreReason, /^unsupported:/);
+  assert.match(ignored.nextStep, /Do not annotate or generate/);
+  for (const term of ["PrivatePicker", ".*", "definitely-absent"]) {
+    const empty = query(term);
+    assert.deepEqual(empty.items, []);
+    assert.equal(empty.nextOffset, null);
+    assert.equal(empty.truncated, false);
+    assert.equal(empty.counts.candidates, 7);
+    assert.match(empty.nextStep, /source search/);
+  }
+  for (const [index, file] of files.entries()) {
+    assert.deepEqual(fs.readFileSync(file), before[index][0]);
+    assert.equal(fs.statSync(file).mtimeMs, before[index][1]);
+  }
+  assert.equal(fs.existsSync(path.join(f.root, "component-catalog.config.json")), false);
+});
+
+test("filtered pagination is bounded, deterministic and independent of unmatched candidates", (t) => {
+  const f = fixture(t);
+  for (let i = 0; i < 60; i++)
+    f.write(
+      `候选${String(i).padStart(2, "0")}.ts`,
+      `export function Account${i}() {}\nexport function Other${i}() {}\n`,
+    );
+  let offset = 0;
+  const names = [];
+  do {
+    const page = scan(f.root, { query: "account", limit: 50, offset });
+    assert.ok(Buffer.byteLength(JSON.stringify(page) + "\n") <= 8192);
+    assert.equal(page.counts.candidates, 120);
+    assert.equal(page.matchingCandidates, 60);
+    assert.equal(page.totalItems, 60);
+    assert.equal(page.omitted.after, 60 - offset - page.items.length);
+    assert.ok(page.items.length > 0);
+    names.push(...page.items.map((x) => x.exportName));
+    offset = page.nextOffset;
+  } while (offset !== null);
+  assert.equal(names.length, 60);
+  assert.equal(new Set(names).size, 60);
+  assert.deepEqual(scan(f.root, { query: "Account10" }), scan(f.root, { query: "Account10" }));
+  assert.equal(scan(f.root, { query: "Account10" }).items[0].exportName, "Account10");
+  assert.deepEqual(scan(f.root, { query: "account", offset: 60 }).items, []);
+  assert.throws(() => scan(f.root, { query: "account", offset: 61 }), /offset exceeds/);
+});
+
+test("filtered scan rejects ambiguous modes and invalid queries", (t) => {
+  const f = fixture(t);
+  for (const query of ["", "   ", "长".repeat(201)])
+    fail(run(["scan", f.root, "--query", query]), /--query must contain/);
+  fail(run(["scan", f.root, "--query", "Button", "--summary"]), /cannot be combined/);
+  fail(run(["scan", f.root, "--query"]), /argument missing/);
+  fail(run(["scan", f.root, "--query", "A", "--query", "B"]), /cannot be repeated/);
+  fail(run(["search", "Button", "--query", "A"]), /does not accept --query/);
+  fail(
+    run(["scan", f.root, "--query", "Button", "--config", "absent.json"]),
+    /does not accept --config/,
+  );
+  assert.match(run(["scan", "--help"]).stdout, /--query/);
+});
+
 test("scan pagination stays bounded and visits all candidates deterministically", (t) => {
   const f = fixture(t);
   for (let i = 0; i < 60; i++)
@@ -149,6 +262,69 @@ export { Internal };
   assert.doesNotThrow(() => scan(f.root));
 });
 
+test("scan recognizes inline React memo forms without accepting arbitrary wrappers", (t) => {
+  const f = fixture(t);
+  f.write(
+    "memo.ts",
+    `import React, { memo as cache, forwardRef as ref } from "react";
+import * as R from "react";
+import { memo as otherMemo } from "other-library";
+import type { memo as typeMemo } from "react";
+const Plain = cache(({ label }: { label: string }) => label);
+export { Plain };
+export const Compared = React.memo(function Named() { return null; }, () => true);
+export const WithRef = R.memo(ref((props, reference) => null));
+export const Parens = cache((() => null));
+const memo = (fn) => fn;
+export const Fake = memo(() => null);
+export const Foreign = otherMemo(() => null);
+export const TypeOnly = typeMemo(() => null);
+export const Referenced = cache(Plain);
+export const Nested = cache(cache(() => null));
+export const Hoc = cache(observer(() => null));
+export const Reverse = ref(cache(() => null));
+export const Spread = cache(...callbacks);
+export const Empty = cache();
+export const TooMany = cache(() => null, () => true, true);
+`,
+  );
+  const result = scan(f.root);
+  assert.equal(result.counts.candidates, 14);
+  assert.deepEqual(
+    result.items.filter((item) => item.supportedShape).map((item) => item.exportName),
+    ["Plain", "Compared", "WithRef", "Parens", "Referenced", "Nested"],
+  );
+  assert.equal(result.counts.unsupported, 8);
+});
+
+test("scan resolves local React wrapper references and named defaults without accepting unknown HOCs or cycles", (t) => {
+  const f = fixture(t);
+  f.write("wrappers.tsx", `import { memo, forwardRef } from "react";
+function Render({ label = "Ready" }: { label?: string }) { return null; }
+const Arrow = ({ label = "Arrow" }: { label?: string }) => null;
+const Ref = forwardRef(Render);
+export const Named = memo(Render);
+export const WithRef = memo(Ref);
+export const Cast = memo(Arrow) as typeof Arrow;
+export const Checked = memo(Render) satisfies typeof Render;
+export default memo(Render);
+const A = memo(B);
+const B = memo(A);
+export const Cycle = memo(A);
+export const Missing = memo(Absent);
+export const Custom = memo(observer(Render));
+export const BareAlias = Render;
+`);
+  const result = scan(f.root);
+  assert.deepEqual(result.items.filter((item) => item.supportedShape).map((item) => item.exportName),
+    ["Named", "WithRef", "Cast", "Checked", "Render"]);
+  assert.deepEqual(result.items.filter((item) => !item.supportedShape).map((item) => item.exportName),
+    ["Cycle", "Missing", "Custom", "BareAlias"]);
+  assert.ok(result.items.find((item) => item.exportName === "Render").missingMetadata.includes("componentCatalog"));
+  f.write("anonymous.tsx", 'import { memo } from "react"; export default memo(() => null);');
+  assert.match(scan(f.root).items.find((item) => item.sourcePath === "anonymous.tsx").shapeIssue, /PascalCase/);
+});
+
 test("directory summary enables scope selection without reading every candidate", (t) => {
   const f = fixture(t);
   f.write("ui/Button.ts", "export function Button() {}\n");
@@ -195,7 +371,7 @@ test("empty directories, invalid source and mistaken scan arguments give actiona
   ])
     fail(run(args), /component-catalog:/);
   f.write("invalid.ts", "export function Broken( {");
-  fail(run(["scan", f.root]), /invalid.ts:1: cannot scan invalid TypeScript syntax/);
+  fail(run(["scan", f.root]), /invalid.ts:1: cannot scan invalid JavaScript\/TypeScript syntax/);
 });
 
 test("new users can follow help and errors from inventory through annotation and generation", (t) => {

@@ -1,11 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import ts from "typescript";
-import { compare, declarationShape, isCatalogMarked, catalogDecision } from "./source.mjs";
+import { compare, declarationShape, isCatalogMarked, catalogDecision, localDeclaration, defaultReference } from "./source.mjs";
+import { isSourceFile } from "./files.mjs";
 
 const namedCandidate = (name) =>
   name && ts.isIdentifier(name) && /^[A-Z][A-Za-z0-9]*$/.test(name.text);
 const bytes = (value) => Buffer.byteLength(JSON.stringify(value) + "\n");
+const normalize = (value) => value.normalize("NFKC").toLowerCase();
 
 function candidateNames(node) {
   const marked = isCatalogMarked(node);
@@ -73,11 +75,15 @@ function missingMetadata(node) {
 
 // This deliberately needs neither a config, a catalog nor installed frontend dependencies.
 // It inventories syntactic candidates; generation remains the semantic validation step.
-export function scan(directory, { limit = 20, offset = 0, summary = false } = {}) {
+export function scan(directory, { limit = 20, offset = 0, summary = false, query } = {}) {
+  if (query !== undefined && (typeof query !== "string" || !query.trim() || query.length > 200))
+    throw new Error("--query must contain 1–200 characters");
+  if (query !== undefined && summary) throw new Error("--query and --summary cannot be combined");
   const root = path.resolve(directory);
   if (!fs.existsSync(root) || !fs.statSync(root).isDirectory())
     throw new Error(`Scan directory does not exist or is not a directory: ${root}`);
   const candidates = [];
+  const searchable = new Map();
   let files = 0;
   let skippedDirectories = 0;
   let skippedSymlinks = 0;
@@ -93,7 +99,7 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
       if (entry.isDirectory()) {
         if (["node_modules", ".git"].includes(entry.name)) skippedDirectories++;
         else walk(file);
-      } else if (entry.isFile() && /\.tsx?$/.test(file) && !file.endsWith(".d.ts")) {
+      } else if (entry.isFile() && isSourceFile(file)) {
         files++;
         const relative = path.relative(root, file).split(path.sep).join("/");
         const source = ts.createSourceFile(
@@ -106,7 +112,7 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
           const first = source.parseDiagnostics[0];
           const { line } = source.getLineAndCharacterOfPosition(first.start ?? 0);
           throw new Error(
-            `${relative}:${line + 1}: cannot scan invalid TypeScript syntax; ${ts.flattenDiagnosticMessageText(first.messageText, " ")}`,
+            `${relative}:${line + 1}: cannot scan invalid JavaScript/TypeScript syntax; ${ts.flattenDiagnosticMessageText(first.messageText, " ")}`,
           );
         }
         const seen = new Set();
@@ -116,7 +122,7 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
             node.parent === source || isCatalogMarked(node) || catalogDecision(node).ignored
               ? candidateNames(node)
               : [];
-          for (const exportName of names) {
+          for (let exportName of names) {
             let target = node;
             if (
               ts.isExportDeclaration(node) &&
@@ -131,16 +137,12 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
                 specifier &&
                 (!specifier.propertyName || specifier.propertyName.text === exportName)
               )
-                target =
-                  source.statements.find(
-                    (statement) =>
-                      ((ts.isFunctionDeclaration(statement) || ts.isClassDeclaration(statement)) &&
-                        statement.name?.text === exportName) ||
-                      (ts.isVariableStatement(statement) &&
-                        statement.declarationList.declarations.some(
-                          (declaration) => declaration.name?.text === exportName,
-                        )),
-                  ) ?? node;
+                target = localDeclaration(source, exportName) ?? node;
+            }
+            if (ts.isExportAssignment(node) && !node.isExportEquals && defaultReference(node.expression)) {
+              const reference = defaultReference(node.expression);
+              target = localDeclaration(source, reference.text) ?? node;
+              if (target !== node) exportName = reference.text;
             }
             const key = `${target.pos}:${exportName}`;
             if (seen.has(key)) continue;
@@ -150,12 +152,13 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
             let shapeIssue;
             try {
               shape = declarationShape(target);
+              if (shape.publicExpression) exportName = shape.declaration.name.text;
             } catch (error) {
               shapeIssue = isCatalogMarked(target)
                 ? error.message
                 : error.message.replaceAll("@componentCatalog declaration", "declaration shape");
             }
-            candidates.push({
+            const item = {
               exportName,
               sourcePath: relative,
               line: source.getLineAndCharacterOfPosition(target.getStart()).line + 1,
@@ -168,7 +171,21 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
               kind: shape ? (shape.members ? "namespace" : "component") : "unsupported",
               ...(shapeIssue ? { shapeIssue } : {}),
               missingMetadata: decision.ignored && !decision.error ? [] : missingMetadata(target),
-            });
+            };
+            candidates.push(item);
+            if (query !== undefined)
+              searchable.set(item, {
+                exportName,
+                sourcePath: relative,
+                summary: (target.jsDoc ?? [])
+                  .map((doc) => ts.getTextOfJSDocComment(doc.comment) ?? "")
+                  .join(" "),
+                tasks: ts
+                  .getJSDocTags(target)
+                  .filter((tag) => tag.tagName.text === "catalogTask")
+                  .map((tag) => ts.getTextOfJSDocComment(tag.comment) ?? "")
+                  .join(" "),
+              });
           }
           ts.forEachChild(node, visit);
         };
@@ -192,9 +209,44 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
     if (!item.supportedShape) group.unsupported++;
     groups.set(directory, group);
   }
-  const allItems = summary
+  let allItems = summary
     ? [...groups.values()].sort((a, b) => compare(a.directory, b.directory))
     : candidates;
+  if (query !== undefined) {
+    const normalized = normalize(query.trim());
+    const terms = [...new Set(normalized.split(/\s+/))];
+    allItems = candidates
+      .map((item) => {
+        const fields = Object.entries(searchable.get(item)).map(([key, value]) => [
+          key,
+          normalize(value),
+        ]);
+        const matches = fields
+          .filter(([, value]) => terms.some((term) => value.includes(term)))
+          .map(([key]) => key);
+        const matched = terms.every((term) => fields.some(([, value]) => value.includes(term)));
+        const rank =
+          normalize(item.exportName) === normalized
+            ? 5
+            : matches.includes("exportName")
+              ? 4
+              : matches.includes("tasks")
+                ? 3
+                : matches.includes("summary")
+                  ? 2
+                  : 1;
+        return { item, matches, matched, rank };
+      })
+      .filter(({ matched }) => matched)
+      .sort(
+        (a, b) =>
+          b.rank - a.rank ||
+          compare(a.item.sourcePath, b.item.sourcePath) ||
+          a.item.line - b.item.line ||
+          compare(a.item.exportName, b.item.exportName),
+      )
+      .map(({ item, matches }) => ({ ...item, matchedFields: matches }));
+  }
   if (offset > allItems.length)
     throw new Error(
       `--offset exceeds ${allItems.length} ${summary ? "directory groups" : "candidates"}; restart scan at --offset 0`,
@@ -208,7 +260,7 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
   let nextStep;
   if (!candidates.length)
     nextStep =
-      "No candidates found. Check the directory and exported TS/TSX declarations; use source search for other languages or export styles.";
+      "No candidates found. Check the directory and exported JS/JSX/TS/TSX declarations; use source search for other languages or export styles.";
   else if (candidates.some((entry) => entry.decisionIssue))
     nextStep = "Fix conflicting or invalid decision tags, then audit with the project config.";
   else if (ignored === candidates.length)
@@ -223,11 +275,16 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
   else
     nextStep =
       "Review ownership and annotate missing metadata only for selected supported candidates. An already selected scope needs no reconfirmation. Then generate and report remaining exclusions.";
+  if (query !== undefined)
+    nextStep = allItems.length
+      ? "Inspect candidate source and actual consumers; markers and supported syntax do not prove catalog enrollment or reuse permission. Do not annotate or generate for a read-only discovery task."
+      : "No matching syntactic candidates. Try another name/path term or use source search for private declarations, export-star barrels and unsupported source formats; do not conclude no component exists.";
   const items = allItems.slice(offset, offset + limit);
   const response = {
     scanVersion: 1,
     view: summary ? "directories" : "candidates",
     root,
+    ...(query !== undefined ? { query: query.trim(), matchingCandidates: allItems.length } : {}),
     counts: {
       files,
       candidates: candidates.length,
@@ -247,6 +304,9 @@ export function scan(directory, { limit = 20, offset = 0, summary = false } = {}
       "Heuristic candidates, not catalog entries or proof of public ownership. Metadata presence is not validity. Paths are relative to root." +
       (summary
         ? " Groups include descendants under each immediate child; '.' means files directly in root."
+        : "") +
+      (query !== undefined
+        ? " Counts describe the full scanned directory; matchingCandidates and pagination describe filtered results. All query terms must match. No config exclusions or vocabulary expansion are applied. marked means annotation presence, not verified catalog membership."
         : ""),
     totalItems: allItems.length,
     items,

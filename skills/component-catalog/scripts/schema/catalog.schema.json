@@ -6,7 +6,7 @@
   "required": ["schemaVersion", "sourceDigest", "typescriptVersion", "components"],
   "properties": {
     "schemaVersion": {
-      "const": 4
+      "const": 7
     },
     "sourceDigest": {
       "type": "string",
@@ -31,8 +31,10 @@
         "id",
         "exportName",
         "importPath",
+        "importExtension",
         "sourcePath",
         "layer",
+        "reuse",
         "status",
         "documentationStatus",
         "summary",
@@ -81,16 +83,35 @@
           "pattern": "^[A-Z][A-Za-z0-9]*$"
         },
         "importPath": {
-          "type": "string",
-          "minLength": 1
+          "oneOf": [{ "type": "string", "minLength": 1 }, { "const": null }]
+        },
+        "importExtension": {
+          "enum": ["omit", "js", "jsx", "preserve"]
         },
         "sourcePath": {
           "type": "string",
-          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.(ts|tsx)$"
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.[jt]sx?$"
         },
         "layer": {
           "type": "string",
           "minLength": 1
+        },
+        "reuse": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scope"],
+          "properties": {
+            "scope": { "enum": ["project", "module", "unspecified"] },
+            "owner": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$" }
+          },
+          "oneOf": [
+            { "type": "object", "properties": { "scope": { "enum": ["project", "unspecified"] } } },
+            {
+              "type": "object",
+              "required": ["owner"],
+              "properties": { "scope": { "const": "module" } }
+            }
+          ]
         },
         "status": {
           "enum": ["experimental", "stable", "deprecated"]
@@ -238,7 +259,7 @@
         },
         "path": {
           "type": "string",
-          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.(ts|tsx)$"
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.[jt]sx?$"
         },
         "purpose": {
           "type": "string",

@@ -1,61 +1,77 @@
 ---
 name: component-catalog
-description: Configure, query and maintain a local TypeScript component catalog. Use for initial setup, reusable component selection, or adding, changing, moving and deleting components in configured roots.
+metadata:
+  revision: "8"
+description: Configure, query and maintain a local React component catalog from JavaScript or TypeScript. Use for requested catalog setup, reusable component selection, or component changes in configured roots. Unrelated business work does not require catalog setup or migration.
 ---
 
 # Component catalog
 
-Use the project's catalog as a discovery aid. Project architecture and runtime source remain authoritative. This skill does not provide the CLI binary: locate the existing package script, local dependency bin, or user-provided tool checkout before invoking it. Do not run an unrelated registry package by guessing its name.
+Use the catalog as a discovery aid; project architecture and runtime source remain authoritative. This skill bundles its CLI at `scripts/bin/component-catalog.mjs`, relative to this file. Prefer the project's existing compatible command. Otherwise use Node >=22 and the actual bundled path; never guess a registry package or project directory.
 
-This skill targets CLI 0.2.0. On setup, upgrade, or an unfamiliar installation, run `component-catalog doctor --installation --expect-version 0.2.0` using the bare local bin. CLI and skill must come from the same pinned checkout/package; do not edit the expected version just to hide a mismatch. Then run `doctor --config <config-path> --expect-version 0.2.0` to check project readiness. Doctor is read-only and does not verify enrollment or freshness. See [references/setup.md](references/setup.md) for installation and recovery.
+## Choose the workflow
 
-Report validation results in the conversation. Keep ad hoc test fixtures, trial reports and local extraction notes outside the consumer repository; do not create or commit extra validation documents unless the user requests them or the project requires them. This does not exclude maintainable automated tests or requested product documentation.
+| Current task | Action |
+| --- | --- |
+| Select an existing component or answer an API question | Use the query workflow below. No installation, generation or migration for a read-only request. |
+| Add/change/move/delete a component in configured roots, or change its examples | Read [maintenance.md](references/maintenance.md), maintain affected metadata and verify freshness. A known-file fix can skip discovery. |
+| Requested first setup, scope expansion or migration | Read [setup.md](references/setup.md). Inspect first; the Agent configures and annotates the selected scope. |
+| Unrelated business work or an explicit pause of catalog work | Stay within the requested scope; do not initiate catalog setup, upgrade or migration. Existing project checks may still require catalog maintenance. Report such failures without disabling checks or claiming they passed. |
 
-## Existing configuration
+Read supporting instructions for the selected workflow; ordinary queries need neither setup nor maintenance instructions. Missing configuration is not permission to initialize a catalog. Respect an explicit pause of catalog work rather than treating this skill as authority to resume it.
 
-Find the nearest `component-catalog.config.json` from the working directory, or use the project's explicit `--config` path. Read that small configuration and the relevant package scripts. Paths other than projectRoot are relative to projectRoot; projectRoot itself is relative to the config file. Avoid inventing `web/src/shared/ui` or other project-specific paths.
+## Query existing components
 
-When choosing or adding a shared component, search a task, export name, or Prop name first. Get details by the returned exact ID, then inspect only the needed source or recommended examples:
+Find the nearest `component-catalog.config.json`, or use the project's explicit config path. Read that small configuration and relevant package scripts. `projectRoot` is relative to the config; other configured paths are relative to projectRoot.
+
+Search by task, export name or Prop name, get an exact returned ID, then read the necessary source and recommended example:
 
 ```bash
 component-catalog --config <config-path> search "task" --limit 5
 component-catalog --config <config-path> get <exact-id>
 component-catalog --config <config-path> get <exact-id> --prop <exact-prop-name>
 component-catalog --config <config-path> get <exact-id> --include members,constraints
+component-catalog --config <config-path> get <exact-id> --from src/features/Target.tsx
 ```
 
-Substitute the actual local CLI command. Use `npm --silent run component -- ...` or `pnpm --silent component ...` for scripts when stdout must remain JSON. No need to query for a small fix at a known source location.
+Substitute the actual local command. Use silent package-runner output when JSON is needed, for example `npm --silent run component -- ...` or `pnpm --silent component ...`. Do not routinely read the full generated catalog.
 
-Do not routinely dump the full generated catalog. Search results are at most 4 KiB, details 16 KiB. Respect `truncated`, `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. A missing catalog Prop may be inherited; inspect source instead of claiming the API is absent. --prop is case-sensitive and mutually exclusive with --include. Namespace entries use members.
+- Search is limited to 4 KiB; detail to 16 KiB. Respect `truncated`, `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
+- `--prop` is exact and case-sensitive, mutually exclusive with `--include`. Namespace entries use members, not Props.
+- If importPath is null, use `get --from <caller-file>` to derive the relative import. The caller path is relative to projectRoot, not the current shell directory, and may name a planned file. Respect importContext and exportKind. This only computes a path from the saved snapshot; it does not check freshness, read the caller, enforce ownership, or prove bundler/runtime compatibility. Existing module aliases remain unchanged when --from is supplied.
+- Compare `reuse` with the target module and project rules: `project` still respects architecture, `module` requires the same owner, `unspecified` means unknown. Search neither filters by caller nor enforces imports.
+- Empty or unsuitable results do not prove no reusable implementation exists. Use the fallback below when candidates do not satisfy the task, results are truncated, or the relevant category is missing. Queries never regenerate or check freshness.
+- For a missing/stale/incompatible catalog in a read-only task, report the limitation and use source. Repair or migrate only within authorized work using the matching workflow above; preserve project-specific tools rather than replacing them automatically.
 
-Queries never regenerate or detect stale data. If a catalog is missing/stale and generation is within the requested work, follow the maintenance workflow below. For read-only review, report the missing evidence or use source. Empty search is not proof no reusable component exists: try export names, actual English task tags or configured vocabulary, then search source.
+## Discover beyond the catalog
 
-## Maintain during implementation
-
-When authorized work adds, changes, moves or deletes a component in configured roots, or changes its referenced examples, read [references/maintenance.md](references/maintenance.md). Include catalog maintenance in the implementation; a known-file fix may skip discovery, but still needs freshness verification if it affects catalog inputs.
-
-With configVersion 2, each root records enrollment policy. In `public` roots, annotate supported new public components without asking again whether to enroll each one. In `review` roots, use existing ownership rules and actual usage to enroll or explicitly ignore; ask only when that decision is unresolved. A policy does not authorize unrelated changes, broader public scope, commits or publication. Read-only requests remain read-only.
-
-Finish authorized changes with `audit` → resolve findings → `generate` → `check`, plus representative queries and applicable project checks. These commands apply to the complete configured scope, independently of displayed pages. `audit/check` report exit 1 for findings and 2 when unable to complete; neither modifies sources or the catalog. Never suppress failures by removing existing markers or inventing metadata. v1 queries/generation still work, but lifecycle auditing requires explicit migration; see the maintenance reference.
-
-`IGNORE_REVIEW_REQUIRED` means an unsupported declaration ignore may be obsolete: inspect the current source and ownership, then enroll or record the actual justified exclusion. Do not automatically enroll, remove the tag, or merely reword its reason. For deprecated entries without successors, supply a truthful `@catalogDeprecatedReason`; do not invent a replacement ID.
-
-## First-time setup or migration
-
-Installing this skill alone does not scan or enroll anything. When the user requests setup, read [references/setup.md](references/setup.md) and take responsibility for discovery, configuration, metadata edits in the selected scope, and verification. The user chooses scope, not individual JSDoc fields.
-
-Start with a read-only inventory, even before a config exists:
+Try alternate names/task tags and, when useful, `search --limit 10`; output limits still apply. If the catalog is insufficient, use the bare CLI (without a script's fixed `--config`) to inspect relevant source directories:
 
 ```bash
-component-catalog scan <frontend-directory> --summary
-component-catalog scan <selected-directory> --limit 20
-component-catalog scan <selected-directory> --offset <nextOffset> --limit 20
+component-catalog scan <relevant-directory> --query "Dialog" --limit 20
+component-catalog scan <relevant-directory> --query "Dialog" --offset <nextOffset> --limit 20
 ```
 
-Start broad discovery with --summary: it groups counts under each immediate child directory, including descendants, without loading every candidate into context. Drill into relevant directories, then use detail pages for enrollment. Detail results include unmarked candidates, missing metadata and unsupported syntax. These are heuristics, not evidence that an export is public. Paths are relative to the returned root, which may differ from projectRoot. Scan does not apply catalog configuration or exclusions. Follow nextOffset until null in the same view when reporting full coverage, or explicitly say the inventory is partial.
+`--query` matches names, paths, JSDoc summaries and task tags; all whitespace-separated terms must match. It does not expand Chinese vocabulary or understand arbitrary requests: translate task wording into likely names/tags using project evidence, and try synonyms separately. Start with the relevant configured root, then inspect relevant frontend directories within the user's task scope even if they are outside catalog roots. Discovery does not expand enrollment or reuse permission.
 
-When the user has already selected directories/components for enrollment, proceed within that scope without another confirmation. Providing only the frontend location identifies where to inspect; it does not make every export public. If scope remains unclear, present a short directory/count/reason recommendation and ask one focused question with choices: recommended public directories, a user-specified subset, or inventory only. Do the read-only discovery before asking. Do not request permission per component.
+Candidates include unmarked, ignored and unsupported declarations. Check their path, line, missingMetadata and shape/ignore reasons, then inspect source and consumers before recommending reuse. A marker is not proof of a valid saved catalog entry; do not pass a guessed candidate ID to `get`. Keep candidate findings distinct from verified catalog results. Follow pagination before claiming full matching coverage; counts describe the whole scanned directory, while matchingCandidates describes the filtered set.
 
-After scope is settled, the Agent adds truthful annotations and verifies all selected supported entries. A first successful example is a checkpoint, not completion of a larger requested scope. Report discovered candidates, selected scope, enrolled entries, skipped entries and pending evidence with reasons; do not claim all components are searchable when only some are enrolled.
+If scanning is inconclusive, use `rg` or equivalent on source/imports, including private declarations, export-star barrels and source formats beyond JS/JSX/TS/TSX. Narrow a scan that fails on unrelated syntax. Missing documentation may block enrollment but must not block source inspection. Read-only discovery never adds annotations, generates artifacts or changes ownership. Report remaining uncertainty instead of claiming no component exists.
 
-Audit success validates enrollment decisions, not search usefulness. Review `discovery` separately, test representative queries chosen from the selected scope, and verify the persistent CLI and routine-check integration before calling full setup complete. See the setup reference for acceptance criteria; unsupported exclusions remain unavailable to search even when explicitly justified.
+## Installation and upgrade diagnosis
+
+Skill revision **8** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
+
+```bash
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 8
+```
+
+With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.
+
+## Decisions and completion
+
+Reuse established scope and enrollment policies. Supported new public components in a `public` root are maintained without asking per component; `review` roots need a source-based ownership decision. Selecting business components does not make them globally reusable. Only unresolved scope/ownership choices need a user decision: prefer the client's eligible structured choice tool, asynchronous when available. See [scope decisions](references/setup.md#scope-decisions) when needed; no timeout or preselected option constitutes consent.
+
+For authorized maintenance, finish with `audit` → resolve findings → `generate` → `check`, affected queries and applicable project checks. Never invent metadata, remove markers or narrow roots to conceal failures. Setup additionally verifies useful search coverage and persistent workflow integration. Report `discovery` separately from audit status; unsupported exclusions are still unavailable even when checks pass.
+
+Report actual validation in conversation. Keep ad hoc trials and reports outside consumer repositories; maintainable tests and requested product documentation are allowed. No extra registry, automatic commit or publication is part of this workflow.

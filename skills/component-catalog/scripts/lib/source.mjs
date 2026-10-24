@@ -60,8 +60,30 @@ export function localExportNames(source) {
   );
 }
 
-// Only direct React imports: a same-named local helper or arbitrary HOC is not forwardRef.
-function isReactForwardRef(expression, source) {
+export function localDeclaration(source, name) {
+  return source.statements.find((statement) =>
+    ((ts.isFunctionDeclaration(statement) || ts.isClassDeclaration(statement)) &&
+      statement.name?.text === name) ||
+    (ts.isVariableStatement(statement) && statement.declarationList.declarations.some(
+      (declaration) => declaration.name?.text === name,
+    )));
+}
+
+export function defaultReference(expression) {
+  while (ts.isParenthesizedExpression(expression) || ts.isAsExpression(expression) ||
+    ts.isTypeAssertionExpression(expression) || ts.isSatisfiesExpression(expression)) expression = expression.expression;
+  return ts.isIdentifier(expression) ? expression : undefined;
+}
+
+function localDefaultExport(source, name) {
+  if (!name) return undefined;
+  return source.statements.find((statement) =>
+    ts.isExportAssignment(statement) && !statement.isExportEquals &&
+    defaultReference(statement.expression)?.text === name);
+}
+
+// Only direct React imports, never same-named local helpers or arbitrary HOCs.
+function isReactHelper(expression, source, helper) {
   return source.statements.some((statement) => {
     if (
       !ts.isImportDeclaration(statement) ||
@@ -80,12 +102,12 @@ function isReactForwardRef(expression, source) {
           (entry) =>
             !entry.isTypeOnly &&
             entry.name.text === expression.text &&
-            (entry.propertyName ?? entry.name).text === "forwardRef",
+            (entry.propertyName ?? entry.name).text === helper,
         )
       );
     return (
       ts.isPropertyAccessExpression(expression) &&
-      expression.name.text === "forwardRef" &&
+      expression.name.text === helper &&
       ts.isIdentifier(expression.expression) &&
       (clause.name?.text === expression.expression.text ||
         (bindings &&
@@ -95,12 +117,58 @@ function isReactForwardRef(expression, source) {
   });
 }
 
+function componentRender(value, source, seen = new Set()) {
+  if (!value) return undefined;
+  while (ts.isParenthesizedExpression(value)) value = value.expression;
+  if (seen.has(value)) return undefined;
+  seen = new Set(seen).add(value);
+  // Preserve the declared public API of cast memo/ref results; do not interpret
+  // arbitrary cast values as component implementations.
+  if (ts.isAsExpression(value) || ts.isTypeAssertionExpression(value) || ts.isSatisfiesExpression(value)) {
+    const render = componentRender(value.expression, source, seen);
+    return render?.wrapper ? render : undefined;
+  }
+  if (ts.isArrowFunction(value) || ts.isFunctionExpression(value)) return { callable: value, declaration: value };
+  if (ts.isIdentifier(value)) {
+    const node = source.statements.find((item) => ts.isFunctionDeclaration(item) && item.name?.text === value.text && item.body)
+      ?? localDeclaration(source, value.text);
+    if (!node) return undefined;
+    if (ts.isFunctionDeclaration(node) && node.body)
+      return { callable: node, declaration: node };
+    if (ts.isVariableStatement(node) && node.declarationList.flags & ts.NodeFlags.Const) {
+      const declaration = node.declarationList.declarations.find((item) => item.name?.text === value.text);
+      const render = componentRender(declaration?.initializer, source, seen);
+      return render ? { ...render, declaration } : undefined;
+    }
+    return undefined;
+  }
+  if (
+    ts.isCallExpression(value) &&
+    isReactHelper(value.expression, source, "forwardRef") &&
+    value.arguments.length === 1 && !ts.isSpreadElement(value.arguments[0])
+  ) {
+    const render = componentRender(value.arguments[0], source, seen);
+    if (render && !render.wrapper) return { ...render, wrapper: "forwardRef" };
+  }
+  if (
+    ts.isCallExpression(value) &&
+    isReactHelper(value.expression, source, "memo") &&
+    [1, 2].includes(value.arguments.length) &&
+    !value.arguments.some(ts.isSpreadElement)
+  ) {
+    const render = componentRender(value.arguments[0], source, seen);
+    if (render) return { ...render, wrapper: render.wrapper?.includes("forwardRef") ? "memo(forwardRef)" : "memo" };
+  }
+  return undefined;
+}
+
 export function declarationShape(node) {
   const source = node.getSourceFile();
   let declaration = node;
   let callable;
   let members;
   let wrapper;
+  let publicExpression;
   if (node.parent === source && ts.isFunctionDeclaration(node) && node.body) {
     callable = node;
   } else if (
@@ -110,18 +178,13 @@ export function declarationShape(node) {
     node.declarationList.declarations.length === 1
   ) {
     [declaration] = node.declarationList.declarations;
-    const value = declaration.initializer;
-    if (value && (ts.isArrowFunction(value) || ts.isFunctionExpression(value))) callable = value;
-    else if (
-      value &&
-      ts.isCallExpression(value) &&
-      isReactForwardRef(value.expression, source) &&
-      value.arguments.length === 1 &&
-      (ts.isArrowFunction(value.arguments[0]) || ts.isFunctionExpression(value.arguments[0]))
-    ) {
-      callable = value.arguments[0];
-      wrapper = "forwardRef";
-    } else if (value && ts.isObjectLiteralExpression(value)) {
+    let value = declaration.initializer;
+    while (value && ts.isParenthesizedExpression(value)) value = value.expression;
+    // A bare alias remains a distinct unsupported export; resolve references only
+    // inside known React wrappers, whose public callable type is checked later.
+    const render = value && !ts.isIdentifier(value) ? componentRender(value, source) : undefined;
+    if (render) ({ callable, wrapper } = render);
+    else if (value && ts.isObjectLiteralExpression(value)) {
       members = value.properties.map((property) => {
         if (
           !ts.isPropertyAssignment(property) ||
@@ -134,13 +197,27 @@ export function declarationShape(node) {
       if (!members.length || new Set(members.map(({ name }) => name)).size !== members.length)
         throw new Error("Catalog namespace requires nonempty, unique members");
     }
+  } else if (node.parent === source && ts.isExportAssignment(node) && !node.isExportEquals) {
+    const render = componentRender(node.expression, source);
+    if (render?.wrapper) {
+      ({ declaration, callable, wrapper } = render);
+      publicExpression = node.expression;
+    }
   }
   if (!callable && !members)
     throw new Error(
-      "Unsupported @componentCatalog declaration: the extractor supports direct functions, direct React forwardRef callbacks or reference namespaces. Report this limitation; preserve runtime behavior.",
+      "Unsupported @componentCatalog declaration: supports direct functions, React forwardRef/memo with inline or same-file render functions, named wrapped defaults, or reference namespaces. Report this limitation; preserve runtime behavior.",
     );
   const flags = ts.getCombinedModifierFlags(node);
-  if (!(flags & ts.ModifierFlags.Export) && !localExportNames(source).has(declaration.name?.text))
+  const named = !!(flags & ts.ModifierFlags.Export) || localExportNames(source).has(declaration.name?.text);
+  const defaultAssignment = !named && localDefaultExport(source, declaration.name?.text);
+  if (!publicExpression && defaultAssignment) {
+    publicExpression = defaultAssignment.expression;
+    if (publicExpression !== defaultReference(publicExpression)) wrapper ??= "default export";
+  }
+  const defaultExport = !!publicExpression || !!(flags & ts.ModifierFlags.Default) ||
+    !!defaultAssignment;
+  if (!named && !defaultExport)
     throw new Error("@componentCatalog declaration must be exported");
   if (
     !declaration.name ||
@@ -153,7 +230,8 @@ export function declarationShape(node) {
     callable,
     members,
     wrapper,
-    exportKind: flags & ts.ModifierFlags.Default ? "default" : "named",
+    publicExpression,
+    exportKind: defaultExport ? "default" : "named",
   };
 }
 
@@ -174,15 +252,18 @@ export function discoverEntries(sources, checker, workspace, roots) {
         } catch (error) {
           fail(node, workspace, error.message);
         }
-        const { declaration, callable, members, wrapper, exportKind } = shape;
+        const { declaration, callable, members, wrapper, publicExpression, exportKind } = shape;
         entries.push({
           node,
           declaration,
           callable,
           members,
           wrapper,
+          publicExpression,
           source,
-          symbol: canonicalSymbol(checker, checker.getSymbolAtLocation(declaration.name)),
+          symbol: publicExpression
+            ? canonicalSymbol(checker, checker.getExportsOfModule(checker.getSymbolAtLocation(source)).find((item) => item.name === "default"))
+            : canonicalSymbol(checker, checker.getSymbolAtLocation(declaration.name)),
           exportKind,
         });
       }

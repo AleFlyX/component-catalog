@@ -5,6 +5,10 @@ import ts from "typescript";
 import { validateSchemaValue } from "./schema.mjs";
 import { compare, discoverEntries, referencedExports, usageKind } from "./source.mjs";
 import { createProject, filesBelow } from "./project.mjs";
+import { isSourceFile } from "./files.mjs";
+import { importFile, relativeImport } from "./imports.mjs";
+import { exampleImportModes, matchesPublicExport } from "./import-validation.mjs";
+import { unresolvedImports } from "./dependencies.mjs";
 
 export function generateCatalog(config, options = {}) {
   const { projectRoot: workspace, sourceRoot, componentRoots } = config;
@@ -70,14 +74,20 @@ export function generateCatalog(config, options = {}) {
     return [rootFor(sourceFile.fileName).idPrefix, ...folder, exportName].join(".");
   }
 
+  function importExtension(sourceFile) {
+    const selected = rootFor(sourceFile.fileName).importExtension ?? "omit";
+    return selected === "js" && /\.[jt]sx$/.test(sourceFile.fileName) && parsed.options.jsx === ts.JsxEmit.Preserve
+      ? "jsx" : selected;
+  }
+
   function importPath(sourceFile) {
+    const root = rootFor(sourceFile.fileName);
+    if (root.importPrefix === null) return null;
     return (
-      rootFor(sourceFile.fileName).importPrefix +
+      root.importPrefix +
       "/" +
-      path
-        .relative(rootFor(sourceFile.fileName).path, sourceFile.fileName)
-        .replaceAll(path.sep, "/")
-        .replace(/\.tsx?$/, "")
+      importFile(path.relative(root.path, sourceFile.fileName).replaceAll(path.sep, "/"),
+        importExtension(sourceFile))
     );
   }
 
@@ -184,22 +194,42 @@ export function generateCatalog(config, options = {}) {
     return { status: "unsupported" };
   }
 
+  function genericParameters(signature, location) {
+    return (signature?.typeParameters ?? []).map((parameter) => {
+      const constraint = parameter.getConstraint();
+      const defaultType = parameter.getDefault();
+      const declaration = parameter.getSymbol()?.declarations?.find(ts.isTypeParameterDeclaration);
+      const isConst = declaration?.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ConstKeyword);
+      const display = (type) => checker.typeToString(type, location, typeFormat);
+      return (isConst ? "const " : "") + display(parameter) +
+        (constraint ? ` extends ${display(constraint)}` : "") +
+        (defaultType ? ` = ${display(defaultType)}` : "");
+    });
+  }
+
   function propsFor(node, checker, entry) {
     const parameter = node.parameters[0];
-    const typeParameters = (node.typeParameters ?? []).map((typeParameter) =>
-      typeParameter.getText(),
-    );
+    let typeParameters = genericParameters(checker.getSignatureFromDeclaration(node), node);
     if (!parameter && !entry.wrapper)
       return { displayType: "{}", typeParameters, inheritedTypes: [], items: [] };
     let type;
     if (entry.wrapper) {
-      const signatures = checker.getTypeAtLocation(entry.declaration.name).getCallSignatures();
+      const signatures = checker.getTypeAtLocation(entry.publicExpression ?? entry.declaration.name).getCallSignatures();
       const props = signatures.length === 1 && signatures[0].getParameters()[0];
+      if (!props && signatures.length === 1 && !parameter)
+        return { displayType: "{}", typeParameters: genericParameters(signatures[0], entry.declaration), inheritedTypes: [], items: [] };
       if (!props)
-        throw new Error(`${entry.declaration.name.text}: cannot resolve forwardRef public Props`);
+        throw new Error(`${entry.declaration.name.text}: cannot resolve ${entry.wrapper} public Props`);
+      typeParameters = genericParameters(signatures[0], entry.declaration);
       type = checker.getTypeOfSymbolAtLocation(props, entry.declaration);
-      if (type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown))
-        throw new Error(`${entry.declaration.name.text}: unresolved forwardRef public Props`);
+      // React's memo overload may infer unknown for a render with no parameters.
+      // Preserve that public type rather than inventing {} or rejecting a valid component.
+      const parameterlessMemo = entry.wrapper === "memo" && !parameter;
+      if (
+        (type.flags & ts.TypeFlags.Any) ||
+        ((type.flags & ts.TypeFlags.Unknown) && !parameterlessMemo)
+      )
+        throw new Error(`${entry.declaration.name.text}: unresolved ${entry.wrapper} public Props`);
     } else type = checker.getTypeAtLocation(parameter);
     const location = parameter ?? entry.declaration;
     const defaults = parameter ? declarationDefaultValues(parameter) : new Map();
@@ -278,6 +308,16 @@ export function generateCatalog(config, options = {}) {
     const { node, declaration, callable, members, source: sourceFile, exportKind } = entry;
     const exportName = declaration.name.text;
     const tags = tagsFor(node);
+    const reuseTag = oneTag(tags, "catalogReuse", exportName, { optional: true });
+    let reuse = rootFor(sourceFile.fileName).reuse ?? { scope: "unspecified" };
+    if (reuseTag !== undefined) {
+      if (["project", "unspecified"].includes(reuseTag)) reuse = { scope: reuseTag };
+      else {
+        const owner = /^module:([a-z][a-z0-9]*(?:[._-][a-z0-9]+)*)$/.exec(reuseTag)?.[1];
+        if (!owner) throw new Error(`${exportName}: invalid @catalogReuse; use project, unspecified or module:<owner>`);
+        reuse = { scope: "module", owner };
+      }
+    }
     const status = oneTag(tags, "catalogStatus", exportName);
     if (!allowedStatuses.has(status))
       throw new Error(`${exportName}: invalid @catalogStatus ${status}`);
@@ -295,11 +335,9 @@ export function generateCatalog(config, options = {}) {
     if (replacement && !componentIdPattern.test(replacement)) {
       throw new Error(`${exportName}: invalid @catalogReplacement ${replacement}`);
     }
-    const summary = ts
-      .displayPartsToString(
-        checker.getSymbolAtLocation(declaration.name).getDocumentationComment(checker),
-      )
-      .trim();
+    const summary = entry.publicExpression
+      ? (node.jsDoc ?? []).map((doc) => ts.getTextOfJSDocComment(doc.comment) ?? "").join("\n").trim()
+      : ts.displayPartsToString(checker.getSymbolAtLocation(declaration.name).getDocumentationComment(checker)).trim();
     if (!summary) throw new Error(`${exportName}: missing component summary`);
     const tasks = manyTags(tags, "catalogTask", exportName);
     if (tasks.some((task) => !/^[a-z][a-z0-9-]*$/.test(task))) {
@@ -307,6 +345,25 @@ export function generateCatalog(config, options = {}) {
     }
     const sourceImport = importPath(sourceFile);
     const examples = parseExamples(tags, entry);
+    for (const example of examples) {
+      if (sourceImport === null && example.path === relative(sourceFile.fileName)) continue;
+      const specifier = sourceImport ?? relativeImport(relative(sourceFile.fileName), example.path,
+        importExtension(sourceFile)).specifier;
+      if (/\.tsx?$/.test(specifier) &&
+          !(parsed.options.allowImportingTsExtensions || (parsed.options.rewriteRelativeImportExtensions && /^\.\.?\//.test(specifier))))
+        throw new Error(`${exportName}: preserved TypeScript import ${specifier} requires allowImportingTsExtensions or relative-import rewriting. Choose an importExtension supported by the project.`);
+      const from = path.resolve(workspace, example.path);
+      const modes = exampleImportModes(checker, program.getSourceFile(from), entry.symbol, specifier, parsed.options);
+      const valid = [...modes].some((mode) => {
+        const resolved = ts.resolveModuleName(specifier, from, parsed.options, ts.sys,
+          undefined, undefined, mode).resolvedModule;
+        if (!resolved) return false;
+        return matchesPublicExport(program, resolved.resolvedFileName,
+          exportKind === "default" ? "default" : exportName, entry.symbol);
+      });
+      if (!valid)
+        throw new Error(`${exportName}: catalog import ${specifier} does not resolve to ${relative(sourceFile.fileName)} from ${example.path}. Correct importPrefix/importExtension, or use importPrefix: null for caller-relative imports; do not invent a runtime alias.`);
+    }
     if (
       status === "stable" &&
       !examples.some(({ kind }) => ["production", "preview"].includes(kind))
@@ -319,8 +376,10 @@ export function generateCatalog(config, options = {}) {
       exportKind,
       kind: members ? "namespace" : "component",
       importPath: sourceImport,
+      importExtension: importExtension(sourceFile),
       sourcePath: relative(sourceFile.fileName),
       layer: rootFor(sourceFile.fileName).layer,
+      reuse,
       status,
       ...(replacement ? { replacement } : {}),
       ...(deprecationReason ? { deprecationReason } : {}),
@@ -343,7 +402,7 @@ export function generateCatalog(config, options = {}) {
       config.configPath,
       ...configInputs,
       ...componentRoots.flatMap((root) =>
-        filesBelow(root.path, config, (file) => /\.(ts|tsx)$/.test(file)),
+        filesBelow(root.path, config, (file) => isSourceFile(file) || file.endsWith(".d.ts")),
       ),
       ...examples,
     ];
@@ -367,7 +426,7 @@ export function generateCatalog(config, options = {}) {
       "No @componentCatalog declarations found in configured componentRoots. Run scan <component-directory>, review public candidates, and add metadata to selected supported declarations before generate.",
     );
   const extraction = ts.createProgram({
-    rootNames: [
+    rootNames: parsed.options.composite ? program.getRootFileNames() : [
       ...new Set(entries.map(({ source }) => source.fileName)),
       ...parsed.fileNames.filter((file) => file.endsWith(".d.ts")),
     ],
@@ -376,6 +435,13 @@ export function generateCatalog(config, options = {}) {
   });
   const diagnostics = ts.getPreEmitDiagnostics(extraction);
   if (diagnostics.length) throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
+  const missing = unresolvedImports(
+    extraction.getSourceFiles().filter((source) => !source.isDeclarationFile),
+    extraction.getTypeChecker(),
+    extraction.getCompilerOptions(),
+  )[0];
+  if (missing)
+    throw new Error(`${relative(missing.sourcePath)}:${missing.line}: Cannot resolve static import ${missing.module}; restore dependencies or correct the compiler config.`);
   const references = new Map(
     sources.map((source) => [source.fileName, referencedExports(source, checker)]),
   );
@@ -438,7 +504,7 @@ export function generateCatalog(config, options = {}) {
     }
   }
   const catalog = {
-    schemaVersion: 4,
+    schemaVersion: 7,
     sourceDigest: sourceDigest(components),
     typescriptVersion: ts.version,
     components,

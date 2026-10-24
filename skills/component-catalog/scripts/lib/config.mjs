@@ -11,7 +11,7 @@ export const template = {
     {
       path: "src/components",
       idPrefix: "ui",
-      importPrefix: "@/components",
+      importPrefix: null,
       layer: "shared",
       enrollment: "review",
     },
@@ -88,7 +88,9 @@ export function loadConfig(argument, cwd = process.cwd()) {
         "path",
         "idPrefix",
         "importPrefix",
+        "importExtension",
         "layer",
+        "reuse",
         ...(raw.configVersion === 2 ? ["enrollment"] : []),
       ],
       "componentRoot",
@@ -105,17 +107,32 @@ export function loadConfig(argument, cwd = process.cwd()) {
       )
     )
       throw new Error("Invalid idPrefix");
-    const importPrefix = nonempty(root.importPrefix, "importPrefix");
+    const importPrefix = root.importPrefix === null ? null : nonempty(root.importPrefix, "importPrefix");
     if (
-      /\s|\\/.test(importPrefix) ||
+      importPrefix !== null && (/\s|\\/.test(importPrefix) ||
       importPrefix.endsWith("/") ||
       importPrefix.startsWith(".") ||
-      importPrefix.startsWith("/")
+      importPrefix.startsWith("/"))
     )
       throw new Error(
-        "importPrefix must be a module alias or package subpath without trailing slash",
+        "importPrefix must be a real module alias/package subpath without trailing slash, or null for caller-relative imports",
       );
+    if (root.importExtension !== undefined && !["omit", "js", "preserve"].includes(root.importExtension))
+      throw new Error("importExtension must be omit, js or preserve");
     nonempty(root.layer, "layer");
+    if (root.reuse !== undefined) {
+      keys(root.reuse, ["scope", "owner"], "componentRoot.reuse");
+      if (!["project", "module", "unspecified"].includes(root.reuse.scope))
+        throw new Error("reuse.scope must be project, module or unspecified");
+      if (
+        root.reuse.owner !== undefined &&
+        (typeof root.reuse.owner !== "string" ||
+          !/^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$/.test(root.reuse.owner))
+      )
+        throw new Error("reuse.owner must be a lowercase module identifier");
+      if (root.reuse.scope === "module" && !root.reuse.owner)
+        throw new Error("module reuse scope requires an owner");
+    }
     return { ...root, path: resolved };
   });
   for (let i = 0; i < componentRoots.length; i++) {

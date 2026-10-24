@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { canonicalSymbol, catalogDecision, declarationShape } from "./source.mjs";
+import { canonicalSymbol, catalogDecision, declarationShape, defaultReference } from "./source.mjs";
 import { filesBelow } from "./project.mjs";
 
 function owner(node) {
@@ -68,6 +68,7 @@ export function inventory(config, project) {
     let shapeError;
     try {
       shape = declarationShape(node);
+      if (shape.publicExpression) exportName = shape.declaration.name.text;
     } catch (error) {
       shapeError = error.message;
     }
@@ -116,18 +117,25 @@ export function inventory(config, project) {
       },
     );
     for (const file of files) {
-      if (/\.(jsx?|vue|svelte|mts|cts|mdx)$/.test(file))
+      if (/\.(vue|svelte|mts|cts|mjs|cjs|mdx)$/.test(file))
         issues.push({
           code: "UNSUPPORTED_SOURCE_FILE",
           sourcePath: relative(file),
           message:
-            "Audit supports .ts/.tsx sources only; assess and explicitly exclude other source files or add extractor support.",
+            "Audit supports .js/.jsx/.ts/.tsx sources; assess other source formats without concealing reusable components through exclusions.",
         });
     }
   }
 
   for (const source of selected) {
     const root = rootFor(source.fileName);
+    if (source.commonJsModuleIndicator) {
+      issue(
+        "UNSUPPORTED_COMMONJS",
+        source.commonJsModuleIndicator,
+        "CommonJS exports are not extracted; inspect module.exports/exports and preserve this coverage limitation instead of treating the scope as empty.",
+      );
+    }
     for (const diagnostic of program.getSyntacticDiagnostics(source)) {
       const line = source.getLineAndCharacterOfPosition(diagnostic.start ?? 0).line + 1;
       issues.push({
@@ -172,6 +180,30 @@ export function inventory(config, project) {
     }
     const module = checker.getSymbolAtLocation(source);
     if (!module) continue;
+    // JS semantic diagnostics can be disabled; star collisions remain invalid exports.
+    const explicit = new Set(checker.getExportsOfModule(module).filter((symbol) =>
+      symbol.declarations?.some((node) => node.getSourceFile() === source && !typeOnly(node)),
+    ).map((symbol) => symbol.name));
+    const starSymbols = new Map();
+    for (const statement of source.statements) {
+      if (!ts.isExportDeclaration(statement) || statement.isTypeOnly || statement.exportClause || !statement.moduleSpecifier)
+        continue;
+      const target = checker.getSymbolAtLocation(statement.moduleSpecifier);
+      if (!target) continue;
+      for (const exported of checker.getExportsOfModule(target)) {
+        if (exported.name === "default" || explicit.has(exported.name) || checker.getTypeOnlyAliasDeclaration(exported)) continue;
+        if (!target.declarations?.some((node) => ts.isSourceFile(node) && hasValuePath(node, exported.name))) continue;
+        const symbol = canonicalSymbol(checker, exported);
+        if (!symbol || !(symbol.flags & ts.SymbolFlags.Value)) continue;
+        const symbols = starSymbols.get(exported.name) ?? new Set();
+        symbols.add(symbol);
+        starSymbols.set(exported.name, symbols);
+      }
+    }
+    for (const [name, symbols] of starSymbols) {
+      if (symbols.size > 1)
+        issue("AMBIGUOUS_EXPORT", source, `Conflicting export-star bindings for ${name}; choose an explicit export.`, name);
+    }
     for (const exported of checker.getExportsOfModule(module)) {
       if (exported.declarations?.length && exported.declarations.every(typeOnly)) continue;
       if (!hasValuePath(source, exported.name)) continue;
@@ -193,11 +225,11 @@ export function inventory(config, project) {
       if (
         declaration &&
         ts.isExportAssignment(declaration) &&
-        ts.isIdentifier(declaration.expression)
+        defaultReference(declaration.expression)
       ) {
         const target = canonicalSymbol(
           checker,
-          checker.getSymbolAtLocation(declaration.expression),
+          checker.getSymbolAtLocation(defaultReference(declaration.expression)),
         );
         declaration = target?.valueDeclaration ?? target?.declarations?.[0] ?? declaration;
       }

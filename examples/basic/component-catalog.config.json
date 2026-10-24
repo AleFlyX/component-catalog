@@ -10,7 +10,8 @@
       "idPrefix": "demo.ui",
       "importPrefix": "@demo/ui",
       "layer": "shared",
-      "enrollment": "public"
+      "enrollment": "public",
+      "reuse": { "scope": "project" }
     }
   ],
   "exclude": [],

@@ -3,11 +3,30 @@ import { loadConfig, validateGenerationPaths } from "./config.mjs";
 import { loadCatalog } from "./catalog.mjs";
 
 const manifest = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
-export const versionInfo = { name: manifest.name, version: manifest.version };
+function readSkillRevision() {
+  try {
+    const source = fs.readFileSync(new URL("../../SKILL.md", import.meta.url), "utf8");
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(source)?.[1];
+    const revision = /^  revision: "([1-9][0-9]{0,5})"\r?$/m.exec(frontmatter ?? "")?.[1];
+    return revision ? Number(revision) : null;
+  } catch {
+    return null;
+  }
+}
+export const versionInfo = {
+  name: manifest.name,
+  version: manifest.version,
+  skillRevision: readSkillRevision(),
+};
 
 // Explicit, read-only readiness diagnosis. Never installs dependencies, runs
 // consumer scripts, generates a catalog, or claims catalog freshness.
-export async function doctor({ configPath, installation = false, expectVersion } = {}) {
+export async function doctor({
+  configPath,
+  installation = false,
+  expectVersion,
+  expectSkillRevision,
+} = {}) {
   const checks = [];
   const add = (id, status, message) => checks.push({ id, status, message });
   const runtime = {
@@ -15,6 +34,7 @@ export async function doctor({ configPath, installation = false, expectVersion }
     node: process.versions.node,
     requiredNode: manifest.engines.node,
     expectedVersion: expectVersion ?? null,
+    expectedSkillRevision: expectSkillRevision ?? null,
     typescript: null,
     expectedTypescript: manifest.dependencies.typescript,
   };
@@ -31,19 +51,27 @@ export async function doctor({ configPath, installation = false, expectVersion }
       : "Running CLI version matches the requested version, if supplied.",
   );
   let ts;
+  add(
+    "skill-revision",
+    versionInfo.skillRevision !== null &&
+      (expectSkillRevision === undefined || expectSkillRevision === versionInfo.skillRevision)
+      ? "pass"
+      : "fail",
+    "Checks the SKILL.md bundled with this executable, not other installed copies. Missing/older instructions require replacing the complete skill from the intended pinned source; do not change revision numbers to bypass this check.",
+  );
   try {
     ts = (await import("typescript")).default;
     runtime.typescript = ts.version;
     add(
       "typescript",
       ts.version === manifest.dependencies.typescript ? "pass" : "fail",
-      "The CLI dependency must match its package manifest. Restore this tool installation using its lockfile (npm ci in the tool checkout).",
+      "The CLI dependency must match its package manifest. Run npm ci --ignore-scripts in the installed skill's scripts directory (or npm ci in the tool checkout).",
     );
   } catch {
     add(
       "typescript",
       "fail",
-      "Cannot load the CLI TypeScript dependency. Run npm ci in the tool checkout or reinstall the pinned local package.",
+      "Cannot load the CLI TypeScript dependency. Run npm ci --ignore-scripts in the installed skill's scripts directory, or restore the tool checkout/pinned local package.",
     );
   }
 
@@ -81,19 +109,24 @@ export async function doctor({ configPath, installation = false, expectVersion }
       if (pathsReady && ts) {
         try {
           const { createProject } = await import("./project.mjs");
-          const { program } = createProject(config);
+          const { unresolvedImports } = await import("./dependencies.mjs");
+          const { program, checker, sources } = createProject(config);
           const dependencies = new Set([2307, 2688, 2792, 7016, 6053, 5083]);
           const diagnostics = [
             ...program.getOptionsDiagnostics(),
             ...program.getGlobalDiagnostics(),
             ...program.getSemanticDiagnostics().filter((item) => dependencies.has(item.code)),
           ];
+          const unresolved = unresolvedImports(sources, checker, program.getCompilerOptions());
+          const missing = unresolved[0];
           add(
             "project-dependencies",
-            diagnostics.length ? "fail" : "pass",
-            diagnostics.length
+            diagnostics.length || unresolved.length ? "fail" : "pass",
+            missing
+              ? `Cannot resolve static import ${missing.module} at ${missing.sourcePath}:${missing.line}. Restore dependencies or correct the compiler config; doctor makes no changes.`
+              : diagnostics.length
               ? `${diagnostics.length} dependency/config diagnostic(s). First: ${ts.flattenDiagnosticMessageText(diagnostics[0].messageText, " ")}. Restore consumer dependencies or fix its tsconfig/imports; doctor makes no changes.`
-              : "Project compiler options and statically referenced module/type dependencies resolve. This is not a full typecheck.",
+              : "Compiler-reported dependencies and static ESM/import() module references resolve. This is not a full typecheck or a check of computed/CommonJS imports.",
           );
         } catch (error) {
           add("project-dependencies", "fail", error.message);
