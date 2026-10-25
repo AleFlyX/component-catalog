@@ -111,6 +111,13 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   const limited = search(catalog, "rowkey", 2);
   assert.equal(limited.items.length, 2);
   assert.equal(limited.omitted.items, 3);
+  assert.equal(limited.omitted.byLimit, 3);
+  assert.equal(limited.omitted.byBytes, 0);
+  assert.equal(limited.truncated, false);
+  const brief = search(baseCatalog, "button", 10, {}, true);
+  assert.equal(brief.brief, true);
+  assert.equal(brief.items[0].summary, undefined);
+  assert.equal(brief.items[0].importPath, "@demo/ui/Button");
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({
@@ -172,6 +179,7 @@ test("bounded UTF-8 JSON, omissions and mandatory focused context", () => {
   const found = search(catalog, "button");
   assert.ok(size(found) <= 4096);
   assert.equal(found.omitted.items, 1);
+  assert.equal(found.omitted.byBytes, 1);
   assert.equal(found.truncated, true);
   let detail = get(catalog, base.id);
   assert.ok(size(detail) <= 16384);

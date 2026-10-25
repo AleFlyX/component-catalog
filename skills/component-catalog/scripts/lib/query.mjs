@@ -14,7 +14,7 @@ function includesTerm(text, term) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-export function search(catalog, input, limit = 5, vocabulary = {}) {
+export function search(catalog, input, limit = 5, vocabulary = {}, brief = false) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
@@ -71,22 +71,26 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
       ...(kind === "component"
         ? { requiredProps: props.items.filter(({ required }) => required).map(({ name }) => name) }
         : {}),
-      summary,
+      ...(brief ? {} : { summary }),
       tasks,
       status,
       reuse: reuse ?? { scope: "unspecified" },
     }));
+  const byLimit = ranked.length - items.length;
   const response = {
     schemaVersion: catalog.schemaVersion,
     sourceDigest: catalog.sourceDigest,
     items,
+    ...(brief ? { brief: true } : {}),
+    // truncated means the response itself lost fields/items to the byte cap.
+    // More matching components than --limit is reported separately as byLimit.
     truncated: false,
-    omitted: { items: ranked.length - items.length },
+    omitted: { items: byLimit, byLimit, byBytes: 0 },
   };
-  response.truncated = response.omitted.items > 0;
   while (size(response) > 4096 && items.length) {
     items.pop();
     response.omitted.items += 1;
+    response.omitted.byBytes += 1;
     response.truncated = true;
   }
   return response;

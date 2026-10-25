@@ -39,7 +39,7 @@ Substitute the actual local command. Use silent package-runner output when JSON 
 
 Keep the query budget small: start with one search; if its `importPath` and `requiredProps` answer the task, do not call get. Get only when you need constraints, examples or type details, and reuse that response instead of fetching the same ID again. When several components need details, pass 2–5 IDs to one get command. Use `--include props` only when you need the prop-name index; use `--prop` for one property.
 
-- Search is limited to 4 KiB; detail to 16 KiB; batch detail shares the 16 KiB budget across 1–5 IDs. Respect `truncated`, `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
+- Search is limited to 4 KiB; detail to 16 KiB; batch detail shares the 16 KiB budget across 1–5 IDs. `truncated` means the response lost fields/items to the byte cap; more matches than `--limit` appear as `omitted.byLimit`, not `truncated`. Respect `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
 - `--prop` is exact and case-sensitive, mutually exclusive with `--include`. Namespace entries use members, not Props.
 - If importPath is null, use `get --from <caller-file>` to derive the relative import. The caller path is relative to projectRoot, not the current shell directory, and may name a planned file. Respect importContext and exportKind. This only computes a path from the saved snapshot; it does not check freshness, read the caller, enforce ownership, or prove bundler/runtime compatibility. Existing module aliases remain unchanged when --from is supplied.
 - Compare `reuse` with the target module and project rules: `project` still respects architecture, `module` requires the same owner, `unspecified` means unknown. Search neither filters by caller nor enforces imports.
@@ -48,7 +48,7 @@ Keep the query budget small: start with one search; if its `importPath` and `req
 
 ## Discover beyond the catalog
 
-Try alternate names/task tags and, when useful, `search --limit 10`; output limits still apply. If the catalog is insufficient, use the bare CLI (without a script's fixed `--config`) to inspect relevant source directories:
+Try alternate names/task tags and, when useful, `search --limit 10 --brief`; `--brief` omits summaries so more candidates fit, then get the chosen ID. If the catalog is insufficient, use the bare CLI (without a script's fixed `--config`) to inspect relevant source directories:
 
 ```bash
 component-catalog scan <relevant-directory> --query "Dialog" --limit 20
