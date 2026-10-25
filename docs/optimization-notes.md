@@ -24,6 +24,7 @@
 | 查询预算（skill revision 9） | 每任务 1 次 search、最多 1 次 get、批量 get、不默认 `--include props` |
 | trial 词表（英文任务词、input、分页） | task 2 从 3 次调用降到 2 次；task 3 固定 1 次 |
 | search `--brief` + `truncated` 语义拆分 | 省略 summary 的紧凑视图；`truncated` 只表示字节裁剪，更多匹配用 `omitted.byLimit` |
+| 查询回归集（`test/query-regression.test.mjs`） | 25 个查询 + 5 个必须排第一的入口，使用真实 trial catalog 防止 task 2/3 排序回退 |
 
 ## 3. 测量结果
 
@@ -49,12 +50,11 @@
 
 ## 5. 后续方向（按优先级）
 
-1. **搜索排序/词表回归集**（下一步）：把 task 2、task 3 及 13 个代表查询固化为查询回归测试；新增词表后跑同一组，防止排名回退。
-2. **更大、更陌生的代码库**：当前是 3 应用 monorepo；换一个已安装依赖的陌生中大型仓库，每条件 5 次，按 cache read 折扣做价格加权。需要重新 setup/标注，成本较高，应在查询语义稳定后进行。
-3. **setup 成本摊销**：把标注/生成的实际 token 成本纳入对比；本次标注约 +842 行，按当前节省额估算仍需约 20–30 个同类任务才可能回本。
-4. **catalog 产物体积**：3.93 MB/74 条主要来自继承 DOM props；可考虑生成时的 inherited/declared 标记或 compact catalog，但要避免隐藏真实 API。
-5. **skill 指令与工具行为同步**：任何新增 selector/字段都要同步 SKILL.md、README 与 doctor revision，避免安装方看到旧指引。
-6. **compact search 的复测**：`--brief` 已实现，但尚未单独跑 3 次 B；下一步用 `--limit 10 --brief` 做探索任务，确认调用数不增加且目标仍在 top 5。
+1. **更大、更陌生的代码库**（下一步）：当前是 3 应用 monorepo；换一个已安装依赖的陌生中大型仓库，每条件 5 次，按 cache read 折扣做价格加权。需要重新 setup/标注，成本较高，应在查询语义稳定后进行。
+2. **setup 成本摊销**：把标注/生成的实际 token 成本纳入对比；本次标注约 +842 行，按当前节省额估算仍需约 20–30 个同类任务才可能回本。
+3. **catalog 产物体积**：3.93 MB/74 条主要来自继承 DOM props；可考虑生成时的 inherited/declared 标记或 compact catalog，但要避免隐藏真实 API。
+4. **skill 指令与工具行为同步**：任何新增 selector/字段都要同步 SKILL.md、README 与 doctor revision，避免安装方看到旧指引。
+5. **compact search 的复测**：`--brief` 已实现并有回归测试，但尚未单独跑 3 次 B；下一步用 `--limit 10 --brief` 做探索任务，确认调用数不增加且目标仍在 top 5。
 
 ## 6. 相关产物
 
