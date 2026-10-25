@@ -1,8 +1,8 @@
-# React Component Atlas
+# Component Catalog
 
 本地组件发现 CLI，面向编码 Agent 和开发者。由 JavaScript/TypeScript 声明与就地 JSDoc 生成完整目录，查询时只输出所需组件或单个 Prop。不启动服务，不进入浏览器运行时。
 
-使用 Node >=22、TypeScript 5.9.3（唯一运行依赖）。GitHub 仓库名为 `react-component-atlas`，CLI 和本地包名为 `component-catalog`。尚未发布 npm 包或选择开源许可证。
+使用 Node >=22、TypeScript 5.9.3（唯一运行依赖）。GitHub 仓库名、CLI 和本地包名均为 `component-catalog`。尚未发布 npm 包或选择开源许可证。
 
 ## 运行
 
@@ -56,7 +56,7 @@ node "<skill-directory>/scripts/bin/component-catalog.mjs" scan "<frontend-direc
 CLI 与 skill 应来自同一个固定提交或本地安装包。本版为 0.3.0，尚无已发布的 npm 包；请使用明确来源的 checkout，不根据包名自动下载。下面的路径和 commit-sha 需替换为实际选择：
 
 ```bash
-git clone https://github.com/AleFlyX/react-component-atlas.git <tool-directory>
+git clone https://github.com/AleFlyX/component-catalog.git <tool-directory>
 cd <tool-directory>
 git checkout --detach <commit-sha>
 npm ci
