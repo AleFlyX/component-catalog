@@ -56,7 +56,10 @@ test("configurable query, exact prop context, fields and offline source-free ope
   const f = fixture(t);
   const before = fs.readFileSync(f.catalogFile);
   const beforeStat = fs.statSync(f.catalogFile);
-  assert.equal(ok(f.run(["search", "按钮"])).items[0].id, "demo.ui.Button");
+  const found = ok(f.run(["search", "按钮"])).items[0];
+  assert.equal(found.id, "demo.ui.Button");
+  assert.equal(found.importPath, "@demo/ui/Button");
+  assert.deepEqual(found.requiredProps, ["label"]);
   assert.equal(ok(f.run(["search", "ＤＩＳＡＢＬＥＤ"])).items[0].exportName, "Button");
   const focused = ok(f.run(["get", "demo.ui.Button", "--prop", "disabled"]));
   assert.equal(focused.component.prop.defaultValue, "false");
@@ -528,8 +531,9 @@ test("oversized inherited props fall back to a bounded prop index", () => {
   assert.equal(detail.truncated, true);
   assert.equal(detail.component.props, undefined);
   assert.equal(detail.component.propIndex.total, 300);
-  assert.equal(detail.component.propIndex.items.length, 300);
-  assert.equal(detail.component.propIndex.items[299].name, "prop299");
+  assert.equal(detail.component.propIndex.names.length, 300);
+  assert.equal(detail.component.propIndex.names[299], "prop299");
+  assert.deepEqual(detail.component.propIndex.required, []);
   assert.deepEqual(detail.component.propIndex.inheritedTypes, base.props.inheritedTypes);
 });
 

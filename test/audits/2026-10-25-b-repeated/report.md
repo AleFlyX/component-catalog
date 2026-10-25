@@ -7,6 +7,8 @@
 - 每条件 3 次独立子 agent 运行；共 9 次
 - 真实模型 usage：从 DSH `~/.dsh/storages/session_projcache/sessions/<session-id>.json` 的 `rows.tokenUsage.val.totals` 读取，而不是字节估算
 
+> 后续优化（search 返回 importPath/requiredProps + 紧凑 propIndex）后，catalog 条件 3 次复测均值为 198,647 tokens（本轮为 229,299），见 [第二轮优化报告](../2026-10-25-optimization-b/report.md)。本报告仍是该优化前的基线。
+
 ## 1. 指标定义
 
 | 指标 | 含义 |

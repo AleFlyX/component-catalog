@@ -1,0 +1,41 @@
+[
+  {
+    "run": 1,
+    "correct": 5,
+    "cliCalls": 20,
+    "cliSucceeded": 20,
+    "cliOutputBytes": 40435,
+    "uncachedInputTokens": 14043,
+    "outputTokens": 8086,
+    "cacheReadTokens": 211840,
+    "totalTokens": 233969,
+    "steps": 12,
+    "settledMs": 93747
+  },
+  {
+    "run": 2,
+    "correct": 5,
+    "cliCalls": 15,
+    "cliSucceeded": 15,
+    "cliOutputBytes": 21001,
+    "uncachedInputTokens": 10798,
+    "outputTokens": 8059,
+    "cacheReadTokens": 167424,
+    "totalTokens": 186281,
+    "steps": 10,
+    "settledMs": 72498
+  },
+  {
+    "run": 3,
+    "correct": 5,
+    "cliCalls": 14,
+    "cliSucceeded": 14,
+    "cliOutputBytes": 20581,
+    "uncachedInputTokens": 10023,
+    "outputTokens": 6181,
+    "cacheReadTokens": 159488,
+    "totalTokens": 175692,
+    "steps": 10,
+    "settledMs": 62223
+  }
+]

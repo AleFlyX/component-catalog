@@ -254,9 +254,9 @@ component-catalog generate --check
 component-catalog check
 ```
 
-search 默认最多 5 项、上限 10 项，仅返回 ID、导出名、kind、摘要、任务标签和状态。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
+search 默认最多 5 项、上限 10 项，返回 ID、导出名、kind、`importPath`、`requiredProps`（组件才有的必填 Prop 名数组）、摘要、任务标签和状态。常见查找可只用 search 回答“导入路径 + 必填 props”，不必再 get。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
 
-get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（全部 Prop 名称与 required 标记），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
+get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（`names` 全部 Prop 名、`required` 必填名、`total`、inheritedTypes 的紧凑索引），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
 
 相对模式下，不传 --from 时 importPath 为 null；传入相对 projectRoot 的调用文件后，返回例如 `../../components/forms/BusinessForm`，并用 importContext 保留调用位置和后缀规则。调用文件可以尚未创建，路径不以当前 shell 目录为基准。查询只按快照计算，不读取源码、检查新鲜度或验证跨模块权限。模块别名模式不会被 --from 改成相对路径；使用默认导出还是 named 导出由 exportKind 决定。
 

@@ -1,0 +1,50 @@
+{
+  "condition": "catalog",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "discussions.DeleteDiscussion",
+      "importPath": "@/features/discussions/components/delete-discussion",
+      "requiredProps": ["id"],
+      "answer": "Use discussions.DeleteDiscussion: a destructive confirmation control for deleting a discussion that takes a single required prop, id (string). It is wrapped in an admin Authorization check, so render it inside an authenticated/admin route.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "ui.form.Input",
+      "importPath": "@/components/ui/form/input",
+      "requiredProps": ["registration"],
+      "answer": "The login form uses ui.form.Input. It binds to react-hook-form through its required registration prop, typed Partial<UseFormRegisterReturn>: pass the result of useForm's register(...) (e.g. registration={register('email')}), and it must be used inside the Form wrapper, which supplies the react-hook-form context; label and error come from FieldWrapper.",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.table.TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "The discussions list paginates with ui.table.TablePagination, which needs totalPages (number), currentPage (number) and rootUrl (string). Hrefs are built as rootUrl?page=N, so rootUrl must not already contain a query string; Table renders it when a pagination prop is supplied.",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "ui.md-preview.MDPreview",
+      "importPath": "@/components/ui/md-preview/md-preview",
+      "requiredProps": ["value"],
+      "answer": "Use ui.md-preview.MDPreview, which takes the Markdown input through its required value prop (string). It parses value as Markdown and sanitizes it with DOMPurify, so pass raw Markdown, not pre-rendered HTML.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "discussions.CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "Use discussions.CreateDiscussion, an admin-only drawer form (title + Markdown body, no props). It requires the Authorization provider and an admin role: only admins see the trigger, and its submit button targets form=create-discussion.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 14,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "All five answers resolved from catalog search/get alone (9 searches, 5 gets); no source files were opened and component-catalog.json was not read. Required props were confirmed via the get output's prop schema (DeleteDiscussion: id; Input: registration typed Partial<UseFormRegisterReturn>; TablePagination: totalPages/currentPage/rootUrl; MDPreview: value; CreateDiscussion: none)."
+}

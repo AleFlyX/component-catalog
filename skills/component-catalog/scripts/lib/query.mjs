@@ -62,10 +62,14 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
     );
   const items = ranked
     .slice(0, limit)
-    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse } }) => ({
+    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, props } }) => ({
       id,
       exportName,
       kind,
+      importPath,
+      ...(kind === "component"
+        ? { requiredProps: props.items.filter(({ required }) => required).map(({ name }) => name) }
+        : {}),
       summary,
       tasks,
       status,
@@ -155,7 +159,8 @@ export function get(catalog, id, include, propName, from) {
       ? {
           total: item.props.items.length,
           inheritedTypes: item.props.inheritedTypes,
-          items: item.props.items.map(({ name, required }) => ({ name, required })),
+          names: item.props.items.map(({ name }) => name),
+          required: item.props.items.filter(({ required }) => required).map(({ name }) => name),
         }
       : undefined;
   let propsDropped = false;
