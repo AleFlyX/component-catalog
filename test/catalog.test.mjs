@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { loadConfig, template } from "../skills/component-catalog/scripts/lib/config.mjs";
 import { generateCatalog } from "../skills/component-catalog/scripts/lib/generate.mjs";
-import { search, get } from "../skills/component-catalog/scripts/lib/query.mjs";
+import { search, get, getMany } from "../skills/component-catalog/scripts/lib/query.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
 const basic = fileURLToPath(new URL("../examples/basic/", import.meta.url));
@@ -59,6 +59,7 @@ test("configurable query, exact prop context, fields and offline source-free ope
   const found = ok(f.run(["search", "按钮"])).items[0];
   assert.equal(found.id, "demo.ui.Button");
   assert.equal(found.importPath, "@demo/ui/Button");
+  assert.equal(found.layer, "shared");
   assert.deepEqual(found.requiredProps, ["label"]);
   assert.equal(ok(f.run(["search", "ＤＩＳＡＢＬＥＤ"])).items[0].exportName, "Button");
   const focused = ok(f.run(["get", "demo.ui.Button", "--prop", "disabled"]));
@@ -540,6 +541,48 @@ test("oversized inherited props fall back to a bounded prop index", () => {
   assert.deepEqual(detail.component.propIndex.inheritedTypes, base.props.inheritedTypes);
 });
 
+test("batch get returns bounded component details and rejects ambiguous selectors", (t) => {
+  const f = fixture(t);
+  const catalog = JSON.parse(fs.readFileSync(f.catalogFile, "utf8"));
+  const second = structuredClone(catalog.components[0]);
+  second.id = "demo.ui.Second";
+  second.exportName = "Second";
+  second.summary = "Second component.";
+  catalog.components.push(second);
+  f.write("component-catalog.json", catalog);
+  const batch = ok(f.run(["get", "demo.ui.Button", "demo.ui.Second", "demo.ui.Button"]));
+  assert.equal(batch.components.length, 2);
+  assert.equal(batch.components[0].id, "demo.ui.Button");
+  assert.equal(batch.components[1].id, "demo.ui.Second");
+  assert.ok(Buffer.byteLength(JSON.stringify(batch) + "\n") <= 16384);
+  assert.equal(batch.truncated, false);
+  assert.equal(batch.omitted.components, 0);
+  fails(f.run(["get", "demo.ui.Button", "demo.ui.Second", "--prop", "label"]), /single component ID/);
+  fails(f.run(["get", "demo.ui.Button", "demo.ui.Second", "--from", "src/Page.tsx"]), /single component ID/);
+  fails(f.run(["get", "demo.ui.Button", "missing"]), /Unknown component ID/);
+  fails(f.run(["get", "a", "b", "c", "d", "e", "f"]), /1–5/);
+
+  const first = structuredClone(catalog.components[0]);
+  const heavyProps = Array.from({ length: 240 }, (_, index) => ({
+    name: `prop${index}`,
+    displayType: "string",
+    required: false,
+    schemaStatus: "complete",
+  }));
+  const heavy = Array.from({ length: 5 }, (_, index) => ({
+    ...structuredClone(first),
+    id: `demo.ui.Heavy${index}`,
+    exportName: `Heavy${index}`,
+    props: { ...first.props, items: heavyProps },
+    constraints: ["x".repeat(200)],
+    examples: [first.examples[0], { ...first.examples[0], purpose: "y".repeat(100) }],
+  }));
+  const bounded = getMany({ ...catalog, components: heavy }, heavy.map((item) => item.id), ["props", "usage", "constraints", "examples"]);
+  assert.ok(Buffer.byteLength(JSON.stringify(bounded) + "\n") <= 16384);
+  assert.equal(bounded.truncated, true);
+  assert.ok(bounded.omitted.components >= 1);
+});
+
 test("ASCII vocabulary terms require word boundaries", () => {
   const base = baseCatalog.components[0];
   const catalog = {
@@ -594,7 +637,7 @@ test("opt-in usage log records command metadata without changing output", (t) =>
     {
       cwd: os.tmpdir(),
       encoding: "utf8",
-      env: { ...process.env, COMPONENT_CATALOG_LOG: log },
+      env: { ...process.env, COMPONENT_CATALOG_LOG: log, COMPONENT_CATALOG_TASK: "task-1" },
     },
   );
   assert.equal(result.status, 0, result.stderr);
@@ -606,6 +649,8 @@ test("opt-in usage log records command metadata without changing output", (t) =>
     .map((line) => JSON.parse(line));
   assert.equal(entry.command, "search");
   assert.equal(entry.argument, "button");
+  assert.equal(entry.task, "task-1");
+  assert.deepEqual(entry.resultIds, ["demo.ui.Button"]);
   assert.equal(entry.outputBytes, Buffer.byteLength(result.stdout));
   assert.equal(entry.truncated, output.truncated);
   assert.equal(entry.status, null);

@@ -1,0 +1,158 @@
+[
+  {
+    "group": "before",
+    "run": 1,
+    "session": "75f5edd2-a498-4f1d-a851-bbbcbcc9dde0",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 20,
+    "cliOutputBytes": 40435,
+    "taskCalls": {
+      "?": 20
+    },
+    "totalTokens": 233969,
+    "uncachedInputTokens": 14043,
+    "outputTokens": 8086,
+    "cacheReadTokens": 211840,
+    "steps": 12,
+    "toolResultTokens": 11775,
+    "wallMs": 93226
+  },
+  {
+    "group": "budgeted",
+    "run": 1,
+    "session": "a352e71e-3f79-4f36-8598-96c51f954db8",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 12993,
+    "taskCalls": {
+      "1": 1,
+      "2": 3,
+      "3": 1,
+      "4": 1
+    },
+    "totalTokens": 145179,
+    "uncachedInputTokens": 5945,
+    "outputTokens": 5474,
+    "cacheReadTokens": 133760,
+    "steps": 10,
+    "toolResultTokens": 3523,
+    "wallMs": 37398
+  },
+  {
+    "group": "budgeted",
+    "run": 2,
+    "session": "c2853bfd-c0e1-4e31-a3d6-e3f7d0032e39",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 7,
+    "cliOutputBytes": 13177,
+    "taskCalls": {
+      "1": 1,
+      "2": 3,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 178577,
+    "uncachedInputTokens": 6235,
+    "outputTokens": 6198,
+    "cacheReadTokens": 166144,
+    "steps": 12,
+    "toolResultTokens": 4375,
+    "wallMs": 46277
+  },
+  {
+    "group": "budgeted",
+    "run": 3,
+    "session": "9233ee2a-4ed0-4224-8c8d-3e8a33931bbe",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 7,
+    "cliOutputBytes": 12128,
+    "taskCalls": {
+      "1": 1,
+      "2": 3,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 142799,
+    "uncachedInputTokens": 6135,
+    "outputTokens": 6232,
+    "cacheReadTokens": 130432,
+    "steps": 9,
+    "toolResultTokens": 3915,
+    "wallMs": 43856
+  },
+  {
+    "group": "tuned",
+    "run": 1,
+    "session": "06c491b2-9ca2-46fa-9602-163fa64670ab",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 11475,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 118782,
+    "uncachedInputTokens": 6126,
+    "outputTokens": 4880,
+    "cacheReadTokens": 107776,
+    "steps": 8,
+    "toolResultTokens": 4201,
+    "wallMs": 34266
+  },
+  {
+    "group": "tuned",
+    "run": 2,
+    "session": "432995f9-56ac-464a-b5d8-515555f51a55",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 11783,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 123258,
+    "uncachedInputTokens": 7698,
+    "outputTokens": 3816,
+    "cacheReadTokens": 111744,
+    "steps": 8,
+    "toolResultTokens": 5767,
+    "wallMs": 29875
+  },
+  {
+    "group": "tuned",
+    "run": 3,
+    "session": "7df8c2ec-09f7-4976-971c-2f3696c5427a",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 8,
+    "cliOutputBytes": 14600,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 256710,
+    "uncachedInputTokens": 9150,
+    "outputTokens": 9096,
+    "cacheReadTokens": 238464,
+    "steps": 14,
+    "toolResultTokens": 6494,
+    "wallMs": 61740
+  }
+]

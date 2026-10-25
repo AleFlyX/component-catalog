@@ -30,7 +30,7 @@ npm run build
 当前 CLI 为 0.3.0，skill 修订号为 8，生成目录格式为 v7。这三者分别标识程序、Agent 指引和数据格式；改交互指引不需要升级目录格式。用下面的命令检查当前入口配套的指引：
 
 ```bash
-node "<skill-directory>/scripts/bin/component-catalog.mjs" doctor --installation --expect-version 0.3.0 --expect-skill-revision 8
+node "<skill-directory>/scripts/bin/component-catalog.mjs" doctor --installation --expect-version 0.3.0 --expect-skill-revision 9
 ```
 
 `--version` 和 doctor 输出 `skillRevision`。缺失/不匹配时重新安装目标固定来源的完整 skill；旧 CLI 不认识该参数也意味着需要核对安装，不能去掉检查后声称新旧一致。doctor 只检查该可执行入口旁的 SKILL.md，不扫描其他安装副本，也不验证内容哈希。维护者修改行为指引时递增 SKILL.md frontmatter 的 metadata.revision，并同步其期望值和回归测试。
@@ -248,6 +248,7 @@ v1 的 search/get/generate 及 generate --check 继续兼容，但不具备新�
 component-catalog search "表单" --limit 5
 component-catalog search rowKey
 component-catalog get ui.forms.BusinessForm
+component-catalog get ui.forms.BusinessForm ui.forms.CustomerPicker ui.forms.AmountInput
 component-catalog get ui.forms.BusinessForm --include props,constraints
 component-catalog get ui.forms.BusinessForm --prop disabled
 component-catalog get ui.forms.BusinessForm --from src/features/orders/Page.tsx
@@ -256,15 +257,15 @@ component-catalog generate --check
 component-catalog check
 ```
 
-search 默认最多 5 项、上限 10 项，返回 ID、导出名、kind、`importPath`、`requiredProps`（组件才有的必填 Prop 名数组）、摘要、任务标签和状态。常见查找可只用 search 回答“导入路径 + 必填 props”，不必再 get。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
+search 默认最多 5 项、上限 10 项，返回 ID、导出名、kind、`importPath`、`layer`、`requiredProps`（组件才有的必填 Prop 名数组）、摘要、任务标签和状态。常见查找可只用 search 回答“导入路径 + 必填 props”，不必再 get。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
 
-get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（`names` 全部 Prop 名、`required` 必填名、`total`、inheritedTypes 的紧凑索引），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
+get 接受 1–5 个精确 ID；单个 ID 保持原有 `component` 响应，多个 ID 返回 `components` 数组并在 16 KiB 总预算内独立压缩、必要时从尾部丢弃并计入 `omitted.components`。多个 ID 不能与 `--prop`/`--from` 组合；`--include` 对所有条目生效。单 ID 默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（`names` 全部 Prop 名、`required` 必填名、`total`、inheritedTypes 的紧凑索引），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
 
 相对模式下，不传 --from 时 importPath 为 null；传入相对 projectRoot 的调用文件后，返回例如 `../../components/forms/BusinessForm`，并用 importContext 保留调用位置和后缀规则。调用文件可以尚未创建，路径不以当前 shell 目录为基准。查询只按快照计算，不读取源码、检查新鲜度或验证跨模块权限。模块别名模式不会被 --from 改成相对路径；使用默认导出还是 named 导出由 exportKind 决定。
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
 
-设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief 等选项；失败时记录 `error`。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
+设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief 等选项；search 记录 `resultIds`，get 记录 `componentIds`，可选的 `COMPONENT_CATALOG_TASK` 会写入 `task` 标签；失败时记录 `error`。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
 
 查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。本版生成目录格式 **7**，支持可为空的 importPath、importExtension、JS/JSX 路径及 reuse/deprecationReason；查询仍支持 v3/v4/v5/v6 快照，其中 v3/v4 的复用范围显示为 unspecified。迁移通过重新生成完成，不直接修改版本号。旧版 CLI 无法读取 v7，需与 skill 同步升级；配置版本仍为 1/2。
 

@@ -62,11 +62,12 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
     );
   const items = ranked
     .slice(0, limit)
-    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, props } }) => ({
+    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props } }) => ({
       id,
       exportName,
       kind,
       importPath,
+      layer,
       ...(kind === "component"
         ? { requiredProps: props.items.filter(({ required }) => required).map(({ name }) => name) }
         : {}),
@@ -91,9 +92,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}) {
   return response;
 }
 
-export function get(catalog, id, include, propName, from) {
-  const item = catalog.components.find((component) => component.id === id);
-  if (!item) throw new Error("Unknown component ID; use search to find an exact ID");
+function buildDetail(catalog, item, include, propName, from, maxBytes = 16384) {
   let selectedProp;
   if (propName !== undefined) {
     if (item.kind !== "component")
@@ -169,7 +168,7 @@ export function get(catalog, id, include, propName, from) {
     ? ["tasks", "summary"]
     : ["usage", "examples", "props", "members", "constraints", "tasks", "summary"];
   for (const field of removable) {
-    if (size(response) <= 16384) break;
+    if (size(response) <= maxBytes) break;
     if (!Object.hasOwn(component, field)) continue;
     delete component[field];
     response.omitted.fields.push(field);
@@ -185,14 +184,14 @@ export function get(catalog, id, include, propName, from) {
           };
       const compactField = propsRequested ? "propIndex" : "propsSummary";
       component[compactField] = compact;
-      if (size(response) > 16384) {
+      if (size(response) > maxBytes) {
         delete component[compactField];
         component.propsOmitted = {
           total: propIndex.total,
           inheritedTypes: propIndex.inheritedTypes,
         };
       }
-      if (size(response) > 16384) delete component.propsOmitted;
+      if (size(response) > maxBytes) delete component.propsOmitted;
     }
   }
   // Restore fields that still fit after the larger fields have been removed.
@@ -201,16 +200,87 @@ export function get(catalog, id, include, propName, from) {
     component[field] = field === "examples" ? item.examples.slice(0, 2) : item[field];
     const previous = response.omitted.fields;
     response.omitted.fields = previous.filter((name) => name !== field);
-    if (size(response) > 16384) {
+    if (size(response) > maxBytes) {
       delete component[field];
       response.omitted.fields = previous;
     }
   }
-  if (size(response) > 16384)
+  if (size(response) > maxBytes)
     throw new Error(
       selectedProp
         ? "Selected prop and required context exceed output limit; inspect the source locally"
         : "Component identity exceeds output limit; inspect the source locally",
     );
+  return response;
+}
+
+export function get(catalog, id, include, propName, from) {
+  const item = catalog.components.find((component) => component.id === id);
+  if (!item) throw new Error("Unknown component ID; use search to find an exact ID");
+  return buildDetail(catalog, item, include, propName, from);
+}
+
+function minimalDetail(item) {
+  return {
+    id: item.id,
+    exportName: item.exportName,
+    exportKind: item.exportKind,
+    kind: item.kind,
+    importPath: item.importPath,
+    sourcePath: item.sourcePath,
+    layer: item.layer,
+    status: item.status,
+    documentationStatus: item.documentationStatus,
+    tasks: item.tasks,
+    reuse: item.reuse ?? { scope: "unspecified" },
+    ...(item.importPath === null
+      ? { importContext: { kind: "relative", from: null, extension: item.importExtension } }
+      : {}),
+  };
+}
+
+// Batch details deliberately share one output budget. Each entry is compacted
+// independently; if entries still do not fit, later entries are dropped and
+// counted, never emitted as a misleading partial component.
+export function getMany(catalog, ids, include) {
+  const seen = new Set();
+  const items = [];
+  for (const id of ids) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const item = catalog.components.find((component) => component.id === id);
+    if (!item) throw new Error(`Unknown component ID; use search to find an exact ID: ${id}`);
+    items.push(item);
+  }
+  const entries = items.map((item) => {
+    try {
+      return buildDetail(catalog, item, include, undefined, undefined, 4096);
+    } catch {
+      try {
+        return buildDetail(catalog, item, [], undefined, undefined, 4096);
+      } catch {
+        return {
+          component: minimalDetail(item),
+          truncated: true,
+          omitted: { fields: ["summary"], examples: 0 },
+        };
+      }
+    }
+  });
+  const components = entries.map((entry) => entry.component);
+  let truncated = entries.some((entry) => entry.truncated);
+  const response = {
+    schemaVersion: catalog.schemaVersion,
+    sourceDigest: catalog.sourceDigest,
+    components,
+    truncated,
+    omitted: { components: 0 },
+  };
+  while (size(response) > 16384 && components.length) {
+    components.pop();
+    response.omitted.components += 1;
+    truncated = true;
+  }
+  response.truncated = truncated;
   return response;
 }

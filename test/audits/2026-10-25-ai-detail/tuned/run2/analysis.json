@@ -1,0 +1,414 @@
+{
+  "session": {
+    "steps": 8,
+    "turns": 1,
+    "llmMs": 22935,
+    "toolMs": 6919,
+    "settledMs": 30211,
+    "wallMs": 29875,
+    "requests": 8,
+    "activityToolCalls": 8
+  },
+  "label": "tuned-run2",
+  "usage": {
+    "uncachedInputTokens": 7698,
+    "outputTokens": 3816,
+    "cacheReadTokens": 111744,
+    "cacheWriteTokens": 0,
+    "totalTokens": 123258,
+    "cacheReadShare": 94
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 10452
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792942391344,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 603,
+        "text": "Controlled benchmark run 2/3, condition \"catalog\". Work only in /tmp/oss-trial/b"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792942391345,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792942391346,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-25T23:33:11+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792942393181,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 133,
+        "text": "I'll start with the config check and a single search covering the likely compone"
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792942393305,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 1707,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792942393419,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 45,
+        "text": null
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792942395251,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 208,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792942395954,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 569,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792942398363,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 335,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792942401665,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 2433,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792942407206,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 976,
+        "text": "Search alone covers all five tasks. One combined `get` to confirm the react-hook"
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792942407904,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 593,
+        "text": null
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792942411995,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 858,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792942412926,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 383,
+        "text": null
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792942415590,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 267,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792942416628,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 11,
+        "text": null
+      },
+      {
+        "index": 16,
+        "seq": 67,
+        "time": 1792942419092,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 312,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 69,
+        "time": 1792942419115,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 73,
+        "time": 1792942421447,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 564,
+        "text": "Run 2 complete. Wrote [catalog-2.json](/tmp/audit-b6/catalog-2.json). ```json {\""
+      }
+    ],
+    "assistantSteps": 8,
+    "assistantTokens": 3653,
+    "toolCalls": 5,
+    "toolResultTokens": 5767,
+    "toolTokens": {
+      "bash": 5741,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 9,
+        "tool": "bash",
+        "tokens": 2433
+      },
+      {
+        "index": 4,
+        "tool": "bash",
+        "tokens": 1707
+      },
+      {
+        "index": 11,
+        "tool": "bash",
+        "tokens": 593
+      },
+      {
+        "index": 7,
+        "tool": "bash",
+        "tokens": 569
+      },
+      {
+        "index": 13,
+        "tool": "bash",
+        "tokens": 383
+      }
+    ]
+  },
+  "cli": {
+    "calls": 6,
+    "outputBytes": 11783,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 9443,
+        "truncated": 4,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 1,
+        "outputBytes": 2340,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 2143
+      },
+      "2": {
+        "calls": 2,
+        "outputBytes": 4270
+      },
+      "3": {
+        "calls": 1,
+        "outputBytes": 1925
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 1296
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2149
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-25T15:33:19.228Z",
+        "task": "1",
+        "command": "search",
+        "argument": "delete discussion confirmation",
+        "outputBytes": 2143,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "discussions.DeleteDiscussion",
+          "comments.DeleteComment",
+          "users.DeleteUser",
+          "ui.dialog.confirmation-dialog.ConfirmationDialog",
+          "discussions.CreateDiscussion"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:33:19.858Z",
+        "task": "2",
+        "command": "search",
+        "argument": "login form input text-input",
+        "outputBytes": 1930,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "ui.form.Input",
+          "ui.form.Textarea",
+          "ui.form.Form",
+          "ui.form.FormDrawer",
+          "auth.LoginForm"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:33:20.443Z",
+        "task": "3",
+        "command": "search",
+        "argument": "discussion list pagination table-pagination",
+        "outputBytes": 1925,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "ui.table.TablePagination",
+          "discussions.DiscussionsList",
+          "ui.table.Pagination",
+          "ui.table.PaginationContent",
+          "ui.table.PaginationEllipsis"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:33:21.085Z",
+        "task": "4",
+        "command": "search",
+        "argument": "markdown",
+        "outputBytes": 1296,
+        "truncated": false,
+        "error": null,
+        "resultIds": [
+          "ui.md-preview.MDPreview",
+          "discussions.DiscussionView",
+          "discussions.CreateDiscussion"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:33:21.651Z",
+        "task": "5",
+        "command": "search",
+        "argument": "create discussion",
+        "outputBytes": 2149,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "discussions.CreateDiscussion",
+          "comments.CreateComment",
+          "discussions.UpdateDiscussion",
+          "discussions.DeleteDiscussion",
+          "discussions.DiscussionView"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:33:27.866Z",
+        "task": "2",
+        "command": "get",
+        "argument": "ui.form.Input",
+        "outputBytes": 2340,
+        "truncated": false,
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "ui.form.Input",
+          "ui.md-preview.MDPreview",
+          "discussions.CreateDiscussion"
+        ]
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 1964,
+    "toolTokensPerAssistantStep": 721,
+    "cacheReadPerCall": 18624
+  }
+}

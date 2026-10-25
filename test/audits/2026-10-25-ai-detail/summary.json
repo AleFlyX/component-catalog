@@ -1,0 +1,76 @@
+{
+  "before": {
+    "runs": 1,
+    "correct": "5/5",
+    "cliCalls": {
+      "mean": 20,
+      "values": [
+        20
+      ]
+    },
+    "cliOutputBytes": 40435,
+    "totalTokens": {
+      "mean": 233969,
+      "median": 233969,
+      "values": [
+        233969
+      ]
+    },
+    "outputTokens": 8086,
+    "toolResultTokens": 11775,
+    "steps": 12,
+    "wallMs": 93226
+  },
+  "budgeted": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": {
+      "mean": 7,
+      "values": [
+        6,
+        7,
+        7
+      ]
+    },
+    "cliOutputBytes": 12766,
+    "totalTokens": {
+      "mean": 155518,
+      "median": 145179,
+      "values": [
+        145179,
+        178577,
+        142799
+      ]
+    },
+    "outputTokens": 5968,
+    "toolResultTokens": 3938,
+    "steps": 10,
+    "wallMs": 42510
+  },
+  "tuned": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": {
+      "mean": 7,
+      "values": [
+        6,
+        6,
+        8
+      ]
+    },
+    "cliOutputBytes": 12619,
+    "totalTokens": {
+      "mean": 166250,
+      "median": 123258,
+      "values": [
+        118782,
+        123258,
+        256710
+      ]
+    },
+    "outputTokens": 5931,
+    "toolResultTokens": 5487,
+    "steps": 10,
+    "wallMs": 41960
+  }
+}

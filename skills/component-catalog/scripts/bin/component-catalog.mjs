@@ -4,7 +4,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { loadConfig, template, validateGenerationPaths } from "../lib/config.mjs";
 import { loadCatalog } from "../lib/catalog.mjs";
-import { search, get } from "../lib/query.mjs";
+import { search, get, getMany } from "../lib/query.mjs";
 
 const usage = {
   doctor:
@@ -19,10 +19,16 @@ const usage = {
     "component-catalog [--config path] generate [--check]\nGenerate explicitly marked components; --check compares without writing. Unmarked candidates need annotation first.\n",
   search:
     "component-catalog [--config path] search <query> [--limit 1..10]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name.\n",
-  get: "component-catalog [--config path] get <id> [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse an exact ID from search. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
+  get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
 const shellQuote = (value) => "'" + value.replaceAll("'", "'\\''") + "'";
+const taskLabel = (() => {
+  const raw = process.env.COMPONENT_CATALOG_TASK;
+  if (raw === undefined) return null;
+  const value = raw.trim().slice(0, 40).replace(/[\u0000-\u001f\u007f]/g, "");
+  return value || null;
+})();
 const startedAt = Date.now();
 let activeCommand;
 // Opt-in, local-only usage audit. Never changes command output; a failed log
@@ -99,7 +105,8 @@ try {
   )
     process.stdout.write(usage[positionals[0]]);
   else {
-    const [command, input] = positionals;
+    const [command, ...inputs] = positionals;
+    const input = inputs[0];
     activeCommand = command;
     const allowed = {
       init: [],
@@ -118,12 +125,17 @@ try {
       throw new Error(
         `${command} does not accept --${unexpected}; use ${command} --help${command === "scan" && unexpected === "config" ? ". scan uses a directory argument; call the CLI without a script's fixed --config" : ""}`,
       );
-    if (positionals.length !== (["scan", "search", "get"].includes(command) ? 2 : 1))
+    if (command === "get") {
+      if (inputs.length < 1 || inputs.length > 5)
+        throw new Error("get accepts 1–5 component IDs; use get --help");
+    } else if (positionals.length !== (["scan", "search"].includes(command) ? 2 : 1))
       throw new Error(`Invalid arguments; use ${command} --help`);
     if (command === "scan" && !input.trim())
       throw new Error("scan requires a directory; use scan --help");
-    if (command !== "scan" && input !== undefined && (!input.trim() || input.length > 200))
+    if (command !== "scan" && inputs.some((value) => !value.trim() || value.length > 200))
       throw new Error("Query or ID must contain 1–200 characters");
+    if (command === "get" && inputs.length > 1 && (values.prop !== undefined || values.from !== undefined))
+      throw new Error("--prop and --from require a single component ID");
     if (values.installation && values.config !== undefined)
       throw new Error("--installation and --config cannot be combined");
     if (
@@ -228,10 +240,11 @@ try {
         };
       } else {
         const catalog = loadCatalog(config.catalog, regenerate);
-        result =
-          command === "search"
-            ? search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary)
-            : get(catalog, input.trim(), include, values.prop, values.from);
+        if (command === "search")
+          result = search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary);
+        else if (inputs.length === 1)
+          result = get(catalog, input.trim(), include, values.prop, values.from);
+        else result = getMany(catalog, inputs.map((value) => value.trim()), include);
       }
     }
     const output = JSON.stringify(result) + "\n";
@@ -239,6 +252,14 @@ try {
     writeUsageLog({
       command,
       argument: typeof input === "string" ? input.slice(0, 200) : null,
+      arguments: inputs.length ? inputs.map((value) => value.slice(0, 200)) : null,
+      task: taskLabel,
+      ...(command === "search" && Array.isArray(result?.items)
+        ? { resultIds: result.items.map((item) => item.id).slice(0, 5) }
+        : {}),
+      ...(command === "get"
+        ? { componentIds: inputs.map((value) => value.trim()) }
+        : {}),
       config: values.config ?? null,
       options: {
         limit: values.limit ?? null,

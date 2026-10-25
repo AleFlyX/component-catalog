@@ -7,6 +7,8 @@
 - 本轮代码：`skills/component-catalog/scripts/lib/query.mjs`（未提交前的当前工作区改动）
 
 > 后续 barrel 导入实验见 [第三轮报告](../2026-10-25-optimization-c/report.md)：导入路径更符合项目习惯，但 token 均值 210,373，高于本轮 198,647；`importPathStyle` 保持默认 `direct`。
+>
+> 再后续的查询预算/批量 get 实验见 [AI 细节报告](../2026-10-25-ai-detail/report.md)：调用均值 16.3→7，total tokens 均值 155.5K/166.3K。
 
 ## 1. 改了什么
 

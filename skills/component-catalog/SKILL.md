@@ -1,7 +1,7 @@
 ---
 name: component-catalog
 metadata:
-  revision: "8"
+  revision: "9"
 description: Configure, query and maintain a local React component catalog from JavaScript or TypeScript. Use for requested catalog setup, reusable component selection, or component changes in configured roots. Unrelated business work does not require catalog setup or migration.
 ---
 
@@ -29,6 +29,7 @@ Search by task, export name or Prop name, get an exact returned ID, then read th
 ```bash
 component-catalog --config <config-path> search "task" --limit 5
 component-catalog --config <config-path> get <exact-id>
+component-catalog --config <config-path> get <exact-id> <other-id> <third-id>
 component-catalog --config <config-path> get <exact-id> --prop <exact-prop-name>
 component-catalog --config <config-path> get <exact-id> --include members,constraints
 component-catalog --config <config-path> get <exact-id> --from src/features/Target.tsx
@@ -36,7 +37,9 @@ component-catalog --config <config-path> get <exact-id> --from src/features/Targ
 
 Substitute the actual local command. Use silent package-runner output when JSON is needed, for example `npm --silent run component -- ...` or `pnpm --silent component ...`. Do not routinely read the full generated catalog.
 
-- Search is limited to 4 KiB; detail to 16 KiB. Respect `truncated`, `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
+Keep the query budget small: start with one search; if its `importPath` and `requiredProps` answer the task, do not call get. Get only when you need constraints, examples or type details, and reuse that response instead of fetching the same ID again. When several components need details, pass 2–5 IDs to one get command. Use `--include props` only when you need the prop-name index; use `--prop` for one property.
+
+- Search is limited to 4 KiB; detail to 16 KiB; batch detail shares the 16 KiB budget across 1–5 IDs. Respect `truncated`, `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
 - `--prop` is exact and case-sensitive, mutually exclusive with `--include`. Namespace entries use members, not Props.
 - If importPath is null, use `get --from <caller-file>` to derive the relative import. The caller path is relative to projectRoot, not the current shell directory, and may name a planned file. Respect importContext and exportKind. This only computes a path from the saved snapshot; it does not check freshness, read the caller, enforce ownership, or prove bundler/runtime compatibility. Existing module aliases remain unchanged when --from is supplied.
 - Compare `reuse` with the target module and project rules: `project` still respects architecture, `module` requires the same owner, `unspecified` means unknown. Search neither filters by caller nor enforces imports.
@@ -60,10 +63,10 @@ If scanning is inconclusive, use `rg` or equivalent on source/imports, including
 
 ## Installation and upgrade diagnosis
 
-Skill revision **8** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
+Skill revision **9** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
 
 ```bash
-node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 8
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 9
 ```
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.
