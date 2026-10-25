@@ -1,0 +1,72 @@
+{
+  "condition": "source-pristine",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "exportName": "ConfirmationDialog",
+      "importPath": "@/components/ui/dialog",
+      "requiredProps": ["triggerButton", "confirmButton", "title"],
+      "answer": "Deleting a discussion uses ConfirmationDialog, imported from '@/components/ui/dialog' (barrel re-exports './dialog' and './confirmation-dialog'). Required props: triggerButton (ReactElement), confirmButton (ReactElement), title (string). Optional: body, cancelButtonText, icon ('danger'|'info'), isDone. DeleteDiscussion wraps it in <Authorization allowedRoles={[ROLES.ADMIN]}> and passes icon=\"danger\", body, and a destructive Button as confirmButton.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "exportName": "Input",
+      "importPath": "@/components/ui/form",
+      "requiredProps": ["registration"],
+      "answer": "The login form uses Input (exported from '@/components/ui/form', defined in components/ui/form/input.tsx). It binds react-hook-form via the required `registration` prop, typed Partial<UseFormRegisterReturn>, supplied as registration={register('email')} / register('password') inside the <Form> render-prop children ({ register, formState }). Input spreads {...registration} onto the native <input>; label and error (FieldError) are optional FieldWrapperPassThroughProps used for display.",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "exportName": "TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "Pagination of the discussion list is TablePagination (exported from components/ui/table/pagination.tsx, which also exports TablePaginationProps). It is NOT re-exported by the '@/components/ui/table' barrel (index.ts only exports './table'); it is normally passed to <Table pagination={{ totalPages, currentPage, rootUrl }} /> and Table renders <TablePagination {...pagination} />. Required props: totalPages (number), currentPage (number), rootUrl (string, used to build `${rootUrl}?page=N` links).",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "exportName": "MDPreview",
+      "importPath": "@/components/ui/md-preview",
+      "requiredProps": ["value"],
+      "answer": "Markdown bodies are rendered safely with MDPreview from '@/components/ui/md-preview'. Its single input prop is `value: string` (raw markdown). Inside, marked `parse(value)` output is sanitized with DOMPurify.sanitize and injected through dangerouslySetInnerHTML, so raw HTML is sanitized. Used as <MDPreview value={discussion.body} /> in DiscussionView.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "exportName": "CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "Discussion creation is handled by CreateDiscussion from '@/features/discussions/components/create-discussion' (no props). It requires the ADMIN role: it is wrapped in <Authorization allowedRoles={[ROLES.ADMIN]}> (ROLES from '@/lib/authorization'), so non-admins get the default forbiddenFallback of null. It renders a FormDrawer + Form (createDiscussionInputSchema) with Title Input and Body Textarea.",
+      "confidence": "high"
+    }
+  ],
+  "commands": 11,
+  "filesRead": [
+    {"path": "apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.tsx", "bytes": 2132, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/dialog/confirmation-dialog/index.ts", "bytes": 39, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/dialog/index.ts", "bytes": 65, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/dialog/dialog.tsx", "bytes": 3886, "mode": "full"},
+    {"path": "apps/react-vite/src/features/discussions/components/delete-discussion.tsx", "bytes": 1487, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/form/input.tsx", "bytes": 1194, "mode": "full"},
+    {"path": "apps/react-vite/src/features/auth/components/login-form.tsx", "bytes": 1710, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/form/index.ts", "bytes": 185, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/form/field-wrapper.tsx", "bytes": 668, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/form/form.tsx", "bytes": 5055, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/table/pagination.tsx", "bytes": 4584, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/table/table.tsx", "bytes": 4433, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/table/index.ts", "bytes": 25, "mode": "full"},
+    {"path": "apps/react-vite/src/features/discussions/components/discussions-list.tsx", "bytes": 2392, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/md-preview/md-preview.tsx", "bytes": 417, "mode": "full"},
+    {"path": "apps/react-vite/src/components/ui/md-preview/index.ts", "bytes": 30, "mode": "full"},
+    {"path": "apps/react-vite/src/features/discussions/components/discussion-view.tsx", "bytes": 1512, "mode": "full"},
+    {"path": "apps/react-vite/src/features/discussions/components/create-discussion.tsx", "bytes": 1974, "mode": "full"},
+    {"path": "apps/react-vite/src/lib/authorization.tsx", "bytes": 1598, "mode": "full"},
+    {"path": "apps/react-vite/src/app/routes/app/discussions/discussions.tsx", "bytes": 1516, "mode": "full"},
+    {"path": "package.json", "bytes": 359, "mode": "full"}
+  ],
+  "totalBytesRead": 35261,
+  "notes": "No catalog CLI/catalog JSON used. Strategy: listed apps/react-vite with find, then located candidates by filename under src/components/ui and src/features/discussions, read each candidate fully with the read tool, and cross-checked real usage with grep (rg not installed; used grep -rn) in delete-discussion.tsx, discussions-list.tsx, discussions.tsx, discussion-view.tsx, create-discussion.tsx. Key uncertainty resolved: the '@/components/ui/table' barrel does NOT re-export pagination.tsx, so TablePagination must be imported from '@/components/ui/table/pagination' or supplied via Table's `pagination` prop; Table itself is imported from '@/components/ui/table'. Other apps (nextjs-app/nextjs-pages) contain duplicates and were ignored except one grep to confirm duplication of the pagination pattern. Command count includes one failed `rg` invocation (rg: command not found)."
+}

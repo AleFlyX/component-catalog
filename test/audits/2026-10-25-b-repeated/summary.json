@@ -1,0 +1,176 @@
+{
+  "catalog": {
+    "runs": 3,
+    "correctness": "15/15",
+    "sourceBytesRead": {
+      "mean": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "cliOutputBytes": {
+      "mean": 44451,
+      "median": 36872,
+      "min": 35471,
+      "max": 61010
+    },
+    "cliCalls": {
+      "mean": 22,
+      "median": 18,
+      "min": 17,
+      "max": 31
+    },
+    "uncachedInputTokens": {
+      "mean": 16482,
+      "median": 14751,
+      "min": 14257,
+      "max": 20439
+    },
+    "outputTokens": {
+      "mean": 8230,
+      "median": 9090,
+      "min": 5583,
+      "max": 10016
+    },
+    "cacheReadTokens": {
+      "mean": 204587,
+      "median": 195840,
+      "min": 170496,
+      "max": 247424
+    },
+    "totalTokens": {
+      "mean": 229299,
+      "median": 219681,
+      "min": 190336,
+      "max": 277879
+    },
+    "steps": {
+      "mean": 10,
+      "median": 10,
+      "min": 10,
+      "max": 11
+    },
+    "settledMs": {
+      "mean": 79324,
+      "median": 98167,
+      "min": 40111,
+      "max": 99695
+    }
+  },
+  "source": {
+    "runs": 3,
+    "correctness": "15/15",
+    "sourceBytesRead": {
+      "mean": 42319,
+      "median": 42877,
+      "min": 39980,
+      "max": 44100
+    },
+    "cliOutputBytes": {
+      "mean": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "cliCalls": {
+      "mean": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "uncachedInputTokens": {
+      "mean": 18271,
+      "median": 17806,
+      "min": 17442,
+      "max": 19564
+    },
+    "outputTokens": {
+      "mean": 8899,
+      "median": 9650,
+      "min": 6386,
+      "max": 10661
+    },
+    "cacheReadTokens": {
+      "mean": 258389,
+      "median": 294400,
+      "min": 158080,
+      "max": 322688
+    },
+    "totalTokens": {
+      "mean": 285559,
+      "median": 323614,
+      "min": 182272,
+      "max": 350791
+    },
+    "steps": {
+      "mean": 13,
+      "median": 15,
+      "min": 8,
+      "max": 17
+    },
+    "settledMs": {
+      "mean": 70022,
+      "median": 86228,
+      "min": 34149,
+      "max": 89688
+    }
+  },
+  "source-pristine": {
+    "runs": 3,
+    "correctness": "15/15",
+    "sourceBytesRead": {
+      "mean": 31420,
+      "median": 29500,
+      "min": 29500,
+      "max": 35261
+    },
+    "cliOutputBytes": {
+      "mean": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "cliCalls": {
+      "mean": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "uncachedInputTokens": {
+      "mean": 16882,
+      "median": 16114,
+      "min": 15335,
+      "max": 19197
+    },
+    "outputTokens": {
+      "mean": 9986,
+      "median": 10177,
+      "min": 8265,
+      "max": 11516
+    },
+    "cacheReadTokens": {
+      "mean": 204160,
+      "median": 191872,
+      "min": 167936,
+      "max": 252672
+    },
+    "totalTokens": {
+      "mean": 231028,
+      "median": 218723,
+      "min": 192315,
+      "max": 282046
+    },
+    "steps": {
+      "mean": 11,
+      "median": 10,
+      "min": 9,
+      "max": 13
+    },
+    "settledMs": {
+      "mean": 53063,
+      "median": 55887,
+      "min": 44233,
+      "max": 59068
+    }
+  }
+}

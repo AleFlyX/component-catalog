@@ -1,0 +1,50 @@
+{
+  "condition": "catalog",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "importPath": "@/components/ui/dialog/confirmation-dialog/confirmation-dialog",
+      "requiredProps": ["triggerButton", "confirmButton", "title"],
+      "answer": "Use the shared ConfirmationDialog (danger icon by default): triggerButton and confirmButton must be React elements, title is a string; optional body, cancelButtonText, icon (\"danger\"|\"info\"), isDone closes the dialog after success. The discussion feature already wraps it as discussions.DeleteDiscussion (import @/features/discussions/components/delete-discussion, single required prop id), which performs the actual delete.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "ui.form.Input",
+      "importPath": "@/components/ui/form/input",
+      "requiredProps": ["registration"],
+      "answer": "The login form uses the shared Input (ui.form.Input). react-hook-form binding is via the required registration prop of type Partial<UseFormRegisterReturn>, fed from the Form render-prop methods, e.g. registration={register('email')}; label/error are optional and rendered by FieldWrapper, so it must be used inside Form.",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.table.TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "The pagination control is TablePagination (page-number control that builds hrefs as rootUrl?page=N, so rootUrl must not contain a query string). DiscussionsList feeds it through the Table pagination prop (type TablePaginationProps), so the table pagination needs totalPages, currentPage and rootUrl.",
+      "confidence": "medium"
+    },
+    {
+      "task": 4,
+      "componentId": "ui.md-preview.MDPreview",
+      "importPath": "@/components/ui/md-preview/md-preview",
+      "requiredProps": ["value"],
+      "answer": "MDPreview renders Markdown as sanitized HTML (DOMPurify) with prose typography; the input prop is value (string, required), and pre-rendered HTML must not be passed.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "discussions.CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "CreateDiscussion is an admin-only drawer form (title plus Markdown body, external submit button targets form=create-discussion) and takes no props; it requires the Authorization provider and is shown only to users with the admin role.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 31,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "All five answers obtained via catalog search/get only; no source files read (catalog entries were complete for every answer, including TablePagination's three required props). Table's pagination prop is typed TablePaginationProps but the catalog does not enumerate it, so the props were taken from ui.table.TablePagination; this is the only medium-confidence item. Calls: 15 search + 16 get, all logged to /tmp/audit-b2/usage/catalog-2.jsonl. No project files modified."
+}

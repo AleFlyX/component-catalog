@@ -1,0 +1,299 @@
+[
+  {
+    "condition": "catalog",
+    "run": 1,
+    "session": "5bb1b695-d638-4778-a7a7-464fcf0e219c",
+    "file": "catalog-1.json",
+    "log": "usage/catalog-1.jsonl",
+    "answers": [
+      "discussions.DeleteDiscussion",
+      "ui.form.Input",
+      "ui.table.TablePagination",
+      "ui.md-preview.MDPreview",
+      "discussions.CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 0,
+    "sourceBytesRead": 0,
+    "commands": null,
+    "cli": {
+      "calls": 17,
+      "succeeded": 17,
+      "failed": 0,
+      "outputBytes": 36872,
+      "truncated": 4
+    },
+    "contentBytes": 36872,
+    "usage": {
+      "uncachedInputTokens": 14257,
+      "outputTokens": 5583,
+      "cacheReadTokens": 170496,
+      "totalInputTokens": 184753,
+      "totalTokens": 190336,
+      "steps": 10,
+      "llmMs": 33084,
+      "settledMs": 40111
+    }
+  },
+  {
+    "condition": "catalog",
+    "run": 2,
+    "session": "d54e93db-794c-4042-b030-ed2efb06eff2",
+    "file": "catalog-2.json",
+    "log": "usage/catalog-2.jsonl",
+    "answers": [
+      "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "ui.form.Input",
+      "ui.table.TablePagination",
+      "ui.md-preview.MDPreview",
+      "discussions.CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 0,
+    "sourceBytesRead": 0,
+    "commands": null,
+    "cli": {
+      "calls": 31,
+      "succeeded": 31,
+      "failed": 0,
+      "outputBytes": 61010,
+      "truncated": 13
+    },
+    "contentBytes": 61010,
+    "usage": {
+      "uncachedInputTokens": 20439,
+      "outputTokens": 10016,
+      "cacheReadTokens": 247424,
+      "totalInputTokens": 267863,
+      "totalTokens": 277879,
+      "steps": 11,
+      "llmMs": 85811,
+      "settledMs": 98167
+    }
+  },
+  {
+    "condition": "catalog",
+    "run": 3,
+    "session": "1b3ed4f1-2181-4a30-b823-8013ded501d0",
+    "file": "catalog-3.json",
+    "log": "usage/catalog-3.jsonl",
+    "answers": [
+      "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "ui.form.Input",
+      "ui.table.TablePagination",
+      "ui.md-preview.MDPreview",
+      "discussions.CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 0,
+    "sourceBytesRead": 0,
+    "commands": null,
+    "cli": {
+      "calls": 18,
+      "succeeded": 18,
+      "failed": 0,
+      "outputBytes": 35471,
+      "truncated": 3
+    },
+    "contentBytes": 35471,
+    "usage": {
+      "uncachedInputTokens": 14751,
+      "outputTokens": 9090,
+      "cacheReadTokens": 195840,
+      "totalInputTokens": 210591,
+      "totalTokens": 219681,
+      "steps": 10,
+      "llmMs": 92490,
+      "settledMs": 99695
+    }
+  },
+  {
+    "condition": "source",
+    "run": 1,
+    "session": "7c83b76e-1d00-4f11-b91e-26a48db5ff75",
+    "file": "source-1.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 18,
+    "sourceBytesRead": 42877,
+    "commands": 8,
+    "cli": null,
+    "contentBytes": 42877,
+    "usage": {
+      "uncachedInputTokens": 19564,
+      "outputTokens": 9650,
+      "cacheReadTokens": 294400,
+      "totalInputTokens": 313964,
+      "totalTokens": 323614,
+      "steps": 15,
+      "llmMs": 88360,
+      "settledMs": 89688
+    }
+  },
+  {
+    "condition": "source",
+    "run": 2,
+    "session": "82f7eccf-2536-4874-bb0c-4849b7a2a8f7",
+    "file": "source-2.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 19,
+    "sourceBytesRead": 44100,
+    "commands": 12,
+    "cli": null,
+    "contentBytes": 44100,
+    "usage": {
+      "uncachedInputTokens": 17442,
+      "outputTokens": 10661,
+      "cacheReadTokens": 322688,
+      "totalInputTokens": 340130,
+      "totalTokens": 350791,
+      "steps": 17,
+      "llmMs": 84498,
+      "settledMs": 86228
+    }
+  },
+  {
+    "condition": "source",
+    "run": 3,
+    "session": "f46a6cc6-5fc6-4e04-b8bd-251af820135a",
+    "file": "source-3.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 17,
+    "sourceBytesRead": 39980,
+    "commands": 9,
+    "cli": null,
+    "contentBytes": 39980,
+    "usage": {
+      "uncachedInputTokens": 17806,
+      "outputTokens": 6386,
+      "cacheReadTokens": 158080,
+      "totalInputTokens": 175886,
+      "totalTokens": 182272,
+      "steps": 8,
+      "llmMs": 33117,
+      "settledMs": 34149
+    }
+  },
+  {
+    "condition": "source-pristine",
+    "run": 1,
+    "session": "34fcbe6f-0545-402c-b1d9-933a27545011",
+    "file": "source-pristine-1.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 18,
+    "sourceBytesRead": 29500,
+    "commands": 11,
+    "cli": null,
+    "contentBytes": 29500,
+    "usage": {
+      "uncachedInputTokens": 16114,
+      "outputTokens": 8265,
+      "cacheReadTokens": 167936,
+      "totalInputTokens": 184050,
+      "totalTokens": 192315,
+      "steps": 9,
+      "llmMs": 43111,
+      "settledMs": 44233
+    }
+  },
+  {
+    "condition": "source-pristine",
+    "run": 2,
+    "session": "70721487-a697-42cb-a79a-b225ebd33430",
+    "file": "source-pristine-2.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 18,
+    "sourceBytesRead": 29500,
+    "commands": 8,
+    "cli": null,
+    "contentBytes": 29500,
+    "usage": {
+      "uncachedInputTokens": 15335,
+      "outputTokens": 11516,
+      "cacheReadTokens": 191872,
+      "totalInputTokens": 207207,
+      "totalTokens": 218723,
+      "steps": 10,
+      "llmMs": 57659,
+      "settledMs": 59068
+    }
+  },
+  {
+    "condition": "source-pristine",
+    "run": 3,
+    "session": "442fa7ff-7f48-4211-92d2-6f2eca6d6947",
+    "file": "source-pristine-3.json",
+    "log": null,
+    "answers": [
+      "ConfirmationDialog",
+      "Input",
+      "TablePagination",
+      "MDPreview",
+      "CreateDiscussion"
+    ],
+    "correct": 5,
+    "total": 5,
+    "filesRead": 21,
+    "sourceBytesRead": 35261,
+    "commands": 11,
+    "cli": null,
+    "contentBytes": 35261,
+    "usage": {
+      "uncachedInputTokens": 19197,
+      "outputTokens": 10177,
+      "cacheReadTokens": 252672,
+      "totalInputTokens": 271869,
+      "totalTokens": 282046,
+      "steps": 13,
+      "llmMs": 54475,
+      "settledMs": 55887
+    }
+  }
+]

@@ -52,6 +52,8 @@
 
 ## 3. 审计 B：子 agent 对照实验
 
+> 本节是单次运行、字节估算的结果。重复 3 次并用真实模型 usage 复核的结论见 [重复实验报告](../2026-10-25-b-repeated/report.md)：catalog 与 pristine 源码总 token 基本打平（−0.75%），**不能证明省 token**；单次字节数高估了 catalog 的成本。
+
 同一组 5 个任务，三个独立子 agent（无共享上下文）：
 
 1. **catalog**：只能用 `search`/`get`，catalog 不足时才读源码；
