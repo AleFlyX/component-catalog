@@ -223,5 +223,73 @@
     "steps": 11,
     "toolResultTokens": 3856,
     "wallMs": 33422
+  },
+  {
+    "group": "brief",
+    "run": 1,
+    "session": "96858d5c-6136-45d7-a917-30737e971167",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 7,
+    "cliOutputBytes": 15106,
+    "taskCalls": {
+      "1": 2,
+      "2": 2,
+      "3": 2,
+      "4": 1
+    },
+    "totalTokens": 189675,
+    "uncachedInputTokens": 7298,
+    "outputTokens": 5737,
+    "cacheReadTokens": 176640,
+    "steps": 12,
+    "toolResultTokens": 4689,
+    "wallMs": 45037
+  },
+  {
+    "group": "brief",
+    "run": 2,
+    "session": "0ef721b3-3bf4-44cb-9084-c1c1eec638c4",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 8,
+    "cliOutputBytes": 19454,
+    "taskCalls": {
+      "1": 2,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 2
+    },
+    "totalTokens": 169444,
+    "uncachedInputTokens": 7579,
+    "outputTokens": 9545,
+    "cacheReadTokens": 152320,
+    "steps": 10,
+    "toolResultTokens": 5258,
+    "wallMs": 60871
+  },
+  {
+    "group": "brief",
+    "run": 3,
+    "session": "080d0f63-7537-4e90-9021-8cf2538568e8",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 8,
+    "cliOutputBytes": 20861,
+    "taskCalls": {
+      "1": 2,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 2
+    },
+    "totalTokens": 182508,
+    "uncachedInputTokens": 9292,
+    "outputTokens": 9760,
+    "cacheReadTokens": 163456,
+    "steps": 10,
+    "toolResultTokens": 6489,
+    "wallMs": 62840
   }
 ]

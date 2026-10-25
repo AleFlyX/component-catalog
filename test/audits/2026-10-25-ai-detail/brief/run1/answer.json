@@ -1,0 +1,50 @@
+{
+  "condition": "catalog-brief",
+  "run": 1,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "discussions.DeleteDiscussion",
+      "importPath": "@/features/discussions/components/delete-discussion",
+      "requiredProps": ["id"],
+      "answer": "Use DeleteDiscussion, a destructive confirmation control for deleting a discussion. It takes the discussion id (string) and is wrapped in an admin Authorization check; render it inside an authenticated route.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "ui.form.Input",
+      "importPath": "@/components/ui/form/input",
+      "requiredProps": ["registration"],
+      "answer": "The login form uses Input. Bind react-hook-form by passing its registration object: registration={register('email')} (registration is required); use it inside Form so FieldWrapper supplies label and error.",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.table.TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "The discussions list's table pagination control is TablePagination. It needs totalPages (number), currentPage (number) and rootUrl (string, without a query string; links are rootUrl?page=N).",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "ui.md-preview.MDPreview",
+      "importPath": "@/components/ui/md-preview/md-preview",
+      "requiredProps": ["value"],
+      "answer": "MDPreview safely renders Markdown. Its input prop is value (the Markdown text).",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "discussions.CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "CreateDiscussion is an admin-only drawer form that creates a discussion with a title and Markdown body. It requires the Authorization provider; only admins see the trigger. It has no required props.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 7,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "All four discovery searches used --limit 10 --brief; the brief view supplied ID/importPath/requiredProps and was enough to pick candidates, so no normal (summary) searches were needed. Three gets total: one combined get for ui.form.Input + discussions.CreateDiscussion (react-hook-form registration constraint and admin-only authorization), one get for ui.table.TablePagination (confirmed the three required props), one get for discussions.DeleteDiscussion (id + admin wrapper). No project files read and no catalog JSON read directly."
+}

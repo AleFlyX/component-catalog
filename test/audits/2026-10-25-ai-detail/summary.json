@@ -98,5 +98,31 @@
     "toolResultTokens": 4673,
     "steps": 11,
     "wallMs": 46078
+  },
+  "brief": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": {
+      "mean": 8,
+      "values": [
+        7,
+        8,
+        8
+      ]
+    },
+    "cliOutputBytes": 18474,
+    "totalTokens": {
+      "mean": 180542,
+      "median": 182508,
+      "values": [
+        189675,
+        169444,
+        182508
+      ]
+    },
+    "outputTokens": 8347,
+    "toolResultTokens": 5479,
+    "steps": 11,
+    "wallMs": 56249
   }
 }
