@@ -1,0 +1,182 @@
+{
+  "check": {
+    "auditVersion": 1,
+    "command": "check",
+    "config": "/tmp/oss-trial/bulletproof-react/apps/react-vite/component-catalog.config.json",
+    "status": "pass",
+    "discovery": {
+      "status": "partial",
+      "searchable": 74,
+      "excludedUnsupported": 15,
+      "note": "Based on current-source generation, not the saved query snapshot. Audit pass validates decisions, not useful search coverage or routine-check integration. Verify representative tasks against the generated snapshot."
+    },
+    "counts": {
+      "candidates": 122,
+      "marked": 74,
+      "ignored": 48,
+      "ignoredUnsupported": 15,
+      "undecided": 0,
+      "generated": 74,
+      "issues": 0
+    },
+    "issues": [],
+    "offset": 0,
+    "nextOffset": null,
+    "truncated": false,
+    "omitted": {
+      "before": 0,
+      "after": 0,
+      "fields": []
+    },
+    "coverage": "Configured JS/JSX/TS/TSX PascalCase value/default exports and explicit decisions. Ignored entries are not enrolled; unsupported exclusions are counted separately."
+  },
+  "audit": {
+    "auditVersion": 1,
+    "command": "audit",
+    "config": "/tmp/oss-trial/bulletproof-react/apps/react-vite/component-catalog.config.json",
+    "status": "pass",
+    "discovery": {
+      "status": "partial",
+      "searchable": 74,
+      "excludedUnsupported": 15,
+      "note": "Based on current-source generation, not the saved query snapshot. Audit pass validates decisions, not useful search coverage or routine-check integration. Verify representative tasks against the generated snapshot."
+    },
+    "counts": {
+      "candidates": 122,
+      "marked": 74,
+      "ignored": 48,
+      "ignoredUnsupported": 15,
+      "undecided": 0,
+      "generated": 74,
+      "issues": 0
+    },
+    "issues": [],
+    "offset": 0,
+    "nextOffset": null,
+    "truncated": false,
+    "omitted": {
+      "before": 0,
+      "after": 0,
+      "fields": []
+    },
+    "coverage": "Configured JS/JSX/TS/TSX PascalCase value/default exports and explicit decisions. Ignored entries are not enrolled; unsupported exclusions are counted separately."
+  },
+  "doctorInstall": {
+    "doctorVersion": 1,
+    "command": "doctor",
+    "scope": "installation",
+    "status": "pass",
+    "runtime": {
+      "name": "component-catalog",
+      "version": "0.3.0",
+      "skillRevision": 8,
+      "node": "24.21.0",
+      "requiredNode": ">=22",
+      "expectedVersion": "0.3.0",
+      "expectedSkillRevision": 8,
+      "typescript": "5.9.3",
+      "expectedTypescript": "5.9.3"
+    },
+    "config": null,
+    "checks": [
+      {
+        "id": "node",
+        "status": "pass",
+        "message": "Use Node >=22."
+      },
+      {
+        "id": "cli-version",
+        "status": "pass",
+        "message": "Running CLI version matches the requested version, if supplied."
+      },
+      {
+        "id": "skill-revision",
+        "status": "pass",
+        "message": "Checks the SKILL.md bundled with this executable, not other installed copies. Missing/older instructions require replacing the complete skill from the intended pinned source; do not change revision numbers to bypass this check."
+      },
+      {
+        "id": "typescript",
+        "status": "pass",
+        "message": "The CLI dependency must match its package manifest. Run npm ci --ignore-scripts in the installed skill's scripts directory (or npm ci in the tool checkout)."
+      }
+    ],
+    "coverage": "Installation/config/dependency readiness only. Does not verify enrollment, freshness, runtime behavior or routine-check integration.",
+    "truncated": false,
+    "omitted": {
+      "fields": []
+    }
+  },
+  "doctorProject": {
+    "doctorVersion": 1,
+    "command": "doctor",
+    "scope": "project",
+    "status": "pass",
+    "runtime": {
+      "name": "component-catalog",
+      "version": "0.3.0",
+      "skillRevision": 8,
+      "node": "24.21.0",
+      "requiredNode": ">=22",
+      "expectedVersion": "0.3.0",
+      "expectedSkillRevision": null,
+      "typescript": "5.9.3",
+      "expectedTypescript": "5.9.3"
+    },
+    "config": {
+      "path": "/tmp/oss-trial/bulletproof-react/apps/react-vite/component-catalog.config.json",
+      "version": 2
+    },
+    "checks": [
+      {
+        "id": "node",
+        "status": "pass",
+        "message": "Use Node >=22."
+      },
+      {
+        "id": "cli-version",
+        "status": "pass",
+        "message": "Running CLI version matches the requested version, if supplied."
+      },
+      {
+        "id": "skill-revision",
+        "status": "pass",
+        "message": "Checks the SKILL.md bundled with this executable, not other installed copies. Missing/older instructions require replacing the complete skill from the intended pinned source; do not change revision numbers to bypass this check."
+      },
+      {
+        "id": "typescript",
+        "status": "pass",
+        "message": "The CLI dependency must match its package manifest. Run npm ci --ignore-scripts in the installed skill's scripts directory (or npm ci in the tool checkout)."
+      },
+      {
+        "id": "config",
+        "status": "pass",
+        "message": "Configuration parsed; paths resolve relative to its project root."
+      },
+      {
+        "id": "enrollment-policy",
+        "status": "pass",
+        "message": "Explicit per-root enrollment policies are configured."
+      },
+      {
+        "id": "paths",
+        "status": "pass",
+        "message": "Source, tsconfig and component roots exist; generation paths stay within the project."
+      },
+      {
+        "id": "project-dependencies",
+        "status": "pass",
+        "message": "Compiler-reported dependencies and static ESM/import() module references resolve. This is not a full typecheck or a check of computed/CommonJS imports."
+      },
+      {
+        "id": "catalog",
+        "status": "pass",
+        "message": "Readable schemaVersion 7 snapshot. Freshness is NOT checked; run check after setup."
+      }
+    ],
+    "coverage": "Installation/config/dependency readiness only. Does not verify enrollment, freshness, runtime behavior or routine-check integration.",
+    "truncated": false,
+    "omitted": {
+      "fields": []
+    }
+  }
+}

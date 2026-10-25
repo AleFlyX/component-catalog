@@ -75,10 +75,14 @@ function missingMetadata(node) {
 
 // This deliberately needs neither a config, a catalog nor installed frontend dependencies.
 // It inventories syntactic candidates; generation remains the semantic validation step.
-export function scan(directory, { limit = 20, offset = 0, summary = false, query } = {}) {
+export function scan(
+  directory,
+  { limit = 20, offset = 0, summary = false, query, brief = false } = {},
+) {
   if (query !== undefined && (typeof query !== "string" || !query.trim() || query.length > 200))
     throw new Error("--query must contain 1–200 characters");
   if (query !== undefined && summary) throw new Error("--query and --summary cannot be combined");
+  if (brief && summary) throw new Error("--brief and --summary cannot be combined");
   const root = path.resolve(directory);
   if (!fs.existsSync(root) || !fs.statSync(root).isDirectory())
     throw new Error(`Scan directory does not exist or is not a directory: ${root}`);
@@ -279,11 +283,23 @@ export function scan(directory, { limit = 20, offset = 0, summary = false, query
     nextStep = allItems.length
       ? "Inspect candidate source and actual consumers; markers and supported syntax do not prove catalog enrollment or reuse permission. Do not annotate or generate for a read-only discovery task."
       : "No matching syntactic candidates. Try another name/path term or use source search for private declarations, export-star barrels and unsupported source formats; do not conclude no component exists.";
-  const items = allItems.slice(offset, offset + limit);
+  const items = allItems.slice(offset, offset + limit).map((item) =>
+    brief
+      ? {
+          exportName: item.exportName,
+          sourcePath: item.sourcePath,
+          line: item.line,
+          marked: item.marked,
+          supportedShape: item.supportedShape,
+          ...(item.ignored ? { ignored: true } : {}),
+        }
+      : item,
+  );
   const response = {
     scanVersion: 1,
     view: summary ? "directories" : "candidates",
     root,
+    ...(brief ? { brief: true } : {}),
     ...(query !== undefined ? { query: query.trim(), matchingCandidates: allItems.length } : {}),
     counts: {
       files,
@@ -307,6 +323,9 @@ export function scan(directory, { limit = 20, offset = 0, summary = false, query
         : "") +
       (query !== undefined
         ? " Counts describe the full scanned directory; matchingCandidates and pagination describe filtered results. All query terms must match. No config exclusions or vocabulary expansion are applied. marked means annotation presence, not verified catalog membership."
+        : "") +
+      (brief
+        ? " Brief view omits metadata tags, shape issues and ignore reasons; counts still describe the full inventory."
         : ""),
     totalItems: allItems.length,
     items,

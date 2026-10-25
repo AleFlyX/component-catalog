@@ -1,0 +1,489 @@
+[
+  {
+    "args": [
+      "ui.button.Button"
+    ],
+    "bytes": 895,
+    "truncated": true,
+    "omitted": {
+      "fields": [
+        "props"
+      ],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse",
+      "constraints",
+      "examples"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.button.Button",
+        "exportName": "Button",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/button/button",
+        "sourcePath": "src/components/ui/button/button.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Primary action button with variant/size presets, an optional leading icon and a loading spinner state.",
+        "tasks": [
+          "button"
+        ],
+        "reuse": {
+          "scope": "project"
+        },
+        "constraints": [
+          "With asChild the single child must forward className and ref, such as a router Link; children render inside a span, so compose inline content."
+        ],
+        "examples": [
+          {
+            "kind": "story",
+            "path": "src/components/ui/button/button.stories.tsx",
+            "purpose": "Default variant with text content"
+          }
+        ]
+      },
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      }
+    }
+  },
+  {
+    "args": [
+      "ui.button.Button",
+      "--include",
+      "props"
+    ],
+    "bytes": 605,
+    "truncated": true,
+    "omitted": {
+      "fields": [
+        "props"
+      ],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.button.Button",
+        "exportName": "Button",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/button/button",
+        "sourcePath": "src/components/ui/button/button.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Primary action button with variant/size presets, an optional leading icon and a loading spinner state.",
+        "tasks": [
+          "button"
+        ],
+        "reuse": {
+          "scope": "project"
+        }
+      },
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      }
+    }
+  },
+  {
+    "args": [
+      "ui.button.Button",
+      "--prop",
+      "isLoading"
+    ],
+    "bytes": 1477,
+    "truncated": false,
+    "omitted": {
+      "fields": [],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse",
+      "constraints",
+      "prop",
+      "propsContext"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.button.Button",
+        "exportName": "Button",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/button/button",
+        "sourcePath": "src/components/ui/button/button.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Primary action button with variant/size presets, an optional leading icon and a loading spinner state.",
+        "tasks": [
+          "button"
+        ],
+        "reuse": {
+          "scope": "project"
+        },
+        "constraints": [
+          "With asChild the single child must forward className and ref, such as a router Link; children render inside a span, so compose inline content."
+        ],
+        "prop": {
+          "name": "isLoading",
+          "displayType": "boolean | undefined",
+          "required": false,
+          "schemaStatus": "complete",
+          "valueSchema": {
+            "type": "boolean",
+            "enum": [
+              false,
+              true
+            ]
+          }
+        },
+        "propsContext": {
+          "displayType": "React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<(props?: (ConfigVariants<{ variant: { default: string; destructive: string; outline: string; secondary: string; ghost: string; link: string; }; size: { default: string; sm: string; lg: string; icon: string; }; }> & ClassProp) | undefined) => string> & { asChild?: boolean; isLoading?: boolean; icon?: React.ReactNode; } & React.RefAttributes<HTMLButtonElement>",
+          "typeParameters": [],
+          "inheritedTypes": []
+        }
+      },
+      "selection": {
+        "kind": "prop",
+        "name": "isLoading",
+        "partial": true
+      },
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      }
+    }
+  },
+  {
+    "args": [
+      "ui.table.Table"
+    ],
+    "bytes": 1276,
+    "truncated": false,
+    "omitted": {
+      "fields": [],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse",
+      "props",
+      "constraints",
+      "examples"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.table.Table",
+        "exportName": "Table",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/table/table",
+        "sourcePath": "src/components/ui/table/table.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Data-driven table that renders typed columns, an empty state and optional pagination.",
+        "tasks": [
+          "data-table"
+        ],
+        "reuse": {
+          "scope": "project"
+        },
+        "props": {
+          "displayType": "TableProps<Entry>",
+          "typeParameters": [
+            "Entry extends BaseEntity"
+          ],
+          "inheritedTypes": [],
+          "items": [
+            {
+              "name": "data",
+              "displayType": "Entry[]",
+              "required": true,
+              "schemaStatus": "partial"
+            },
+            {
+              "name": "columns",
+              "displayType": "TableColumn<Entry>[]",
+              "required": true,
+              "schemaStatus": "partial"
+            },
+            {
+              "name": "pagination",
+              "displayType": "TablePaginationProps | undefined",
+              "required": false,
+              "schemaStatus": "partial"
+            }
+          ]
+        },
+        "constraints": [
+          "Rows must extend BaseEntity so they expose an id for React keys; columns need title and field and may supply a Cell renderer."
+        ],
+        "examples": [
+          {
+            "kind": "story",
+            "path": "src/components/ui/table/table.stories.tsx",
+            "purpose": "Default story with typed columns and sample data"
+          }
+        ]
+      },
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      }
+    }
+  },
+  {
+    "args": [
+      "ui.form.Input",
+      "--prop",
+      "registration"
+    ],
+    "bytes": 1146,
+    "truncated": false,
+    "omitted": {
+      "fields": [],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse",
+      "constraints",
+      "prop",
+      "propsContext"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.form.Input",
+        "exportName": "Input",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/form/input",
+        "sourcePath": "src/components/ui/form/input.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Text input that renders its label and error message through FieldWrapper.",
+        "tasks": [
+          "text-input"
+        ],
+        "reuse": {
+          "scope": "project"
+        },
+        "constraints": [
+          "registration from react-hook-form is required, and the label/error come from FieldWrapper, so use it inside a Form."
+        ],
+        "prop": {
+          "name": "registration",
+          "displayType": "Partial<UseFormRegisterReturn>",
+          "required": true,
+          "schemaStatus": "unsupported"
+        },
+        "propsContext": {
+          "displayType": "React.InputHTMLAttributes<HTMLInputElement> & FieldWrapperPassThroughProps & { className?: string; registration: Partial<UseFormRegisterReturn>; } & React.RefAttributes<HTMLInputElement>",
+          "typeParameters": [],
+          "inheritedTypes": []
+        }
+      },
+      "selection": {
+        "kind": "prop",
+        "name": "registration",
+        "partial": true
+      },
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      }
+    }
+  },
+  {
+    "args": [
+      "ui.form.FormDrawer",
+      "--from",
+      "src/features/users/components/update-profile.tsx"
+    ],
+    "bytes": 1610,
+    "truncated": false,
+    "omitted": {
+      "fields": [],
+      "examples": 0
+    },
+    "fields": [
+      "id",
+      "exportName",
+      "exportKind",
+      "kind",
+      "importPath",
+      "sourcePath",
+      "layer",
+      "status",
+      "documentationStatus",
+      "summary",
+      "tasks",
+      "reuse",
+      "props",
+      "constraints",
+      "examples"
+    ],
+    "response": {
+      "schemaVersion": 7,
+      "sourceDigest": "sha256:afb9e7ab15e63fa434ee0d21d1b62d9822eb33edf753adf4facfb116f82b8d72",
+      "component": {
+        "id": "ui.form.FormDrawer",
+        "exportName": "FormDrawer",
+        "exportKind": "named",
+        "kind": "component",
+        "importPath": "@/components/ui/form/form-drawer",
+        "sourcePath": "src/components/ui/form/form-drawer.tsx",
+        "layer": "shared-ui",
+        "status": "experimental",
+        "documentationStatus": "complete",
+        "summary": "Drawer-hosted form layout with a trigger, title, submit control and automatic close when done.",
+        "tasks": [
+          "form-layout"
+        ],
+        "reuse": {
+          "scope": "project"
+        },
+        "props": {
+          "displayType": "FormDrawerProps",
+          "typeParameters": [],
+          "inheritedTypes": [],
+          "items": [
+            {
+              "name": "isDone",
+              "displayType": "boolean",
+              "required": true,
+              "schemaStatus": "complete",
+              "valueSchema": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "triggerButton",
+              "displayType": "React.ReactElement<any, string | React.JSXElementConstructor<any>>",
+              "required": true,
+              "schemaStatus": "unsupported"
+            },
+            {
+              "name": "submitButton",
+              "displayType": "React.ReactElement<any, string | React.JSXElementConstructor<any>>",
+              "required": true,
+              "schemaStatus": "unsupported"
+            },
+            {
+              "name": "title",
+              "displayType": "string",
+              "required": true,
+              "schemaStatus": "complete",
+              "valueSchema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "children",
+              "displayType": "React.ReactNode",
+              "required": true,
+              "schemaStatus": "partial"
+            }
+          ]
+        },
+        "constraints": [
+          "The submitButton must submit the inner form by id (form=...), and isDone closes the drawer after a successful mutation."
+        ],
+        "examples": [
+          {
+            "kind": "production",
+            "path": "src/features/users/components/update-profile.tsx",
+            "purpose": "Profile edit form inside a FormDrawer"
+          }
+        ]
+      },
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      }
+    }
+  }
+]

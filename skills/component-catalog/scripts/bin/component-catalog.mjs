@@ -13,7 +13,7 @@ const usage = {
     "component-catalog [--config path] audit [--limit 1..50] [--offset n]\nRead-only enrollment and metadata audit; requires explicit v2 policies. Exit 1 for findings, 2 if unable to check.\n",
   check:
     "component-catalog [--config path] check [--limit 1..50] [--offset n]\nAudit enrollment and verify generated catalog freshness without writing.\n",
-  scan: "component-catalog scan <directory> [--summary | --query text] [--limit 1..50] [--offset n]\nRead-only JS/JSX/TS/TSX candidate inventory; no config or markers required. --summary groups by immediate child directory. --query filters names, paths, JSDoc summaries and task tags (all whitespace-separated terms); no vocabulary expansion. Does not enroll components.\n",
+  scan: "component-catalog scan <directory> [--summary | --query text | --brief] [--limit 1..50] [--offset n]\nRead-only JS/JSX/TS/TSX candidate inventory; no config or markers required. --summary groups by immediate child directory. --brief returns only name/path/line/marked/supportedShape so more items fit per bounded page. --query filters names, paths, JSDoc summaries and task tags (all whitespace-separated terms); no vocabulary expansion. Does not enroll components.\n",
   init: "component-catalog init\nPrints a JSON template only. Adapt paths and save it as component-catalog.config.json.\n",
   generate:
     "component-catalog [--config path] generate [--check]\nGenerate explicitly marked components; --check compares without writing. Unmarked candidates need annotation first.\n",
@@ -23,12 +23,27 @@ const usage = {
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
 const shellQuote = (value) => "'" + value.replaceAll("'", "'\\''") + "'";
+const startedAt = Date.now();
+let activeCommand;
+// Opt-in, local-only usage audit. Never changes command output; a failed log
+// write is ignored so instrumentation cannot break the CLI.
+function writeUsageLog(entry) {
+  const target = process.env.COMPONENT_CATALOG_LOG;
+  if (!target) return;
+  try {
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.appendFileSync(target, JSON.stringify({ ts: new Date().toISOString(), ...entry }) + "\n");
+  } catch {
+    // Best effort only.
+  }
+}
 let diagnosticCommand = false;
 const cliOptions = {
   config: { type: "string" },
   limit: { type: "string" },
   offset: { type: "string" },
   summary: { type: "boolean" },
+  brief: { type: "boolean" },
   query: { type: "string" },
   include: { type: "string" },
   prop: { type: "string" },
@@ -85,9 +100,10 @@ try {
     process.stdout.write(usage[positionals[0]]);
   else {
     const [command, input] = positionals;
+    activeCommand = command;
     const allowed = {
       init: [],
-      scan: ["limit", "offset", "summary", "query"],
+      scan: ["limit", "offset", "summary", "query", "brief"],
       generate: ["config", "check"],
       search: ["config", "limit"],
       get: ["config", "include", "prop", "from"],
@@ -156,6 +172,7 @@ try {
         offset: Number(values.offset ?? 0),
         summary: values.summary ?? false,
         query: values.query,
+        brief: values.brief ?? false,
       });
     } else if (command === "doctor") {
       const { doctor } = await import("../lib/doctor.mjs");
@@ -217,9 +234,33 @@ try {
             : get(catalog, input.trim(), include, values.prop, values.from);
       }
     }
-    process.stdout.write(JSON.stringify(result) + "\n");
+    const output = JSON.stringify(result) + "\n";
+    process.stdout.write(output);
+    writeUsageLog({
+      command,
+      argument: typeof input === "string" ? input.slice(0, 200) : null,
+      config: values.config ?? null,
+      options: {
+        limit: values.limit ?? null,
+        offset: values.offset ?? null,
+        include: values.include ?? null,
+        prop: values.prop ?? null,
+        from: values.from ?? null,
+        brief: values.brief ?? null,
+      },
+      outputBytes: Buffer.byteLength(output, "utf8"),
+      durationMs: Date.now() - startedAt,
+      status: typeof result?.status === "string" ? result.status : null,
+      truncated: result?.truncated ?? null,
+      omitted: result?.omitted ?? null,
+    });
   }
 } catch (error) {
+  writeUsageLog({
+    command: activeCommand ?? null,
+    error: error.message,
+    durationMs: Date.now() - startedAt,
+  });
   process.stderr.write(`component-catalog: ${error.message}\n`);
   process.exitCode = diagnosticCommand ? 2 : 1;
 }

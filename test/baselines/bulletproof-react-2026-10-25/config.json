@@ -1,0 +1,275 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": "src",
+  "tsconfig": "tsconfig.json",
+  "catalog": "component-catalog.json",
+  "componentRoots": [
+    {
+      "path": "src/components/ui",
+      "idPrefix": "ui",
+      "importPrefix": "@/components/ui",
+      "importExtension": "omit",
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": {
+        "scope": "project"
+      }
+    },
+    {
+      "path": "src/features/auth/components",
+      "idPrefix": "auth",
+      "importPrefix": "@/features/auth/components",
+      "importExtension": "omit",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "auth"
+      }
+    },
+    {
+      "path": "src/features/comments/components",
+      "idPrefix": "comments",
+      "importPrefix": "@/features/comments/components",
+      "importExtension": "omit",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "comments"
+      }
+    },
+    {
+      "path": "src/features/discussions/components",
+      "idPrefix": "discussions",
+      "importPrefix": "@/features/discussions/components",
+      "importExtension": "omit",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "discussions"
+      }
+    },
+    {
+      "path": "src/features/users/components",
+      "idPrefix": "users",
+      "importPrefix": "@/features/users/components",
+      "importExtension": "omit",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "users"
+      }
+    }
+  ],
+  "exclude": [],
+  "previewRoots": [],
+  "testRoots": [],
+  "vocabulary": {
+    "按钮": {
+      "primary": "button",
+      "related": [
+        "action"
+      ]
+    },
+    "button": {
+      "primary": "button",
+      "related": [
+        "action"
+      ]
+    },
+    "加载": {
+      "primary": "loading",
+      "related": []
+    },
+    "loading": {
+      "primary": "loading",
+      "related": []
+    },
+    "链接": {
+      "primary": "navigation",
+      "related": [
+        "link"
+      ]
+    },
+    "弹窗": {
+      "primary": "dialog",
+      "related": []
+    },
+    "对话框": {
+      "primary": "dialog",
+      "related": []
+    },
+    "modal": {
+      "primary": "dialog",
+      "related": []
+    },
+    "确认框": {
+      "primary": "confirmation",
+      "related": []
+    },
+    "二次确认": {
+      "primary": "confirmation",
+      "related": []
+    },
+    "抽屉": {
+      "primary": "drawer",
+      "related": []
+    },
+    "下拉菜单": {
+      "primary": "dropdown-menu",
+      "related": []
+    },
+    "菜单": {
+      "primary": "dropdown-menu",
+      "related": []
+    },
+    "表格": {
+      "primary": "data-table",
+      "related": []
+    },
+    "分页": {
+      "primary": "table-pagination",
+      "related": [
+        "pagination"
+      ]
+    },
+    "表单": {
+      "primary": "form-layout",
+      "related": [
+        "form-field",
+        "text-input"
+      ]
+    },
+    "输入框": {
+      "primary": "text-input",
+      "related": []
+    },
+    "文本域": {
+      "primary": "text-input",
+      "related": []
+    },
+    "选择器": {
+      "primary": "select",
+      "related": []
+    },
+    "开关": {
+      "primary": "toggle",
+      "related": []
+    },
+    "错误提示": {
+      "primary": "form-error",
+      "related": []
+    },
+    "错误": {
+      "primary": "form-error",
+      "related": []
+    },
+    "通知": {
+      "primary": "notification",
+      "related": []
+    },
+    "markdown": {
+      "primary": "markdown",
+      "related": []
+    },
+    "预览": {
+      "primary": "markdown",
+      "related": []
+    },
+    "登录": {
+      "primary": "auth",
+      "related": []
+    },
+    "注册": {
+      "primary": "auth",
+      "related": []
+    },
+    "讨论": {
+      "primary": "discussion-list",
+      "related": [
+        "discussion-create",
+        "discussion-update",
+        "discussion-delete",
+        "discussion-detail"
+      ]
+    },
+    "帖子": {
+      "primary": "discussion-list",
+      "related": []
+    },
+    "评论": {
+      "primary": "comments",
+      "related": [
+        "comment-create",
+        "comment-delete"
+      ]
+    },
+    "用户": {
+      "primary": "user-list",
+      "related": [
+        "user-delete",
+        "profile-update"
+      ]
+    },
+    "个人资料": {
+      "primary": "profile-update",
+      "related": []
+    },
+    "pagination": {
+      "primary": "pagination",
+      "related": [
+        "table-pagination"
+      ]
+    },
+    "table pagination": {
+      "primary": "table-pagination",
+      "related": [
+        "pagination"
+      ]
+    },
+    "创建讨论": {
+      "primary": "discussion-create",
+      "related": [
+        "form-layout"
+      ]
+    },
+    "删除讨论": {
+      "primary": "discussion-delete",
+      "related": [
+        "confirmation"
+      ]
+    },
+    "编辑讨论": {
+      "primary": "discussion-update",
+      "related": [
+        "form-layout"
+      ]
+    },
+    "评论列表": {
+      "primary": "comments",
+      "related": []
+    },
+    "删除评论": {
+      "primary": "comment-delete",
+      "related": [
+        "confirmation"
+      ]
+    },
+    "用户列表": {
+      "primary": "user-list",
+      "related": [
+        "data-table"
+      ]
+    },
+    "删除用户": {
+      "primary": "user-delete",
+      "related": [
+        "confirmation"
+      ]
+    }
+  }
+}

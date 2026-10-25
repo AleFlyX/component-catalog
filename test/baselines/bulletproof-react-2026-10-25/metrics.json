@@ -1,0 +1,450 @@
+{
+  "capturedAt": "2026-10-25T10:06:03.921Z",
+  "tool": {
+    "commit": "2a9b6c4e43e73dc27be82e4e267201852ba26db4",
+    "cliVersion": "0.3.0",
+    "skillRevision": 8,
+    "node": "v24.21.0"
+  },
+  "trial": {
+    "project": "alan2207/bulletproof-react",
+    "app": "apps/react-vite",
+    "commit": "9506629ed003a561c6627735480cce4994244bb4",
+    "configSha256": "sha256:417e2b5d3fc63436d992e9d81ea5b2b662d963b5a9fdf1d1acd6fe9516278f75",
+    "catalogSha256": "sha256:047c62ef63b064a0e64ead637e3802eb02ccbfd9b854814fe17565cf74baf171",
+    "catalogBytes": 3929651
+  },
+  "checks": {
+    "checkStatus": "pass",
+    "counts": {
+      "candidates": 122,
+      "marked": 74,
+      "ignored": 48,
+      "ignoredUnsupported": 15,
+      "undecided": 0,
+      "generated": 74,
+      "issues": 0
+    },
+    "discovery": {
+      "status": "partial",
+      "searchable": 74,
+      "excludedUnsupported": 15,
+      "note": "Based on current-source generation, not the saved query snapshot. Audit pass validates decisions, not useful search coverage or routine-check integration. Verify representative tasks against the generated snapshot."
+    },
+    "doctorInstall": "pass",
+    "doctorProject": "pass"
+  },
+  "queries": [
+    {
+      "query": "按钮",
+      "expected": "ui.button.Button",
+      "position": 1,
+      "bytes": 412,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.button.Button"
+      ]
+    },
+    {
+      "query": "加载中",
+      "expected": "ui.spinner.Spinner",
+      "position": 1,
+      "bytes": 399,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.spinner.Spinner"
+      ]
+    },
+    {
+      "query": "确认框",
+      "expected": "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "position": 1,
+      "bytes": 1264,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.dialog.confirmation-dialog.ConfirmationDialog",
+        "comments.DeleteComment",
+        "discussions.DeleteDiscussion",
+        "users.DeleteUser"
+      ]
+    },
+    {
+      "query": "抽屉",
+      "expected": "ui.drawer.DrawerContent",
+      "position": 1,
+      "bytes": 1296,
+      "truncated": true,
+      "omitted": {
+        "items": 1
+      },
+      "ids": [
+        "ui.drawer.DrawerContent",
+        "ui.drawer.DrawerDescription",
+        "ui.drawer.DrawerFooter",
+        "ui.drawer.DrawerHeader",
+        "ui.drawer.DrawerOverlay"
+      ]
+    },
+    {
+      "query": "下拉菜单",
+      "expected": "ui.dropdown.DropdownMenuContent",
+      "position": 2,
+      "bytes": 1435,
+      "truncated": true,
+      "omitted": {
+        "items": 4
+      },
+      "ids": [
+        "ui.dropdown.DropdownMenuCheckboxItem",
+        "ui.dropdown.DropdownMenuContent",
+        "ui.dropdown.DropdownMenuItem",
+        "ui.dropdown.DropdownMenuLabel",
+        "ui.dropdown.DropdownMenuRadioItem"
+      ]
+    },
+    {
+      "query": "表格",
+      "expected": "ui.table.Table",
+      "position": 1,
+      "bytes": 1250,
+      "truncated": true,
+      "omitted": {
+        "items": 6
+      },
+      "ids": [
+        "ui.table.Table",
+        "ui.table.TableBody",
+        "ui.table.TableCaption",
+        "ui.table.TableCell",
+        "ui.table.TableElement"
+      ]
+    },
+    {
+      "query": "分页",
+      "expected": "ui.table.TablePagination",
+      "position": 1,
+      "bytes": 1364,
+      "truncated": true,
+      "omitted": {
+        "items": 3
+      },
+      "ids": [
+        "ui.table.TablePagination",
+        "ui.table.Pagination",
+        "ui.table.PaginationContent",
+        "ui.table.PaginationEllipsis",
+        "ui.table.PaginationItem"
+      ]
+    },
+    {
+      "query": "输入框",
+      "expected": "ui.form.Input",
+      "position": 1,
+      "bytes": 610,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.form.Input",
+        "ui.form.Textarea"
+      ]
+    },
+    {
+      "query": "登录",
+      "expected": "auth.LoginForm",
+      "position": 1,
+      "bytes": 677,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "auth.LoginForm",
+        "auth.RegisterForm"
+      ]
+    },
+    {
+      "query": "评论",
+      "expected": "comments.CommentsList",
+      "position": 2,
+      "bytes": 1217,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "comments.Comments",
+        "comments.CommentsList",
+        "comments.CreateComment",
+        "comments.DeleteComment"
+      ]
+    },
+    {
+      "query": "创建讨论",
+      "expected": "discussions.CreateDiscussion",
+      "position": 1,
+      "bytes": 1481,
+      "truncated": true,
+      "omitted": {
+        "items": 3
+      },
+      "ids": [
+        "discussions.CreateDiscussion",
+        "ui.form.Form",
+        "ui.form.FormDrawer",
+        "auth.LoginForm",
+        "auth.RegisterForm"
+      ]
+    },
+    {
+      "query": "用户列表",
+      "expected": "users.UsersList",
+      "position": 1,
+      "bytes": 1269,
+      "truncated": true,
+      "omitted": {
+        "items": 6
+      },
+      "ids": [
+        "users.UsersList",
+        "ui.table.Table",
+        "ui.table.TableBody",
+        "ui.table.TableCaption",
+        "ui.table.TableCell"
+      ]
+    },
+    {
+      "query": "markdown 预览",
+      "expected": "ui.md-preview.MDPreview",
+      "position": 1,
+      "bytes": 977,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.md-preview.MDPreview",
+        "discussions.DiscussionView",
+        "discussions.CreateDiscussion"
+      ]
+    }
+  ],
+  "gets": [
+    {
+      "args": [
+        "ui.button.Button"
+      ],
+      "bytes": 895,
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "examples"
+      ]
+    },
+    {
+      "args": [
+        "ui.button.Button",
+        "--include",
+        "props"
+      ],
+      "bytes": 605,
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse"
+      ]
+    },
+    {
+      "args": [
+        "ui.button.Button",
+        "--prop",
+        "isLoading"
+      ],
+      "bytes": 1477,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "prop",
+        "propsContext"
+      ]
+    },
+    {
+      "args": [
+        "ui.table.Table"
+      ],
+      "bytes": 1276,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "props",
+        "constraints",
+        "examples"
+      ]
+    },
+    {
+      "args": [
+        "ui.form.Input",
+        "--prop",
+        "registration"
+      ],
+      "bytes": 1146,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "prop",
+        "propsContext"
+      ]
+    },
+    {
+      "args": [
+        "ui.form.FormDrawer",
+        "--from",
+        "src/features/users/components/update-profile.tsx"
+      ],
+      "bytes": 1610,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "props",
+        "constraints",
+        "examples"
+      ]
+    }
+  ],
+  "scanPages": [
+    {
+      "offset": 0,
+      "items": 26,
+      "bytes": 8031,
+      "nextOffset": 26,
+      "totalItems": 113
+    },
+    {
+      "offset": 26,
+      "items": 23,
+      "bytes": 8159,
+      "nextOffset": 49,
+      "totalItems": 113
+    },
+    {
+      "offset": 49,
+      "items": 35,
+      "bytes": 7955,
+      "nextOffset": 84,
+      "totalItems": 113
+    },
+    {
+      "offset": 84,
+      "items": 29,
+      "bytes": 6739,
+      "nextOffset": null,
+      "totalItems": 113
+    }
+  ]
+}

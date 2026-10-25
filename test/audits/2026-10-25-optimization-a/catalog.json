@@ -1,0 +1,49 @@
+{
+  "condition": "catalog",
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "importPath": "@/components/ui/dialog/confirmation-dialog/confirmation-dialog",
+      "requiredProps": ["triggerButton", "confirmButton", "title"],
+      "answer": "删除讨论的确认弹窗用 ConfirmationDialog：必填 triggerButton、confirmButton、title；body、cancelButtonText、icon、isDone 可选，confirm 按钮执行删除，isDone 在成功后关闭弹窗。catalog 里另有现成的 discussions.DeleteDiscussion 控件（仅必填 id，admin 包装）供讨论列表直接复用。",
+      "confidence": "medium"
+    },
+    {
+      "task": 2,
+      "componentId": "ui.form.Input",
+      "importPath": "@/components/ui/form/input",
+      "requiredProps": ["registration"],
+      "answer": "登录表单的邮箱/密码输入框用 ui.form.Input；通过必填 registration prop 绑定 react-hook-form，即把 register('email')/register('password') 的返回值传给 registration，Input 将其应用到原生 input；label 和 error 为可选，且须在 Form 内使用。",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.table.TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "讨论列表把分页数据作为 Table 的 pagination（TablePaginationProps）传入，分页控件是 ui.table.TablePagination，必填 totalPages、currentPage、rootUrl；链接形如 rootUrl?page=N，rootUrl 不能已带查询串。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "ui.md-preview.MDPreview",
+      "importPath": "@/components/ui/md-preview/md-preview",
+      "requiredProps": ["value"],
+      "answer": "安全渲染 Markdown 正文用 ui.md-preview.MDPreview，输入 prop 是 value（Markdown 字符串，经 DOMPurify 清洗后渲染；不要传已渲染的 HTML）。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "discussions.CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "创建讨论用 discussions.CreateDiscussion（无 props 的 drawer 表单，提交按钮 form=create-discussion）；要求 admin 权限：依赖 Authorization provider，只有 admin 能看到触发按钮。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 28,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog was sufficient for all five tasks; no app source files were read (filesRead empty, totalBytesRead 0). 28 search/get invocations were logged in total: 24 successful and 4 early 'get --from project' attempts rejected by the CLI before returning data. Task 1 caveat: the catalog also documents the feature-level control discussions.DeleteDiscussion (required prop: id, admin-wrapped); because the question asks for the confirmation popup itself, ui.dialog.confirmation-dialog.ConfirmationDialog was chosen. Only component-catalog.config.json (config header, via shell) and the usage log were inspected; neither is app source or needed for the answers."
+}

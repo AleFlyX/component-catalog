@@ -1,0 +1,1833 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index d64deab..0b8c9b3 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -17,6 +17,17 @@ The demo application is a team collaboration platform where users can:
+ 
+ **Live Demo**: [https://bulletproof-react-app.netlify.app](https://bulletproof-react-app.netlify.app)
+ 
++## Component catalog
++
++`apps/react-vite` keeps a local component catalog (`component-catalog.config.json`, generated `component-catalog.json`) for `src/components/ui` and `src/features/*/components`. After adding, removing or changing an exported component in those directories, run from `apps/react-vite`:
++
++```bash
++pnpm run catalog:generate   # refresh component-catalog.json
++pnpm run catalog:check      # verify enrollment, metadata and freshness
++```
++
++`pnpm run check` runs the type check followed by the catalog check, and is the routine verification command.
++
+ ## Setup Commands
+ 
+ ```bash
+diff --git a/apps/react-vite/package.json b/apps/react-vite/package.json
+index 5d81cb7..d3d5e20 100644
+--- a/apps/react-vite/package.json
++++ b/apps/react-vite/package.json
+@@ -12,6 +12,10 @@
+     "prepare": "husky",
+     "lint": "eslint src --ignore-path .gitignore",
+     "check-types": "tsc --project tsconfig.json --pretty --noEmit",
++    "catalog": "node /home/ccb/component-catalog/skills/component-catalog/scripts/bin/component-catalog.mjs --config component-catalog.config.json",
++    "catalog:generate": "npm run --silent catalog -- generate",
++    "catalog:check": "npm run --silent catalog -- check",
++    "check": "pnpm run check-types && pnpm run catalog:check",
+     "generate": "plop",
+     "storybook": "storybook dev -p 6006",
+     "build-storybook": "storybook build",
+diff --git a/apps/react-vite/src/components/ui/button/button.stories.tsx b/apps/react-vite/src/components/ui/button/button.stories.tsx
+index 3cd81ee..e22ca73 100644
+--- a/apps/react-vite/src/components/ui/button/button.stories.tsx
++++ b/apps/react-vite/src/components/ui/button/button.stories.tsx
+@@ -2,6 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
+ 
+ import { Button } from './button';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Button> = {
+   component: Button,
+ };
+@@ -9,6 +12,9 @@ const meta: Meta<typeof Button> = {
+ export default meta;
+ type Story = StoryObj<typeof Button>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   args: {
+     children: 'Button',
+diff --git a/apps/react-vite/src/components/ui/button/button.tsx b/apps/react-vite/src/components/ui/button/button.tsx
+index 55b4ead..701134a 100644
+--- a/apps/react-vite/src/components/ui/button/button.tsx
++++ b/apps/react-vite/src/components/ui/button/button.tsx
+@@ -43,6 +43,14 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+     icon?: React.ReactNode;
+   };
+ 
++/**
++ * Primary action button with variant/size presets, an optional leading icon and a loading spinner state.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask button
++ * @catalogConstraint With asChild the single child must forward className and ref, such as a router Link; children render inside a span, so compose inline content.
++ * @catalogExample story src/components/ui/button/button.stories.tsx | Default variant with text content
++ */
+ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+   (
+     {
+diff --git a/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.stories.tsx b/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.stories.tsx
+index 3f787b4..f708858 100644
+--- a/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.stories.tsx
++++ b/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.stories.tsx
+@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
+ 
+ import { ConfirmationDialog } from './confirmation-dialog';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof ConfirmationDialog> = {
+   component: ConfirmationDialog,
+ };
+@@ -12,6 +15,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof ConfirmationDialog>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Danger: Story = {
+   args: {
+     icon: 'danger',
+@@ -22,6 +28,9 @@ export const Danger: Story = {
+   },
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Info: Story = {
+   args: {
+     icon: 'info',
+diff --git a/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.tsx b/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.tsx
+index c8da831..fd33106 100644
+--- a/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.tsx
++++ b/apps/react-vite/src/components/ui/dialog/confirmation-dialog/confirmation-dialog.tsx
+@@ -24,6 +24,14 @@ export type ConfirmationDialogProps = {
+   isDone?: boolean;
+ };
+ 
++/**
++ * Confirmation prompt with an icon, title, body, trigger, confirm action and cancel button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask confirmation
++ * @catalogConstraint triggerButton and confirmButton must be React elements; the confirm button performs the action and isDone closes the dialog after success.
++ * @catalogExample story src/components/ui/dialog/confirmation-dialog/confirmation-dialog.stories.tsx | Danger confirmation with title and body
++ */
+ export const ConfirmationDialog = ({
+   triggerButton,
+   confirmButton,
+diff --git a/apps/react-vite/src/components/ui/dialog/dialog.stories.tsx b/apps/react-vite/src/components/ui/dialog/dialog.stories.tsx
+index 7873b6a..3164e1a 100644
+--- a/apps/react-vite/src/components/ui/dialog/dialog.stories.tsx
++++ b/apps/react-vite/src/components/ui/dialog/dialog.stories.tsx
+@@ -50,6 +50,9 @@ const DemoDialog = () => {
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta = {
+   component: Dialog,
+ };
+@@ -58,6 +61,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof Dialog>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Demo: Story = {
+   render: () => <DemoDialog />,
+ };
+diff --git a/apps/react-vite/src/components/ui/dialog/dialog.tsx b/apps/react-vite/src/components/ui/dialog/dialog.tsx
+index e9a1caa..b98687b 100644
+--- a/apps/react-vite/src/components/ui/dialog/dialog.tsx
++++ b/apps/react-vite/src/components/ui/dialog/dialog.tsx
+@@ -4,14 +4,34 @@ import * as React from 'react';
+ 
+ import { cn } from '@/utils/cn';
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Root; no local wrapper implementation to document.
++ */
+ const Dialog = DialogPrimitive.Root;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Trigger; no local wrapper implementation to document.
++ */
+ const DialogTrigger = DialogPrimitive.Trigger;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Portal; no local wrapper implementation to document.
++ */
+ const DialogPortal = DialogPrimitive.Portal;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Close; no local wrapper implementation to document.
++ */
+ const DialogClose = DialogPrimitive.Close;
+ 
++/**
++ * Full-screen dimming overlay used behind dialog content and rendered automatically by DialogContent.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Usually rendered by DialogContent inside its portal; render it manually only when composing a custom dialog surface.
++ * @catalogExample production src/components/ui/dialog/dialog.tsx | Composed internally by DialogContent before the content panel
++ */
+ const DialogOverlay = React.forwardRef<
+   React.ElementRef<typeof DialogPrimitive.Overlay>,
+   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+@@ -27,6 +47,14 @@ const DialogOverlay = React.forwardRef<
+ ));
+ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+ 
++/**
++ * Dialog content panel that brings its own portal, overlay and close button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Must be rendered inside a Dialog root; it already portals itself, so no extra portal is needed.
++ * @catalogExample story src/components/ui/dialog/dialog.stories.tsx | Demo dialog with header, body and footer
++ */
+ const DialogContent = React.forwardRef<
+   React.ElementRef<typeof DialogPrimitive.Content>,
+   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+@@ -51,6 +79,14 @@ const DialogContent = React.forwardRef<
+ ));
+ DialogContent.displayName = DialogPrimitive.Content.displayName;
+ 
++/**
++ * Layout wrapper for a dialog title and description.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Styling-only container; render it inside DialogContent so the heading stays aligned with the panel.
++ * @catalogExample story src/components/ui/dialog/dialog.stories.tsx | Header with title and description
++ */
+ const DialogHeader = ({
+   className,
+   ...props
+@@ -65,6 +101,14 @@ const DialogHeader = ({
+ );
+ DialogHeader.displayName = 'DialogHeader';
+ 
++/**
++ * Layout wrapper that arranges dialog action buttons.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Contains action controls only; render it as the last child of DialogContent.
++ * @catalogExample story src/components/ui/dialog/dialog.stories.tsx | Footer with save and cancel actions
++ */
+ const DialogFooter = ({
+   className,
+   ...props
+@@ -79,6 +123,14 @@ const DialogFooter = ({
+ );
+ DialogFooter.displayName = 'DialogFooter';
+ 
++/**
++ * Accessible dialog title rendered with Radix title semantics.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Render inside DialogContent with textual content; Radix uses it to label the dialog for assistive technology.
++ * @catalogExample story src/components/ui/dialog/dialog.stories.tsx | "Edit profile" title in the demo dialog
++ */
+ const DialogTitle = React.forwardRef<
+   React.ElementRef<typeof DialogPrimitive.Title>,
+   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+@@ -94,6 +146,14 @@ const DialogTitle = React.forwardRef<
+ ));
+ DialogTitle.displayName = DialogPrimitive.Title.displayName;
+ 
++/**
++ * Muted supporting description for the dialog title.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dialog
++ * @catalogConstraint Optional but recommended for screen readers; render it inside DialogContent next to the title.
++ * @catalogExample story src/components/ui/dialog/dialog.stories.tsx | Description beneath the dialog title
++ */
+ const DialogDescription = React.forwardRef<
+   React.ElementRef<typeof DialogPrimitive.Description>,
+   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+diff --git a/apps/react-vite/src/components/ui/drawer/drawer.stories.tsx b/apps/react-vite/src/components/ui/drawer/drawer.stories.tsx
+index c81d77d..4a4193f 100644
+--- a/apps/react-vite/src/components/ui/drawer/drawer.stories.tsx
++++ b/apps/react-vite/src/components/ui/drawer/drawer.stories.tsx
+@@ -14,6 +14,9 @@ import {
+   DrawerTrigger,
+ } from './drawer';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Drawer> = {
+   component: Drawer,
+ };
+@@ -59,6 +62,9 @@ const DemoDrawer = () => {
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   render: () => <DemoDrawer />,
+ };
+diff --git a/apps/react-vite/src/components/ui/drawer/drawer.tsx b/apps/react-vite/src/components/ui/drawer/drawer.tsx
+index f4f2306..32e5ad8 100644
+--- a/apps/react-vite/src/components/ui/drawer/drawer.tsx
++++ b/apps/react-vite/src/components/ui/drawer/drawer.tsx
+@@ -5,14 +5,34 @@ import * as React from 'react';
+ 
+ import { cn } from '@/utils/cn';
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Root used as the drawer root; no local wrapper implementation to document.
++ */
+ const Drawer = DrawerPrimitive.Root;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Trigger used as the drawer trigger; no local wrapper implementation to document.
++ */
+ const DrawerTrigger = DrawerPrimitive.Trigger;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Close used as the drawer close; no local wrapper implementation to document.
++ */
+ const DrawerClose = DrawerPrimitive.Close;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dialog Portal used as the drawer portal; no local wrapper implementation to document.
++ */
+ const DrawerPortal = DrawerPrimitive.Portal;
+ 
++/**
++ * Full-screen dimming overlay for drawers, rendered automatically by DrawerContent.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Rendered by DrawerContent inside the drawer portal; only render it manually for a custom drawer surface.
++ * @catalogExample production src/components/ui/drawer/drawer.tsx | Composed internally by DrawerContent
++ */
+ const DrawerOverlay = React.forwardRef<
+   React.ElementRef<typeof DrawerPrimitive.Overlay>,
+   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
+@@ -52,6 +72,14 @@ type DrawerContentProps = React.ComponentPropsWithoutRef<
+ > &
+   VariantProps<typeof drawerVariants>;
+ 
++/**
++ * Slide-in drawer panel with side variants, overlay, close button and portal.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Must be rendered inside a Drawer root; the side prop selects top, bottom, left or right placement.
++ * @catalogExample story src/components/ui/drawer/drawer.stories.tsx | Right-side drawer with header, content and footer
++ */
+ const DrawerContent = React.forwardRef<
+   React.ElementRef<typeof DrawerPrimitive.Content>,
+   DrawerContentProps
+@@ -73,6 +101,14 @@ const DrawerContent = React.forwardRef<
+ ));
+ DrawerContent.displayName = DrawerPrimitive.Content.displayName;
+ 
++/**
++ * Layout wrapper for the drawer title and description.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Styling-only container; render it inside DrawerContent.
++ * @catalogExample production src/components/ui/form/form-drawer.tsx | Header inside the reusable FormDrawer
++ */
+ const DrawerHeader = ({
+   className,
+   ...props
+@@ -87,6 +123,14 @@ const DrawerHeader = ({
+ );
+ DrawerHeader.displayName = 'DrawerHeader';
+ 
++/**
++ * Layout wrapper that arranges drawer action buttons.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Render it as the last section of DrawerContent and keep the actions inside it.
++ * @catalogExample production src/components/ui/form/form-drawer.tsx | Footer with close and submit actions
++ */
+ const DrawerFooter = ({
+   className,
+   ...props
+@@ -101,6 +145,14 @@ const DrawerFooter = ({
+ );
+ DrawerFooter.displayName = 'DrawerFooter';
+ 
++/**
++ * Accessible drawer title with Radix title semantics.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Render inside DrawerContent; Radix uses it to label the drawer.
++ * @catalogExample production src/components/ui/form/form-drawer.tsx | Title bound to the FormDrawer title prop
++ */
+ const DrawerTitle = React.forwardRef<
+   React.ElementRef<typeof DrawerPrimitive.Title>,
+   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
+@@ -113,6 +165,14 @@ const DrawerTitle = React.forwardRef<
+ ));
+ DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
+ 
++/**
++ * Muted supporting description for the drawer title.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask drawer
++ * @catalogConstraint Optional; render it inside DrawerContent so it is associated with the drawer.
++ * @catalogExample story src/components/ui/drawer/drawer.stories.tsx | Description beneath the drawer title
++ */
+ const DrawerDescription = React.forwardRef<
+   React.ElementRef<typeof DrawerPrimitive.Description>,
+   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
+diff --git a/apps/react-vite/src/components/ui/dropdown/dropdown.stories.tsx b/apps/react-vite/src/components/ui/dropdown/dropdown.stories.tsx
+index bfd033e..bdc24f9 100644
+--- a/apps/react-vite/src/components/ui/dropdown/dropdown.stories.tsx
++++ b/apps/react-vite/src/components/ui/dropdown/dropdown.stories.tsx
+@@ -16,14 +16,21 @@ import {
+   DropdownMenuSubTrigger,
+   DropdownMenuSubContent,
+   DropdownMenuRadioGroup,
++  DropdownMenuShortcut,
+ } from './dropdown';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta = {
+   component: DropdownMenu,
+ };
+ 
+ export default meta;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default = () => (
+   <DropdownMenu>
+     <DropdownMenuTrigger asChild>
+@@ -38,6 +45,9 @@ export const Default = () => (
+   </DropdownMenu>
+ );
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const WithCheckboxItems = () => {
+   const [checked, setChecked] = React.useState(true);
+   const [checked2, setChecked2] = React.useState(false);
+@@ -65,6 +75,9 @@ export const WithCheckboxItems = () => {
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const WithRadioItems = () => {
+   const [value, setValue] = React.useState('one');
+ 
+@@ -88,6 +101,25 @@ export const WithRadioItems = () => {
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
++export const WithShortcut = () => (
++  <DropdownMenu>
++    <DropdownMenuTrigger asChild>
++      <Button>Open Menu</Button>
++    </DropdownMenuTrigger>
++    <DropdownMenuContent>
++      <DropdownMenuItem>
++        Profile <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
++      </DropdownMenuItem>
++    </DropdownMenuContent>
++  </DropdownMenu>
++);
++
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const WithSubmenus = () => (
+   <DropdownMenu>
+     <DropdownMenuTrigger>
+diff --git a/apps/react-vite/src/components/ui/dropdown/dropdown.tsx b/apps/react-vite/src/components/ui/dropdown/dropdown.tsx
+index 9429465..878ca4b 100644
+--- a/apps/react-vite/src/components/ui/dropdown/dropdown.tsx
++++ b/apps/react-vite/src/components/ui/dropdown/dropdown.tsx
+@@ -8,18 +8,44 @@ import * as React from 'react';
+ 
+ import { cn } from '@/utils/cn';
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu Root; no local wrapper implementation to document.
++ */
+ const DropdownMenu = DropdownMenuPrimitive.Root;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu Trigger; no local wrapper implementation to document.
++ */
+ const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu Group; no local wrapper implementation to document.
++ */
+ const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu Portal; no local wrapper implementation to document.
++ */
+ const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu Sub; no local wrapper implementation to document.
++ */
+ const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of @radix-ui/react-dropdown-menu RadioGroup; no local wrapper implementation to document.
++ */
+ const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+ 
++/**
++ * Menu row that opens a nested submenu and shows a chevron.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Pair it with DropdownMenuSubContent inside the same DropdownMenuSub.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | "More Options" submenu trigger
++ */
+ const DropdownMenuSubTrigger = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
+@@ -42,6 +68,14 @@ const DropdownMenuSubTrigger = React.forwardRef<
+ DropdownMenuSubTrigger.displayName =
+   DropdownMenuPrimitive.SubTrigger.displayName;
+ 
++/**
++ * Portalled submenu panel opened from a DropdownMenuSubTrigger.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Render inside DropdownMenuSub next to its trigger and keep the submenu items inside it.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Submenu with two items
++ */
+ const DropdownMenuSubContent = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
+@@ -58,6 +92,14 @@ const DropdownMenuSubContent = React.forwardRef<
+ DropdownMenuSubContent.displayName =
+   DropdownMenuPrimitive.SubContent.displayName;
+ 
++/**
++ * Portalled menu surface that lays out dropdown items with a small side offset.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Render it inside DropdownMenu and keep DropdownMenu* children so Radix can manage focus and selection.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Default menu opened from a trigger button
++ */
+ const DropdownMenuContent = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+@@ -77,6 +119,14 @@ const DropdownMenuContent = React.forwardRef<
+ ));
+ DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+ 
++/**
++ * Selectable action row inside a dropdown menu with optional inset alignment.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Render inside DropdownMenuContent; handle onSelect or render a router link for navigation.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Basic menu items
++ */
+ const DropdownMenuItem = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+@@ -95,6 +145,14 @@ const DropdownMenuItem = React.forwardRef<
+ ));
+ DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+ 
++/**
++ * Checkbox menu row that shows a check indicator for its toggled state.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Controlled through checked and onCheckedChange; render it inside DropdownMenuContent.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Two independently toggled checkbox items
++ */
+ const DropdownMenuCheckboxItem = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
+@@ -119,6 +177,14 @@ const DropdownMenuCheckboxItem = React.forwardRef<
+ DropdownMenuCheckboxItem.displayName =
+   DropdownMenuPrimitive.CheckboxItem.displayName;
+ 
++/**
++ * Single-choice menu row that shows a dot for the selected value.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Must be wrapped in DropdownMenuRadioGroup and receive a value, inside DropdownMenuContent.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Radio items inside a labelled group
++ */
+ const DropdownMenuRadioItem = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
+@@ -141,6 +207,14 @@ const DropdownMenuRadioItem = React.forwardRef<
+ ));
+ DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName;
+ 
++/**
++ * Non-interactive label row for grouping dropdown menu items.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Render inside DropdownMenuContent; it is not focusable, so never use it as an action.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | "Select an option" label above a radio group
++ */
+ const DropdownMenuLabel = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.Label>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
+@@ -159,6 +233,14 @@ const DropdownMenuLabel = React.forwardRef<
+ ));
+ DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
+ 
++/**
++ * Horizontal divider between dropdown menu sections.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Decorative only; render it inside DropdownMenuContent between item groups.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Separator between the label and radio options
++ */
+ const DropdownMenuSeparator = React.forwardRef<
+   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
+   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+@@ -171,6 +253,14 @@ const DropdownMenuSeparator = React.forwardRef<
+ ));
+ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
+ 
++/**
++ * Muted right-aligned keyboard shortcut hint for a dropdown menu item.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask dropdown-menu
++ * @catalogConstraint Render inside DropdownMenuItem and keep the text short; it is presentational and does not register the shortcut.
++ * @catalogExample story src/components/ui/dropdown/dropdown.stories.tsx | Shortcut hint inside the Profile item
++ */
+ const DropdownMenuShortcut = ({
+   className,
+   ...props
+diff --git a/apps/react-vite/src/components/ui/form/error.tsx b/apps/react-vite/src/components/ui/form/error.tsx
+index 5b2b055..dbd68f4 100644
+--- a/apps/react-vite/src/components/ui/form/error.tsx
++++ b/apps/react-vite/src/components/ui/form/error.tsx
+@@ -2,6 +2,14 @@ export type ErrorProps = {
+   errorMessage?: string | null;
+ };
+ 
++/**
++ * Small destructive error text that renders nothing when no message is provided.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-error
++ * @catalogConstraint Renders null for empty messages; the message doubles as the element aria-label, so pass the raw validation text.
++ * @catalogExample production src/components/ui/form/field-wrapper.tsx | FieldWrapper renders the react-hook-form error message
++ */
+ export const Error = ({ errorMessage }: ErrorProps) => {
+   if (!errorMessage) return null;
+ 
+diff --git a/apps/react-vite/src/components/ui/form/field-wrapper.tsx b/apps/react-vite/src/components/ui/form/field-wrapper.tsx
+index 3320eb7..10c601b 100644
+--- a/apps/react-vite/src/components/ui/form/field-wrapper.tsx
++++ b/apps/react-vite/src/components/ui/form/field-wrapper.tsx
+@@ -16,6 +16,14 @@ export type FieldWrapperPassThroughProps = Omit<
+   'className' | 'children'
+ >;
+ 
++/**
++ * Label and error layout wrapper used by the built-in input, textarea and select fields.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-field
++ * @catalogConstraint Children are rendered inside a Label, so pass a single labelled control; the optional error comes from react-hook-form field state.
++ * @catalogExample production src/components/ui/form/input.tsx | Text input composed with the label and error wrapper
++ */
+ export const FieldWrapper = (props: FieldWrapperProps) => {
+   const { label, error, children } = props;
+   return (
+diff --git a/apps/react-vite/src/components/ui/form/form-drawer.tsx b/apps/react-vite/src/components/ui/form/form-drawer.tsx
+index 0d7572a..0a5f03a 100644
+--- a/apps/react-vite/src/components/ui/form/form-drawer.tsx
++++ b/apps/react-vite/src/components/ui/form/form-drawer.tsx
+@@ -21,6 +21,14 @@ type FormDrawerProps = {
+   children: React.ReactNode;
+ };
+ 
++/**
++ * Drawer-hosted form layout with a trigger, title, submit control and automatic close when done.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-layout
++ * @catalogConstraint The submitButton must submit the inner form by id (form=...), and isDone closes the drawer after a successful mutation.
++ * @catalogExample production src/features/users/components/update-profile.tsx | Profile edit form inside a FormDrawer
++ */
+ export const FormDrawer = ({
+   title,
+   children,
+diff --git a/apps/react-vite/src/components/ui/form/form.stories.tsx b/apps/react-vite/src/components/ui/form/form.stories.tsx
+index 071c78d..72ceea9 100644
+--- a/apps/react-vite/src/components/ui/form/form.stories.tsx
++++ b/apps/react-vite/src/components/ui/form/form.stories.tsx
+@@ -3,7 +3,15 @@ import { z } from 'zod';
+ 
+ import { Button } from '../button';
+ 
+-import { Form } from './form';
++import {
++  Form,
++  FormControl,
++  FormDescription,
++  FormField,
++  FormItem,
++  FormLabel,
++  FormMessage,
++} from './form';
+ import { FormDrawer } from './form-drawer';
+ import { Input } from './input';
+ import { Select } from './select';
+@@ -57,6 +65,9 @@ const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta = {
+   component: MyForm,
+ };
+@@ -65,10 +76,52 @@ export default meta;
+ 
+ type Story = StoryObj<typeof MyForm>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   render: () => <MyForm />,
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
++export const WithFormField: Story = {
++  render: () => (
++    <Form
++      onSubmit={() => undefined}
++      schema={z.object({ title: z.string().min(1, 'Required') })}
++      id="form-field-example"
++    >
++      {() => (
++        <FormField
++          name="title"
++          render={({ field }) => (
++            <FormItem>
++              <FormLabel>Title</FormLabel>
++              <FormControl>
++                <Input
++                  registration={{ name: field.name }}
++                  name={field.name}
++                  value={field.value as string}
++                  onChange={(event) => void field.onChange(event)}
++                  onBlur={field.onBlur}
++                  ref={field.ref}
++                />
++              </FormControl>
++              <FormDescription>Short summary text.</FormDescription>
++              <FormMessage />
++            </FormItem>
++          )}
++        />
++      )}
++    </Form>
++  ),
++};
++
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const AsFormDrawer: Story = {
+   render: () => (
+     <FormDrawer
+diff --git a/apps/react-vite/src/components/ui/form/form.tsx b/apps/react-vite/src/components/ui/form/form.tsx
+index bc2faee..ca8a5bf 100644
+--- a/apps/react-vite/src/components/ui/form/form.tsx
++++ b/apps/react-vite/src/components/ui/form/form.tsx
+@@ -31,6 +31,14 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
+   {} as FormFieldContextValue,
+ );
+ 
++/**
++ * Controller wrapper that publishes the field name to the form field context.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-field
++ * @catalogConstraint Render inside Form or a FormProvider so Controller can read the form context; pass name and render.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Title field composed with FormItem, FormLabel and FormControl
++ */
+ const FormField = <
+   TFieldValues extends FieldValues,
+   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+@@ -75,6 +83,14 @@ const FormItemContext = React.createContext<FormItemContextValue>(
+   {} as FormItemContextValue,
+ );
+ 
++/**
++ * Field container that generates the id shared by the label, control and message.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-field
++ * @catalogConstraint Render inside a FormField render callback; the generated id is what FormLabel and FormControl rely on.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Title field item with label, control and message
++ */
+ const FormItem = React.forwardRef<
+   HTMLDivElement,
+   React.HTMLAttributes<HTMLDivElement>
+@@ -89,6 +105,14 @@ const FormItem = React.forwardRef<
+ });
+ FormItem.displayName = 'FormItem';
+ 
++/**
++ * Label bound to the generated field id that turns destructive when the field has an error.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-label
++ * @catalogConstraint Must be rendered inside FormItem so useFormField can supply the id and error state.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Title label inside the FormField example
++ */
+ const FormLabel = React.forwardRef<
+   React.ElementRef<typeof LabelPrimitive.Root>,
+   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+@@ -106,6 +130,14 @@ const FormLabel = React.forwardRef<
+ });
+ FormLabel.displayName = 'FormLabel';
+ 
++/**
++ * Slot that injects the field id, aria-describedby and aria-invalid onto its single child control.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-control
++ * @catalogConstraint Must wrap exactly one focusable control inside FormItem; that child has to forward id and aria attributes.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Input wrapped by FormControl
++ */
+ const FormControl = React.forwardRef<
+   React.ElementRef<typeof Slot>,
+   React.ComponentPropsWithoutRef<typeof Slot>
+@@ -129,6 +161,14 @@ const FormControl = React.forwardRef<
+ });
+ FormControl.displayName = 'FormControl';
+ 
++/**
++ * Muted helper text associated with the field through aria-describedby.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-help
++ * @catalogConstraint Render inside FormItem; FormControl links it to the control through aria-describedby.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Short summary text under the title input
++ */
+ const FormDescription = React.forwardRef<
+   HTMLParagraphElement,
+   React.HTMLAttributes<HTMLParagraphElement>
+@@ -146,6 +186,14 @@ const FormDescription = React.forwardRef<
+ });
+ FormDescription.displayName = 'FormDescription';
+ 
++/**
++ * Destructive validation message that renders the current field error or fallback children.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-error
++ * @catalogConstraint Render inside FormItem; it reads the error from react-hook-form and renders nothing when absent.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Validation message slot for the title field
++ */
+ const FormMessage = React.forwardRef<
+   HTMLParagraphElement,
+   React.HTMLAttributes<HTMLParagraphElement>
+@@ -179,6 +227,14 @@ type FormProps<TFormValues extends FieldValues, Schema> = {
+   id?: string;
+ };
+ 
++/**
++ * Zod-validated form wrapper that provides react-hook-form context and renders children as a function.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-layout
++ * @catalogConstraint The schema is required and children receive the form methods; give the form an id when an external submit button uses form=id.
++ * @catalogExample story src/components/ui/form/form.stories.tsx | Title, description and type fields in the default story
++ */
+ const Form = <
+   Schema extends ZodType<any, any, any>,
+   TFormValues extends FieldValues = z.infer<Schema>,
+@@ -204,6 +260,9 @@ const Form = <
+   );
+ };
+ 
++/**
++ * @componentCatalogIgnore unsupported: direct re-export alias of react-hook-form FormProvider; no local wrapper implementation to document.
++ */
+ export {
+   useFormField,
+   Form,
+diff --git a/apps/react-vite/src/components/ui/form/input.tsx b/apps/react-vite/src/components/ui/form/input.tsx
+index 3ae4cc9..bd43826 100644
+--- a/apps/react-vite/src/components/ui/form/input.tsx
++++ b/apps/react-vite/src/components/ui/form/input.tsx
+@@ -11,6 +11,14 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+     registration: Partial<UseFormRegisterReturn>;
+   };
+ 
++/**
++ * Text input that renders its label and error message through FieldWrapper.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask text-input
++ * @catalogConstraint registration from react-hook-form is required, and the label/error come from FieldWrapper, so use it inside a Form.
++ * @catalogExample production src/features/auth/components/login-form.tsx | Email and password fields inside the login form
++ */
+ const Input = React.forwardRef<HTMLInputElement, InputProps>(
+   ({ className, type, label, error, registration, ...props }, ref) => {
+     return (
+diff --git a/apps/react-vite/src/components/ui/form/label.tsx b/apps/react-vite/src/components/ui/form/label.tsx
+index ed9dfcf..86f7347 100644
+--- a/apps/react-vite/src/components/ui/form/label.tsx
++++ b/apps/react-vite/src/components/ui/form/label.tsx
+@@ -8,6 +8,14 @@ const labelVariants = cva(
+   'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+ );
+ 
++/**
++ * Form label built on the Radix label root with peer-disabled styling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask form-label
++ * @catalogConstraint Pass htmlFor to associate the label with its control; the peer-disabled classes only apply when the control is a sibling.
++ * @catalogExample production src/features/auth/components/register-form.tsx | Label paired with the team switch
++ */
+ const Label = React.forwardRef<
+   React.ElementRef<typeof LabelPrimitive.Root>,
+   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+diff --git a/apps/react-vite/src/components/ui/form/select.tsx b/apps/react-vite/src/components/ui/form/select.tsx
+index 6b38621..2c2aa74 100644
+--- a/apps/react-vite/src/components/ui/form/select.tsx
++++ b/apps/react-vite/src/components/ui/form/select.tsx
+@@ -17,6 +17,14 @@ type SelectFieldProps = FieldWrapperPassThroughProps & {
+   registration: Partial<UseFormRegisterReturn>;
+ };
+ 
++/**
++ * Native select wrapper with options, label and error message from FieldWrapper.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask select
++ * @catalogConstraint Pass options with label/value and registration from react-hook-form; the native select is controlled through registration.
++ * @catalogExample production src/features/auth/components/register-form.tsx | Team select shown when joining an existing team
++ */
+ export const Select = (props: SelectFieldProps) => {
+   const { label, options, error, className, defaultValue, registration } =
+     props;
+diff --git a/apps/react-vite/src/components/ui/form/switch.tsx b/apps/react-vite/src/components/ui/form/switch.tsx
+index afa9e19..6a45153 100644
+--- a/apps/react-vite/src/components/ui/form/switch.tsx
++++ b/apps/react-vite/src/components/ui/form/switch.tsx
+@@ -3,6 +3,14 @@ import * as React from 'react';
+ 
+ import { cn } from '@/utils/cn';
+ 
++/**
++ * Radix switch control with a themed thumb for boolean toggles.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask toggle
++ * @catalogConstraint Controlled through checked and onCheckedChange; give it an id and pair it with a Label for an accessible name.
++ * @catalogExample production src/features/auth/components/register-form.tsx | Join-existing-team toggle paired with a Label
++ */
+ const Switch = React.forwardRef<
+   React.ElementRef<typeof SwitchPrimitives.Root>,
+   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
+diff --git a/apps/react-vite/src/components/ui/form/textarea.tsx b/apps/react-vite/src/components/ui/form/textarea.tsx
+index 41119ca..59edb58 100644
+--- a/apps/react-vite/src/components/ui/form/textarea.tsx
++++ b/apps/react-vite/src/components/ui/form/textarea.tsx
+@@ -11,6 +11,14 @@ export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
+     registration: Partial<UseFormRegisterReturn>;
+   };
+ 
++/**
++ * Multiline text field with a label and error message from FieldWrapper.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask text-input
++ * @catalogConstraint registration is required to bind it to react-hook-form; render it inside a Form.
++ * @catalogExample production src/features/discussions/components/create-discussion.tsx | Body field in the create-discussion form
++ */
+ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+   ({ className, label, error, registration, ...props }, ref) => {
+     return (
+diff --git a/apps/react-vite/src/components/ui/link/link.stories.tsx b/apps/react-vite/src/components/ui/link/link.stories.tsx
+index 09094cb..770574e 100644
+--- a/apps/react-vite/src/components/ui/link/link.stories.tsx
++++ b/apps/react-vite/src/components/ui/link/link.stories.tsx
+@@ -2,6 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
+ 
+ import { Link } from './link';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Link> = {
+   component: Link,
+ };
+@@ -10,6 +13,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof Link>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   args: {
+     children: 'Link',
+diff --git a/apps/react-vite/src/components/ui/link/link.tsx b/apps/react-vite/src/components/ui/link/link.tsx
+index 7d68abd..2b9efe2 100644
+--- a/apps/react-vite/src/components/ui/link/link.tsx
++++ b/apps/react-vite/src/components/ui/link/link.tsx
+@@ -2,6 +2,14 @@ import { Link as RouterLink, LinkProps } from 'react-router';
+ 
+ import { cn } from '@/utils/cn';
+ 
++/**
++ * App router link styled with muted default colours.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask navigation
++ * @catalogConstraint Requires a React Router route context; use to for in-app navigation instead of href.
++ * @catalogExample production src/features/discussions/components/discussions-list.tsx | View links to a discussion page
++ */
+ export const Link = ({ className, children, ...props }: LinkProps) => {
+   return (
+     <RouterLink
+diff --git a/apps/react-vite/src/components/ui/md-preview/md-preview.stories.tsx b/apps/react-vite/src/components/ui/md-preview/md-preview.stories.tsx
+index 5af3b73..9d7b066 100644
+--- a/apps/react-vite/src/components/ui/md-preview/md-preview.stories.tsx
++++ b/apps/react-vite/src/components/ui/md-preview/md-preview.stories.tsx
+@@ -2,6 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
+ 
+ import { MDPreview } from './md-preview';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof MDPreview> = {
+   component: MDPreview,
+ };
+@@ -10,6 +13,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof MDPreview>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   args: {
+     value: `## Hello World!`,
+diff --git a/apps/react-vite/src/components/ui/md-preview/md-preview.tsx b/apps/react-vite/src/components/ui/md-preview/md-preview.tsx
+index 57c8db8..165a8c6 100644
+--- a/apps/react-vite/src/components/ui/md-preview/md-preview.tsx
++++ b/apps/react-vite/src/components/ui/md-preview/md-preview.tsx
+@@ -7,6 +7,14 @@ export type MDPreviewProps = {
+   value: string;
+ };
+ 
++/**
++ * Renders Markdown as sanitized HTML with prose typography.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask markdown
++ * @catalogConstraint value is parsed as Markdown and sanitized with DOMPurify; do not pass pre-rendered HTML, and keep window available for its initialization.
++ * @catalogExample production src/features/discussions/components/discussion-view.tsx | Renders the discussion body
++ */
+ export const MDPreview = ({ value = '' }: MDPreviewProps) => {
+   return (
+     <div
+diff --git a/apps/react-vite/src/components/ui/notifications/notification.stories.tsx b/apps/react-vite/src/components/ui/notifications/notification.stories.tsx
+index 11f7909..2a93ff8 100644
+--- a/apps/react-vite/src/components/ui/notifications/notification.stories.tsx
++++ b/apps/react-vite/src/components/ui/notifications/notification.stories.tsx
+@@ -2,6 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
+ 
+ import { Notification } from './notification';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Notification> = {
+   title: 'Components/Notifications',
+   component: Notification,
+@@ -14,6 +17,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof Notification>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Info: Story = {
+   args: {
+     notification: {
+@@ -26,6 +32,9 @@ export const Info: Story = {
+   },
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Success: Story = {
+   args: {
+     notification: {
+@@ -38,6 +47,9 @@ export const Success: Story = {
+   },
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Warning: Story = {
+   args: {
+     notification: {
+@@ -50,6 +62,9 @@ export const Warning: Story = {
+   },
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Error: Story = {
+   args: {
+     notification: {
+diff --git a/apps/react-vite/src/components/ui/notifications/notification.tsx b/apps/react-vite/src/components/ui/notifications/notification.tsx
+index e5b1705..b652c94 100644
+--- a/apps/react-vite/src/components/ui/notifications/notification.tsx
++++ b/apps/react-vite/src/components/ui/notifications/notification.tsx
+@@ -19,6 +19,14 @@ export type NotificationProps = {
+   onDismiss: (id: string) => void;
+ };
+ 
++/**
++ * Single toast card with a type icon, title, message and dismiss button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask notification
++ * @catalogConstraint The parent owns the notification list and must pass onDismiss(id); type selects one of the built-in icons.
++ * @catalogExample story src/components/ui/notifications/notification.stories.tsx | Info toast with title and message
++ */
+ export const Notification = ({
+   notification: { id, type, title, message },
+   onDismiss,
+diff --git a/apps/react-vite/src/components/ui/notifications/notifications.tsx b/apps/react-vite/src/components/ui/notifications/notifications.tsx
+index 080534d..b123d68 100644
+--- a/apps/react-vite/src/components/ui/notifications/notifications.tsx
++++ b/apps/react-vite/src/components/ui/notifications/notifications.tsx
+@@ -1,6 +1,14 @@
+ import { Notification } from './notification';
+ import { useNotifications } from './notifications-store';
+ 
++/**
++ * Fixed overlay that renders every queued notification from the notification store.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask notification
++ * @catalogConstraint Mount it once near the app root; it reads the global store and takes no props.
++ * @catalogExample production src/app/provider.tsx | Mounted once in the app provider
++ */
+ export const Notifications = () => {
+   const { notifications, dismissNotification } = useNotifications();
+ 
+diff --git a/apps/react-vite/src/components/ui/spinner/spinner.stories.tsx b/apps/react-vite/src/components/ui/spinner/spinner.stories.tsx
+index 1e7ce58..ddebddb 100644
+--- a/apps/react-vite/src/components/ui/spinner/spinner.stories.tsx
++++ b/apps/react-vite/src/components/ui/spinner/spinner.stories.tsx
+@@ -2,6 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
+ 
+ import { Spinner } from './spinner';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Spinner> = {
+   component: Spinner,
+ };
+@@ -10,6 +13,9 @@ export default meta;
+ 
+ type Story = StoryObj<typeof Spinner>;
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   args: {
+     size: 'md',
+diff --git a/apps/react-vite/src/components/ui/spinner/spinner.tsx b/apps/react-vite/src/components/ui/spinner/spinner.tsx
+index d71a44c..3560787 100644
+--- a/apps/react-vite/src/components/ui/spinner/spinner.tsx
++++ b/apps/react-vite/src/components/ui/spinner/spinner.tsx
+@@ -18,6 +18,14 @@ export type SpinnerProps = {
+   className?: string;
+ };
+ 
++/**
++ * Inline SVG loading spinner with size and colour variants and a visually hidden label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask loading
++ * @catalogConstraint It already contains an sr-only Loading label; render it inside the pending region rather than adding a second live announcement.
++ * @catalogExample production src/features/comments/components/comments-list.tsx | Shown while comments are loading
++ */
+ export const Spinner = ({
+   size = 'md',
+   variant = 'primary',
+diff --git a/apps/react-vite/src/components/ui/table/pagination.tsx b/apps/react-vite/src/components/ui/table/pagination.tsx
+index 5ea63b5..25b2540 100644
+--- a/apps/react-vite/src/components/ui/table/pagination.tsx
++++ b/apps/react-vite/src/components/ui/table/pagination.tsx
+@@ -10,6 +10,14 @@ import { cn } from '@/utils/cn';
+ 
+ import { Link } from '../link';
+ 
++/**
++ * Navigation landmark for page controls with an accessible pagination label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint Wrap PaginationContent and its items; it renders a nav with role navigation.
++ * @catalogExample production src/components/ui/table/pagination.tsx | TablePagination composes the pagination navigation
++ */
+ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
+   <nav
+     role="navigation"
+@@ -20,6 +28,14 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
+ );
+ Pagination.displayName = 'Pagination';
+ 
++/**
++ * Horizontal list container for pagination items.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint Render inside Pagination and keep the children as PaginationItem elements.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Composed by TablePagination
++ */
+ const PaginationContent = React.forwardRef<
+   HTMLUListElement,
+   React.ComponentProps<'ul'>
+@@ -32,6 +48,14 @@ const PaginationContent = React.forwardRef<
+ ));
+ PaginationContent.displayName = 'PaginationContent';
+ 
++/**
++ * List item wrapper for one pagination control.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint Render inside PaginationContent; it renders a plain li.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Composed by TablePagination
++ */
+ const PaginationItem = React.forwardRef<
+   HTMLLIElement,
+   React.ComponentProps<'li'>
+@@ -45,6 +69,14 @@ type PaginationLinkProps = {
+ } & Pick<ButtonProps, 'size'> &
+   React.ComponentProps<'a'>;
+ 
++/**
++ * Router link styled as a pagination button and marked as the current page when active.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint href is required because it is forwarded to the app router Link; isActive adds aria-current=page.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Page number links in TablePagination
++ */
+ const PaginationLink = ({
+   className,
+   isActive,
+@@ -70,6 +102,14 @@ const PaginationLink = ({
+ );
+ PaginationLink.displayName = 'PaginationLink';
+ 
++/**
++ * Previous-page link preconfigured with a chevron and accessible label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint It is a PaginationLink, so pass href for the previous page and render it inside PaginationItem.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Previous link rendered by TablePagination
++ */
+ const PaginationPrevious = ({
+   className,
+   ...props
+@@ -86,6 +126,14 @@ const PaginationPrevious = ({
+ );
+ PaginationPrevious.displayName = 'PaginationPrevious';
+ 
++/**
++ * Next-page link preconfigured with a chevron and accessible label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint It is a PaginationLink, so pass href for the next page and render it inside PaginationItem.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Next link rendered by TablePagination
++ */
+ const PaginationNext = ({
+   className,
+   ...props
+@@ -102,6 +150,14 @@ const PaginationNext = ({
+ );
+ PaginationNext.displayName = 'PaginationNext';
+ 
++/**
++ * Non-interactive ellipsis indicating skipped pages with a hidden More pages label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask pagination
++ * @catalogConstraint Render inside PaginationItem; it is aria-hidden and not focusable.
++ * @catalogExample production src/components/ui/table/pagination.tsx | Ellipsis rendered by TablePagination
++ */
+ const PaginationEllipsis = ({
+   className,
+   ...props
+@@ -133,6 +189,15 @@ export type TablePaginationProps = {
+   rootUrl: string;
+ };
+ 
++/**
++ * Page-number pagination control that builds hrefs from a root URL and current page.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask table-pagination
++ * @catalogTask pagination
++ * @catalogConstraint totalPages, currentPage and rootUrl are required; links use rootUrl?page=N, so rootUrl must not already contain a query string.
++ * @catalogExample production src/components/ui/table/table.tsx | Table renders TablePagination when a pagination prop is supplied
++ */
+ export const TablePagination = ({
+   totalPages,
+   currentPage,
+diff --git a/apps/react-vite/src/components/ui/table/table.stories.tsx b/apps/react-vite/src/components/ui/table/table.stories.tsx
+index c52a169..50624d2 100644
+--- a/apps/react-vite/src/components/ui/table/table.stories.tsx
++++ b/apps/react-vite/src/components/ui/table/table.stories.tsx
+@@ -1,7 +1,20 @@
+ import { Meta, StoryObj } from '@storybook/react';
+ 
+-import { Table } from './table';
++import {
++  Table,
++  TableBody,
++  TableCaption,
++  TableCell,
++  TableElement,
++  TableFooter,
++  TableHead,
++  TableHeader,
++  TableRow,
++} from './table';
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ const meta: Meta<typeof Table> = {
+   component: Table,
+ };
+@@ -38,6 +51,38 @@ const data: User[] = [
+   },
+ ];
+ 
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
++export const LowLevel: Story = {
++  render: () => (
++    <TableElement>
++      <TableCaption>Team members</TableCaption>
++      <TableHeader>
++        <TableRow>
++          <TableHead>Name</TableHead>
++          <TableHead>Role</TableHead>
++        </TableRow>
++      </TableHeader>
++      <TableBody>
++        <TableRow>
++          <TableCell>Jane Cooper</TableCell>
++          <TableCell>Admin</TableCell>
++        </TableRow>
++      </TableBody>
++      <TableFooter>
++        <TableRow>
++          <TableCell>1 member</TableCell>
++          <TableCell />
++        </TableRow>
++      </TableFooter>
++    </TableElement>
++  ),
++};
++
++/**
++ * @componentCatalogIgnore non-component: Storybook story export, not a public component.
++ */
+ export const Default: Story = {
+   args: {
+     data,
+diff --git a/apps/react-vite/src/components/ui/table/table.tsx b/apps/react-vite/src/components/ui/table/table.tsx
+index d1f4bac..a5bd25a 100644
+--- a/apps/react-vite/src/components/ui/table/table.tsx
++++ b/apps/react-vite/src/components/ui/table/table.tsx
+@@ -6,6 +6,14 @@ import { cn } from '@/utils/cn';
+ 
+ import { TablePagination, TablePaginationProps } from './pagination';
+ 
++/**
++ * Scrollable table wrapper that renders the native table element.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render header and body sections with TableHeader and TableBody; the wrapper provides horizontal overflow.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Low-level table composition with caption and footer
++ */
+ const TableElement = React.forwardRef<
+   HTMLTableElement,
+   React.HTMLAttributes<HTMLTableElement>
+@@ -20,6 +28,14 @@ const TableElement = React.forwardRef<
+ ));
+ TableElement.displayName = 'Table';
+ 
++/**
++ * Table head section with a bottom border on its rows.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside TableElement and wrap its column headings in a TableRow.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Header row with Name and Role columns
++ */
+ const TableHeader = React.forwardRef<
+   HTMLTableSectionElement,
+   React.HTMLAttributes<HTMLTableSectionElement>
+@@ -28,6 +44,14 @@ const TableHeader = React.forwardRef<
+ ));
+ TableHeader.displayName = 'TableHeader';
+ 
++/**
++ * Table body section that removes the bottom border from its last row.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside TableElement; use a TableRow per entry so hover styling applies.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Body rows in the low-level table
++ */
+ const TableBody = React.forwardRef<
+   HTMLTableSectionElement,
+   React.HTMLAttributes<HTMLTableSectionElement>
+@@ -40,6 +64,14 @@ const TableBody = React.forwardRef<
+ ));
+ TableBody.displayName = 'TableBody';
+ 
++/**
++ * Muted table footer section for summary rows.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside TableElement after TableBody and use a TableRow inside it.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Footer row summarising the member count
++ */
+ const TableFooter = React.forwardRef<
+   HTMLTableSectionElement,
+   React.HTMLAttributes<HTMLTableSectionElement>
+@@ -55,6 +87,14 @@ const TableFooter = React.forwardRef<
+ ));
+ TableFooter.displayName = 'TableFooter';
+ 
++/**
++ * Border and hover styled table row.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside TableHeader, TableBody or TableFooter; pass an id-based key from the caller.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Header and body rows
++ */
+ const TableRow = React.forwardRef<
+   HTMLTableRowElement,
+   React.HTMLAttributes<HTMLTableRowElement>
+@@ -70,6 +110,14 @@ const TableRow = React.forwardRef<
+ ));
+ TableRow.displayName = 'TableRow';
+ 
++/**
++ * Left-aligned header cell with muted text and checkbox spacing adjustments.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside a TableRow in TableHeader, one cell per column.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Name and Role heading cells
++ */
+ const TableHead = React.forwardRef<
+   HTMLTableCellElement,
+   React.ThHTMLAttributes<HTMLTableCellElement>
+@@ -85,6 +133,14 @@ const TableHead = React.forwardRef<
+ ));
+ TableHead.displayName = 'TableHead';
+ 
++/**
++ * Padded table data cell.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render inside a TableRow; pass Cell renderers to Table columns for custom content.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Body cells with member name and role
++ */
+ const TableCell = React.forwardRef<
+   HTMLTableCellElement,
+   React.TdHTMLAttributes<HTMLTableCellElement>
+@@ -100,6 +156,14 @@ const TableCell = React.forwardRef<
+ ));
+ TableCell.displayName = 'TableCell';
+ 
++/**
++ * Caption element that labels the table beneath it.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Render as a child of TableElement; it is optional but useful for an accessible table name.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Team members caption in the low-level table
++ */
+ const TableCaption = React.forwardRef<
+   HTMLTableCaptionElement,
+   React.HTMLAttributes<HTMLTableCaptionElement>
+@@ -135,6 +199,14 @@ export type TableProps<Entry> = {
+   pagination?: TablePaginationProps;
+ };
+ 
++/**
++ * Data-driven table that renders typed columns, an empty state and optional pagination.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask data-table
++ * @catalogConstraint Rows must extend BaseEntity so they expose an id for React keys; columns need title and field and may supply a Cell renderer.
++ * @catalogExample story src/components/ui/table/table.stories.tsx | Default story with typed columns and sample data
++ */
+ export const Table = <Entry extends BaseEntity>({
+   data,
+   columns,
+diff --git a/apps/react-vite/src/features/auth/components/login-form.tsx b/apps/react-vite/src/features/auth/components/login-form.tsx
+index 02ad0fc..9f46349 100644
+--- a/apps/react-vite/src/features/auth/components/login-form.tsx
++++ b/apps/react-vite/src/features/auth/components/login-form.tsx
+@@ -9,6 +9,15 @@ type LoginFormProps = {
+   onSuccess: () => void;
+ };
+ 
++/**
++ * Email and password login form that hands control to a caller-provided success callback.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth
++ * @catalogTask form-layout
++ * @catalogConstraint onSuccess is required; the form reads redirectTo from the current URL and redirects only after the mutation succeeds.
++ * @catalogExample production src/app/routes/auth/login.tsx | Rendered by the login route inside the auth layout
++ */
+ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+   const login = useLogin({
+     onSuccess,
+diff --git a/apps/react-vite/src/features/auth/components/register-form.tsx b/apps/react-vite/src/features/auth/components/register-form.tsx
+index 9eb4a03..dc76891 100644
+--- a/apps/react-vite/src/features/auth/components/register-form.tsx
++++ b/apps/react-vite/src/features/auth/components/register-form.tsx
+@@ -14,6 +14,15 @@ type RegisterFormProps = {
+   teams?: Team[];
+ };
+ 
++/**
++ * Account registration form with optional team selection for new users.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth
++ * @catalogTask form-layout
++ * @catalogConstraint chooseTeam, setChooseTeam and onSuccess are required; pass teams to let users join an existing team instead of typing a name.
++ * @catalogExample production src/app/routes/auth/register.tsx | Rendered by the register route with the team list
++ */
+ export const RegisterForm = ({
+   onSuccess,
+   chooseTeam,
+diff --git a/apps/react-vite/src/features/comments/components/comments-list.tsx b/apps/react-vite/src/features/comments/components/comments-list.tsx
+index ee30725..fad3266 100644
+--- a/apps/react-vite/src/features/comments/components/comments-list.tsx
++++ b/apps/react-vite/src/features/comments/components/comments-list.tsx
+@@ -16,6 +16,14 @@ type CommentsListProps = {
+   discussionId: string;
+ };
+ 
++/**
++ * Infinite comment list with author formatting, delete actions and a load-more control.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask comments
++ * @catalogConstraint Requires a QueryClientProvider and the Authorization context; delete actions are only offered when the policy allows.
++ * @catalogExample production src/features/comments/components/comments.tsx | Rendered under the comments heading
++ */
+ export const CommentsList = ({ discussionId }: CommentsListProps) => {
+   const user = useUser();
+   const commentsQuery = useInfiniteComments({ discussionId });
+diff --git a/apps/react-vite/src/features/comments/components/comments.tsx b/apps/react-vite/src/features/comments/components/comments.tsx
+index 19146aa..1ea08e5 100644
+--- a/apps/react-vite/src/features/comments/components/comments.tsx
++++ b/apps/react-vite/src/features/comments/components/comments.tsx
+@@ -5,6 +5,14 @@ type CommentsProps = {
+   discussionId: string;
+ };
+ 
++/**
++ * Discussion comment section that combines the create form with the comment list.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask comments
++ * @catalogConstraint discussionId is required and must match the discussion being viewed.
++ * @catalogExample production src/app/routes/app/discussions/discussion.tsx | Comments section under a discussion
++ */
+ export const Comments = ({ discussionId }: CommentsProps) => {
+   return (
+     <div>
+diff --git a/apps/react-vite/src/features/comments/components/create-comment.tsx b/apps/react-vite/src/features/comments/components/create-comment.tsx
+index cb8d797..81ee00f 100644
+--- a/apps/react-vite/src/features/comments/components/create-comment.tsx
++++ b/apps/react-vite/src/features/comments/components/create-comment.tsx
+@@ -13,6 +13,15 @@ type CreateCommentProps = {
+   discussionId: string;
+ };
+ 
++/**
++ * Drawer form that creates a comment on a discussion and reports success.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask comment-create
++ * @catalogTask form-layout
++ * @catalogConstraint discussionId is required; the submit button uses form=create-comment to submit the inner Form.
++ * @catalogExample production src/features/comments/components/comments.tsx | Create button next to the comments heading
++ */
+ export const CreateComment = ({ discussionId }: CreateCommentProps) => {
+   const { addNotification } = useNotifications();
+   const createCommentMutation = useCreateComment({
+diff --git a/apps/react-vite/src/features/comments/components/delete-comment.tsx b/apps/react-vite/src/features/comments/components/delete-comment.tsx
+index ac9b396..4dcd052 100644
+--- a/apps/react-vite/src/features/comments/components/delete-comment.tsx
++++ b/apps/react-vite/src/features/comments/components/delete-comment.tsx
+@@ -11,6 +11,15 @@ type DeleteCommentProps = {
+   discussionId: string;
+ };
+ 
++/**
++ * Destructive confirmation control for deleting one comment.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask comment-delete
++ * @catalogTask confirmation
++ * @catalogConstraint id and discussionId are required; the parent is responsible for authorization and for hiding it when deletion is not allowed.
++ * @catalogExample production src/features/comments/components/comments-list.tsx | Rendered for each comment the user can delete
++ */
+ export const DeleteComment = ({ id, discussionId }: DeleteCommentProps) => {
+   const { addNotification } = useNotifications();
+   const deleteCommentMutation = useDeleteComment({
+diff --git a/apps/react-vite/src/features/discussions/components/create-discussion.tsx b/apps/react-vite/src/features/discussions/components/create-discussion.tsx
+index 17e5361..de196bc 100644
+--- a/apps/react-vite/src/features/discussions/components/create-discussion.tsx
++++ b/apps/react-vite/src/features/discussions/components/create-discussion.tsx
+@@ -10,6 +10,15 @@ import {
+   useCreateDiscussion,
+ } from '../api/create-discussion';
+ 
++/**
++ * Admin-only drawer form that creates a discussion with a title and Markdown body.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask discussion-create
++ * @catalogTask form-layout
++ * @catalogConstraint Requires the Authorization provider; only admins see the trigger, and the submit button targets form=create-discussion.
++ * @catalogExample production src/app/routes/app/discussions/discussions.tsx | Create button in the discussions route header
++ */
+ export const CreateDiscussion = () => {
+   const { addNotification } = useNotifications();
+   const createDiscussionMutation = useCreateDiscussion({
+diff --git a/apps/react-vite/src/features/discussions/components/delete-discussion.tsx b/apps/react-vite/src/features/discussions/components/delete-discussion.tsx
+index e4d625f..28ddd09 100644
+--- a/apps/react-vite/src/features/discussions/components/delete-discussion.tsx
++++ b/apps/react-vite/src/features/discussions/components/delete-discussion.tsx
+@@ -11,6 +11,15 @@ type DeleteDiscussionProps = {
+   id: string;
+ };
+ 
++/**
++ * Destructive confirmation control for deleting a discussion.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask discussion-delete
++ * @catalogTask confirmation
++ * @catalogConstraint id is required; it is wrapped in an admin Authorization check, so render it inside an authenticated route.
++ * @catalogExample production src/features/discussions/components/discussions-list.tsx | Delete action in the discussions table
++ */
+ export const DeleteDiscussion = ({ id }: DeleteDiscussionProps) => {
+   const { addNotification } = useNotifications();
+   const deleteDiscussionMutation = useDeleteDiscussion({
+diff --git a/apps/react-vite/src/features/discussions/components/discussion-view.tsx b/apps/react-vite/src/features/discussions/components/discussion-view.tsx
+index 47d42b0..ae70e88 100644
+--- a/apps/react-vite/src/features/discussions/components/discussion-view.tsx
++++ b/apps/react-vite/src/features/discussions/components/discussion-view.tsx
+@@ -5,6 +5,15 @@ import { formatDate } from '@/utils/format';
+ import { useDiscussion } from '../api/get-discussion';
+ import { UpdateDiscussion } from '../components/update-discussion';
+ 
++/**
++ * Discussion detail view that renders the author, Markdown body and admin update control.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask discussion-detail
++ * @catalogTask markdown
++ * @catalogConstraint discussionId is required; the admin update control is hidden for non-admin users.
++ * @catalogExample production src/app/routes/app/discussions/discussion.tsx | Detail route for one discussion
++ */
+ export const DiscussionView = ({ discussionId }: { discussionId: string }) => {
+   const discussionQuery = useDiscussion({
+     discussionId,
+diff --git a/apps/react-vite/src/features/discussions/components/discussions-list.tsx b/apps/react-vite/src/features/discussions/components/discussions-list.tsx
+index 9aa5fba..008b5f4 100644
+--- a/apps/react-vite/src/features/discussions/components/discussions-list.tsx
++++ b/apps/react-vite/src/features/discussions/components/discussions-list.tsx
+@@ -16,6 +16,15 @@ export type DiscussionsListProps = {
+   onDiscussionPrefetch?: (id: string) => void;
+ };
+ 
++/**
++ * Paginated discussions table with links and an admin delete action per row.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask discussion-list
++ * @catalogTask data-table
++ * @catalogConstraint It reads page from URL search params; onDiscussionPrefetch is optional and fires when a row link is hovered.
++ * @catalogExample production src/app/routes/app/discussions/discussions.tsx | Discussions route listing the first page
++ */
+ export const DiscussionsList = ({
+   onDiscussionPrefetch,
+ }: DiscussionsListProps) => {
+diff --git a/apps/react-vite/src/features/discussions/components/update-discussion.tsx b/apps/react-vite/src/features/discussions/components/update-discussion.tsx
+index 3c81ce9..3c6fc3d 100644
+--- a/apps/react-vite/src/features/discussions/components/update-discussion.tsx
++++ b/apps/react-vite/src/features/discussions/components/update-discussion.tsx
+@@ -15,6 +15,15 @@ type UpdateDiscussionProps = {
+   discussionId: string;
+ };
+ 
++/**
++ * Admin-only drawer form that edits a discussion title and body.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask discussion-update
++ * @catalogTask form-layout
++ * @catalogConstraint discussionId is required and prefills the form; only admins see the trigger.
++ * @catalogExample production src/features/discussions/components/discussion-view.tsx | Update control on the discussion detail view
++ */
+ export const UpdateDiscussion = ({ discussionId }: UpdateDiscussionProps) => {
+   const { addNotification } = useNotifications();
+   const discussionQuery = useDiscussion({ discussionId });
+diff --git a/apps/react-vite/src/features/users/components/delete-user.tsx b/apps/react-vite/src/features/users/components/delete-user.tsx
+index 3078e16..d8b406c 100644
+--- a/apps/react-vite/src/features/users/components/delete-user.tsx
++++ b/apps/react-vite/src/features/users/components/delete-user.tsx
+@@ -9,6 +9,15 @@ type DeleteUserProps = {
+   id: string;
+ };
+ 
++/**
++ * Destructive confirmation for deleting another user, hidden for the current account.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask user-delete
++ * @catalogTask confirmation
++ * @catalogConstraint id is required; it hides itself for the signed-in user and needs the auth context.
++ * @catalogExample production src/features/users/components/users-list.tsx | Delete action in the users table
++ */
+ export const DeleteUser = ({ id }: DeleteUserProps) => {
+   const user = useUser();
+   const { addNotification } = useNotifications();
+diff --git a/apps/react-vite/src/features/users/components/update-profile.tsx b/apps/react-vite/src/features/users/components/update-profile.tsx
+index 4af708f..42c1cd6 100644
+--- a/apps/react-vite/src/features/users/components/update-profile.tsx
++++ b/apps/react-vite/src/features/users/components/update-profile.tsx
+@@ -10,6 +10,15 @@ import {
+   useUpdateProfile,
+ } from '../api/update-profile';
+ 
++/**
++ * Drawer form for editing the signed-in user's name, email and bio.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask profile-update
++ * @catalogTask form-layout
++ * @catalogConstraint Prefills from the auth state; the submit button uses form=update-profile and the drawer closes when the mutation succeeds.
++ * @catalogExample production src/app/routes/app/profile.tsx | Profile route with the update control
++ */
+ export const UpdateProfile = () => {
+   const user = useUser();
+   const { addNotification } = useNotifications();
+diff --git a/apps/react-vite/src/features/users/components/users-list.tsx b/apps/react-vite/src/features/users/components/users-list.tsx
+index 380a3c1..b9bdf29 100644
+--- a/apps/react-vite/src/features/users/components/users-list.tsx
++++ b/apps/react-vite/src/features/users/components/users-list.tsx
+@@ -6,6 +6,15 @@ import { useUsers } from '../api/get-users';
+ 
+ import { DeleteUser } from './delete-user';
+ 
++/**
++ * Table of all users with their roles and a delete action per row.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask user-list
++ * @catalogTask data-table
++ * @catalogConstraint The route must already be restricted to admins; it fetches every user and renders the delete action for each row.
++ * @catalogExample production src/app/routes/app/users.tsx | Users route behind an admin authorization check
++ */
+ export const UsersList = () => {
+   const usersQuery = useUsers();
+ 

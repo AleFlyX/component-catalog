@@ -101,6 +101,7 @@ doctor 只读检查 Node、CLI 版本、工具的 TypeScript 依赖，以及项�
 component-catalog scan ./src --summary
 component-catalog scan ./src/components --limit 20
 component-catalog scan ./src/components --offset 20 --limit 20
+component-catalog scan ./src/components --brief --limit 50
 component-catalog scan ./src --query "Dialog" --limit 20
 component-catalog scan --help
 ```
@@ -113,7 +114,7 @@ scan 不需要配置、已有目录、组件标记或前端项目依赖，只需
 
 它是启发式盘点：页面、普通函数、对象常量也可能是候选，类、包装函数和重导出可能列为不支持；不能代替公共组件边界判断。`supportedShape` 只表示当前提取器支持该声明形式，`missingMetadata` 只检查字段是否填写，不验证标签值、类型或示例有效性；最终以 generate 的校验为准。未标记候选不会出现在 search/get 中。
 
-scan 默认最多 20 项，上限 50 项，每页最多 8 KiB UTF-8（含换行）。`counts` 为本次扫描范围的计数，unsupported 与 marked/unmarked 可重叠，needsMetadata 表示支持的声明中尚缺必填元数据的候选数；`view` 区分目录汇总和候选详情，`totalItems` 表示当前视图的总项数，`items` 为分页内容。必须沿用同一视图/目录并使用实际返回的 `nextOffset` 继续，不能假定每页恰好有 20 项；null 表示结束。多页扫描期间若源码发生改变，应从 offset 0 重扫。路径相对返回的 `root`，不一定相对项目根。nextStep 根据当前标记状态提示补注释或生成验证，不要求已选范围再次确认。
+scan 默认最多 20 项，上限 50 项，每页最多 8 KiB UTF-8（含换行）。`--brief` 只返回 `exportName`、`sourcePath`、`line`、`marked`、`supportedShape`（以及 `ignored`），省略元数据细节、shape 原因和 ignore 原因，因此同样的字节上限通常能放下完整的一页 50 项；它适合先分页拿全候选清单，再对少数候选读取详情。`counts` 为本次扫描范围的计数，unsupported 与 marked/unmarked 可重叠，needsMetadata 表示支持的声明中尚缺必填元数据的候选数；`view` 区分目录汇总和候选详情，`totalItems` 表示当前视图的总项数，`items` 为分页内容。必须沿用同一视图/目录并使用实际返回的 `nextOffset` 继续，不能假定每页恰好有 20 项；null 表示结束。多页扫描期间若源码发生改变，应从 offset 0 重扫。路径相对返回的 `root`，不一定相对项目根。nextStep 根据当前标记状态提示补注释或生成验证，不要求已选范围再次确认。
 
 扫描支持 `.js/.jsx/.ts/.tsx`，跳过 `.d.ts`、node_modules、.git 和子级符号链接；不读取目录配置或套用 exclude，所以不接受 --config。想缩小范围时直接指定更窄的目录。Vue、Svelte、MDX 等不在当前扫描范围；返回零候选不表示项目没有组件。
 
@@ -255,11 +256,13 @@ component-catalog check
 
 search 默认最多 5 项、上限 10 项，仅返回 ID、导出名、kind、摘要、任务标签和状态。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
 
-get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。
+get 精确匹配 ID，默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（全部 Prop 名称与 required 标记），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
 
 相对模式下，不传 --from 时 importPath 为 null；传入相对 projectRoot 的调用文件后，返回例如 `../../components/forms/BusinessForm`，并用 importContext 保留调用位置和后缀规则。调用文件可以尚未创建，路径不以当前 shell 目录为基准。查询只按快照计算，不读取源码、检查新鲜度或验证跨模块权限。模块别名模式不会被 --from 改成相对路径；使用默认导出还是 named 导出由 exportKind 决定。
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
+
+设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief 等选项；失败时记录 `error`。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
 
 查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。本版生成目录格式 **7**，支持可为空的 importPath、importExtension、JS/JSX 路径及 reuse/deprecationReason；查询仍支持 v3/v4/v5/v6 快照，其中 v3/v4 的复用范围显示为 unspecified。迁移通过重新生成完成，不直接修改版本号。旧版 CLI 无法读取 v7，需与 skill 同步升级；配置版本仍为 1/2。
 

@@ -503,3 +503,88 @@ test("co-located previews count and config does not coerce invalid vocabulary ty
     fails(f.run(["search", "button"]), /component-catalog:/);
   }
 });
+
+test("oversized inherited props fall back to a bounded prop index", () => {
+  const base = structuredClone(baseCatalog.components[0]);
+  base.props.items = Array.from({ length: 300 }, (_, index) => ({
+    name: `prop${index}`,
+    displayType: "string",
+    required: false,
+    schemaStatus: "complete",
+  }));
+  base.props.displayType = "React.HTMLAttributes<HTMLElement>";
+  const catalog = { ...baseCatalog, components: [base] };
+  const summary = get(catalog, base.id);
+  assert.ok(size(summary) <= 16384);
+  assert.ok(summary.omitted.fields.includes("props"));
+  assert.equal(summary.truncated, true);
+  assert.equal(summary.component.props, undefined);
+  assert.equal(summary.component.propIndex, undefined);
+  assert.equal(summary.component.propsSummary.total, 300);
+  assert.match(summary.component.propsSummary.hint, /--include props/);
+  const detail = get(catalog, base.id, ["props"]);
+  assert.ok(size(detail) <= 16384);
+  assert.ok(detail.omitted.fields.includes("props"));
+  assert.equal(detail.truncated, true);
+  assert.equal(detail.component.props, undefined);
+  assert.equal(detail.component.propIndex.total, 300);
+  assert.equal(detail.component.propIndex.items.length, 300);
+  assert.equal(detail.component.propIndex.items[299].name, "prop299");
+  assert.deepEqual(detail.component.propIndex.inheritedTypes, base.props.inheritedTypes);
+});
+
+test("ASCII vocabulary terms require word boundaries", () => {
+  const base = baseCatalog.components[0];
+  const catalog = {
+    ...baseCatalog,
+    components: [
+      {
+        id: "ui.Button",
+        exportName: "Button",
+        summary: "Unrelated",
+        tasks: ["button"],
+        props: { ...base.props, items: [{ ...base.props.items[0], name: "isLoading" }] },
+      },
+      {
+        id: "ui.Spinner",
+        exportName: "Spinner",
+        summary: "Unrelated",
+        tasks: ["loading"],
+        props: { ...base.props, items: [] },
+      },
+    ].map((item) => ({ ...base, ...item })),
+  };
+  const vocabulary = { loading: { primary: "loading", related: [] } };
+  assert.deepEqual(
+    search(catalog, "isLoading", 5, vocabulary).items.map((item) => item.exportName),
+    ["Button"],
+  );
+  assert.equal(search(catalog, "loading", 5, vocabulary).items[0].exportName, "Spinner");
+});
+
+test("opt-in usage log records command metadata without changing output", (t) => {
+  const f = fixture(t);
+  const log = path.join(f.dir, "usage.jsonl");
+  const result = spawnSync(
+    process.execPath,
+    [cli, "--config", f.configFile, "search", "button"],
+    {
+      cwd: os.tmpdir(),
+      encoding: "utf8",
+      env: { ...process.env, COMPONENT_CATALOG_LOG: log },
+    },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  const [entry] = fs
+    .readFileSync(log, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  assert.equal(entry.command, "search");
+  assert.equal(entry.argument, "button");
+  assert.equal(entry.outputBytes, Buffer.byteLength(result.stdout));
+  assert.equal(entry.truncated, output.truncated);
+  assert.equal(entry.status, null);
+  assert.ok(entry.durationMs >= 0);
+});

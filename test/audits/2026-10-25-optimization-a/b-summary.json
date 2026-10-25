@@ -1,0 +1,34 @@
+{
+  "capturedAt": "2026-10-25T13:26:12.185Z",
+  "conditions": [
+    {
+      "condition": "catalog",
+      "tasks": 5,
+      "filesRead": 0,
+      "sourceBytesRead": 0,
+      "cliCalls": 28,
+      "cliCallsSucceeded": 24,
+      "cliOutputBytes": 46895,
+      "estimatedTokens": 11724
+    },
+    {
+      "condition": "source",
+      "tasks": 5,
+      "filesRead": 17,
+      "sourceBytesRead": 34788,
+      "cliCalls": 0,
+      "cliOutputBytes": 0,
+      "estimatedTokens": 8697
+    },
+    {
+      "condition": "source-pristine",
+      "tasks": 5,
+      "filesRead": 18,
+      "sourceBytesRead": 29500,
+      "cliCalls": 0,
+      "cliOutputBytes": 0,
+      "estimatedTokens": 7375
+    }
+  ],
+  "notes": "Byte/token proxies only; one run per condition; source agents used the read tool (full files)."
+}

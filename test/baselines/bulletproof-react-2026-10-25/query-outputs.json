@@ -1,0 +1,205 @@
+[
+  {
+    "query": "按钮",
+    "expected": "ui.button.Button",
+    "position": 1,
+    "bytes": 412,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "ui.button.Button"
+    ]
+  },
+  {
+    "query": "加载中",
+    "expected": "ui.spinner.Spinner",
+    "position": 1,
+    "bytes": 399,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "ui.spinner.Spinner"
+    ]
+  },
+  {
+    "query": "确认框",
+    "expected": "ui.dialog.confirmation-dialog.ConfirmationDialog",
+    "position": 1,
+    "bytes": 1264,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "comments.DeleteComment",
+      "discussions.DeleteDiscussion",
+      "users.DeleteUser"
+    ]
+  },
+  {
+    "query": "抽屉",
+    "expected": "ui.drawer.DrawerContent",
+    "position": 1,
+    "bytes": 1296,
+    "truncated": true,
+    "omitted": {
+      "items": 1
+    },
+    "ids": [
+      "ui.drawer.DrawerContent",
+      "ui.drawer.DrawerDescription",
+      "ui.drawer.DrawerFooter",
+      "ui.drawer.DrawerHeader",
+      "ui.drawer.DrawerOverlay"
+    ]
+  },
+  {
+    "query": "下拉菜单",
+    "expected": "ui.dropdown.DropdownMenuContent",
+    "position": 2,
+    "bytes": 1435,
+    "truncated": true,
+    "omitted": {
+      "items": 4
+    },
+    "ids": [
+      "ui.dropdown.DropdownMenuCheckboxItem",
+      "ui.dropdown.DropdownMenuContent",
+      "ui.dropdown.DropdownMenuItem",
+      "ui.dropdown.DropdownMenuLabel",
+      "ui.dropdown.DropdownMenuRadioItem"
+    ]
+  },
+  {
+    "query": "表格",
+    "expected": "ui.table.Table",
+    "position": 1,
+    "bytes": 1250,
+    "truncated": true,
+    "omitted": {
+      "items": 6
+    },
+    "ids": [
+      "ui.table.Table",
+      "ui.table.TableBody",
+      "ui.table.TableCaption",
+      "ui.table.TableCell",
+      "ui.table.TableElement"
+    ]
+  },
+  {
+    "query": "分页",
+    "expected": "ui.table.TablePagination",
+    "position": 1,
+    "bytes": 1364,
+    "truncated": true,
+    "omitted": {
+      "items": 3
+    },
+    "ids": [
+      "ui.table.TablePagination",
+      "ui.table.Pagination",
+      "ui.table.PaginationContent",
+      "ui.table.PaginationEllipsis",
+      "ui.table.PaginationItem"
+    ]
+  },
+  {
+    "query": "输入框",
+    "expected": "ui.form.Input",
+    "position": 1,
+    "bytes": 610,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "ui.form.Input",
+      "ui.form.Textarea"
+    ]
+  },
+  {
+    "query": "登录",
+    "expected": "auth.LoginForm",
+    "position": 1,
+    "bytes": 677,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "auth.LoginForm",
+      "auth.RegisterForm"
+    ]
+  },
+  {
+    "query": "评论",
+    "expected": "comments.CommentsList",
+    "position": 2,
+    "bytes": 1217,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "comments.Comments",
+      "comments.CommentsList",
+      "comments.CreateComment",
+      "comments.DeleteComment"
+    ]
+  },
+  {
+    "query": "创建讨论",
+    "expected": "discussions.CreateDiscussion",
+    "position": 1,
+    "bytes": 1481,
+    "truncated": true,
+    "omitted": {
+      "items": 3
+    },
+    "ids": [
+      "discussions.CreateDiscussion",
+      "ui.form.Form",
+      "ui.form.FormDrawer",
+      "auth.LoginForm",
+      "auth.RegisterForm"
+    ]
+  },
+  {
+    "query": "用户列表",
+    "expected": "users.UsersList",
+    "position": 1,
+    "bytes": 1269,
+    "truncated": true,
+    "omitted": {
+      "items": 6
+    },
+    "ids": [
+      "users.UsersList",
+      "ui.table.Table",
+      "ui.table.TableBody",
+      "ui.table.TableCaption",
+      "ui.table.TableCell"
+    ]
+  },
+  {
+    "query": "markdown 预览",
+    "expected": "ui.md-preview.MDPreview",
+    "position": 1,
+    "bytes": 977,
+    "truncated": false,
+    "omitted": {
+      "items": 0
+    },
+    "ids": [
+      "ui.md-preview.MDPreview",
+      "discussions.DiscussionView",
+      "discussions.CreateDiscussion"
+    ]
+  }
+]

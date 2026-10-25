@@ -494,3 +494,23 @@ export function Button() { return null; }
   assert.match(unsupported.items[0].shapeIssue, /preserve runtime behavior/);
   assert.doesNotMatch(unsupported.items[0].shapeIssue, /@componentCatalog/);
 });
+
+test("brief scan fits a full page and keeps identifying fields only", (t) => {
+  const f = fixture(t);
+  for (let i = 0; i < 60; i++)
+    f.write(`brief/C${String(i).padStart(2, "0")}.ts`, `export function C${i}() { return null; }\n`);
+  const page = scan(f.root, { limit: 50, brief: true });
+  assert.equal(page.brief, true);
+  assert.ok(Buffer.byteLength(JSON.stringify(page) + "\n") <= 8192);
+  assert.equal(page.items.length, 50);
+  assert.deepEqual(Object.keys(page.items[0]).sort(), [
+    "exportName",
+    "line",
+    "marked",
+    "sourcePath",
+    "supportedShape",
+  ]);
+  assert.match(page.note, /Brief view omits metadata tags/);
+  assert.throws(() => scan(f.root, { brief: true, summary: true }), /cannot be combined/);
+  assert.equal(ok(run(["scan", f.root, "--brief", "--limit", "50"])).brief, true);
+});

@@ -4,13 +4,22 @@ const encode = (value) => JSON.stringify(value) + "\n";
 const size = (value) => Buffer.byteLength(encode(value), "utf8");
 const normalize = (value) => value.normalize("NFKC").toLowerCase();
 const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+// ASCII vocabulary terms must not match inside another identifier ("loading" in
+// "isLoading"); CJK terms keep substring matching because they have no word
+// boundaries. This affects vocabulary concept matching only, not direct terms.
+const asciiTerm = (term) => /^[\x00-\x7F]+$/.test(term);
+function includesTerm(text, term) {
+  if (!asciiTerm(term)) return text.includes(term);
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
+}
 
 export function search(catalog, input, limit = 5, vocabulary = {}) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
     .map(([term, values]) => [normalize(term), values])
-    .filter(([term]) => query.includes(term));
+    .filter(([term]) => includesTerm(query, term));
   // A specific phrase owns its contained terms; unrelated concepts still combine.
   const concepts = matchedTerms
     .filter(([term]) => !matchedTerms.some(([other]) => other !== term && other.includes(term)))
@@ -92,6 +101,7 @@ export function get(catalog, id, include, propName, from) {
       );
     include = ["constraints"];
   }
+  const propsRequested = include?.includes("props") ?? false;
   include ??= [item.kind === "namespace" ? "members" : "props", "constraints", "examples"];
   const component = Object.fromEntries(
     [
@@ -137,6 +147,18 @@ export function get(catalog, id, include, propName, from) {
     truncated: omittedExamples > 0,
     omitted: { fields: [], examples: omittedExamples },
   };
+  // Components that inherit DOM attributes can have hundreds of props. Keep a
+  // compact name/required index when the full props block cannot fit, instead of
+  // returning an entry with no API surface at all.
+  const propIndex =
+    item.kind === "component" && include.includes("props")
+      ? {
+          total: item.props.items.length,
+          inheritedTypes: item.props.inheritedTypes,
+          items: item.props.items.map(({ name, required }) => ({ name, required })),
+        }
+      : undefined;
+  let propsDropped = false;
   // Focused queries must keep the selected API, its type context and constraints together.
   const removable = selectedProp
     ? ["tasks", "summary"]
@@ -147,9 +169,30 @@ export function get(catalog, id, include, propName, from) {
     delete component[field];
     response.omitted.fields.push(field);
     response.truncated = true;
+    if (field === "props" && propIndex) {
+      propsDropped = true;
+      const compact = propsRequested
+        ? propIndex
+        : {
+            total: propIndex.total,
+            inheritedTypes: propIndex.inheritedTypes,
+            hint: "use --include props for a bounded prop name index, or --prop for one prop",
+          };
+      const compactField = propsRequested ? "propIndex" : "propsSummary";
+      component[compactField] = compact;
+      if (size(response) > 16384) {
+        delete component[compactField];
+        component.propsOmitted = {
+          total: propIndex.total,
+          inheritedTypes: propIndex.inheritedTypes,
+        };
+      }
+      if (size(response) > 16384) delete component.propsOmitted;
+    }
   }
   // Restore fields that still fit after the larger fields have been removed.
   for (const field of [...response.omitted.fields].reverse()) {
+    if (field === "props" && propsDropped) continue;
     component[field] = field === "examples" ? item.examples.slice(0, 2) : item[field];
     const previous = response.omitted.fields;
     response.omitted.fields = previous.filter((name) => name !== field);
