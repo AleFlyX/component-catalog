@@ -315,6 +315,9 @@ test("config validation rejects mistakes and ambiguous roots", (t) => {
       c.vocabulary.bad = { primary: "BAD", related: [] };
     },
     (c) => {
+      c.importPathStyle = "alias";
+    },
+    (c) => {
       c.exclude = ["src"];
     },
     (c) => {
@@ -566,8 +569,24 @@ test("ASCII vocabulary terms require word boundaries", () => {
   assert.equal(search(catalog, "loading", 5, vocabulary).items[0].exportName, "Spinner");
 });
 
-test("opt-in usage log records command metadata without changing output", (t) => {
+test("barrel import style uses a real directory entrypoint", (t) => {
   const f = fixture(t);
+  fs.cpSync(basic, f.dir, {
+    recursive: true,
+    filter: (source) => path.basename(source) !== "component-catalog.json",
+  });
+  const config = JSON.parse(fs.readFileSync(f.configFile, "utf8"));
+  config.importPathStyle = "barrel";
+  f.write("component-catalog.config.json", config);
+  f.write("src/components/forms/index.ts", "export * from '../Button';\n");
+  assert.equal(ok(f.run(["generate"])).components, 1);
+  const detail = ok(f.run(["get", "demo.ui.Button"]));
+  assert.equal(detail.component.importPath, "@demo/ui/forms");
+  const generated = JSON.parse(fs.readFileSync(f.catalogFile, "utf8"));
+  assert.equal(generated.components[0].importExtension, "omit");
+});
+
+test("opt-in usage log records command metadata without changing output", (t) => {  const f = fixture(t);
   const log = path.join(f.dir, "usage.jsonl");
   const result = spawnSync(
     process.execPath,

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 import { validateSchemaValue } from "./schema.mjs";
-import { compare, discoverEntries, referencedExports, usageKind } from "./source.mjs";
+import { compare, canonicalSymbol, discoverEntries, referencedExports, usageKind } from "./source.mjs";
 import { createProject, filesBelow } from "./project.mjs";
 import { isSourceFile } from "./files.mjs";
 import { importFile, relativeImport } from "./imports.mjs";
@@ -16,6 +16,31 @@ export function generateCatalog(config, options = {}) {
   const { relative, configInputs, parsed, program, checker, sources, diagnosticHost } = project;
   const schemaPath = new URL("../schema/catalog.schema.json", import.meta.url);
   const rootFor = (file) => componentRoots.find((root) => file.startsWith(root.path + path.sep));
+  // Prefer a real directory entrypoint (index.*) when the project asks for
+  // barrel-style imports. The closest barrel to the component root wins, so
+  // ui/form/index.ts beats ui/form/field/index.ts.
+  const barrelFor = (() => {
+    if (config.importPathStyle !== "barrel") return null;
+    const result = new Map();
+    const indexName = /^index\.[jt]sx?$/;
+    for (const root of componentRoots) {
+      for (const file of filesBelow(root.path, config, (candidate) => indexName.test(path.basename(candidate)))) {
+        const source = program.getSourceFile(file);
+        if (!source) continue;
+        const module = checker.getSymbolAtLocation(source);
+        if (!module) continue;
+        const depth = path.relative(root.path, path.dirname(file)).split(path.sep).filter(Boolean).length;
+        for (const exported of checker.getExportsOfModule(module)) {
+          const symbol = canonicalSymbol(checker, exported);
+          if (!symbol || !(symbol.flags & ts.SymbolFlags.Value)) continue;
+          const current = result.get(symbol);
+          if (!current || depth < current.depth || (depth === current.depth && file < current.file))
+            result.set(symbol, { dir: path.dirname(file), depth, file });
+        }
+      }
+    }
+    return result;
+  })();
   const allowedStatuses = new Set(["experimental", "stable", "deprecated"]);
   const allowedExamples = new Set(["production", "preview", "test", "story"]);
   const componentIdPattern = /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
@@ -80,15 +105,25 @@ export function generateCatalog(config, options = {}) {
       ? "jsx" : selected;
   }
 
-  function importPath(sourceFile) {
+  function importTarget(sourceFile, symbol) {
     const root = rootFor(sourceFile.fileName);
-    if (root.importPrefix === null) return null;
-    return (
-      root.importPrefix +
-      "/" +
-      importFile(path.relative(root.path, sourceFile.fileName).replaceAll(path.sep, "/"),
-        importExtension(sourceFile))
-    );
+    const extension = importExtension(sourceFile);
+    if (root.importPrefix === null) return { importPath: null, importExtension: extension };
+    const barrel = barrelFor?.get(symbol);
+    if (barrel) {
+      const relativeDir = path.relative(root.path, barrel.dir).split(path.sep).join("/");
+      return {
+        importPath: relativeDir ? `${root.importPrefix}/${relativeDir}` : root.importPrefix,
+        importExtension: "omit",
+      };
+    }
+    return {
+      importPath:
+        root.importPrefix +
+        "/" +
+        importFile(path.relative(root.path, sourceFile.fileName).replaceAll(path.sep, "/"), extension),
+      importExtension: extension,
+    };
   }
 
   function declarationDefaultValues(parameter) {
@@ -343,12 +378,13 @@ export function generateCatalog(config, options = {}) {
     if (tasks.some((task) => !/^[a-z][a-z0-9-]*$/.test(task))) {
       throw new Error(`${exportName}: invalid @catalogTask`);
     }
-    const sourceImport = importPath(sourceFile);
+    const target = importTarget(sourceFile, entry.symbol);
+    const sourceImport = target.importPath;
     const examples = parseExamples(tags, entry);
     for (const example of examples) {
       if (sourceImport === null && example.path === relative(sourceFile.fileName)) continue;
       const specifier = sourceImport ?? relativeImport(relative(sourceFile.fileName), example.path,
-        importExtension(sourceFile)).specifier;
+        target.importExtension).specifier;
       if (/\.tsx?$/.test(specifier) &&
           !(parsed.options.allowImportingTsExtensions || (parsed.options.rewriteRelativeImportExtensions && /^\.\.?\//.test(specifier))))
         throw new Error(`${exportName}: preserved TypeScript import ${specifier} requires allowImportingTsExtensions or relative-import rewriting. Choose an importExtension supported by the project.`);
@@ -376,7 +412,7 @@ export function generateCatalog(config, options = {}) {
       exportKind,
       kind: members ? "namespace" : "component",
       importPath: sourceImport,
-      importExtension: importExtension(sourceFile),
+      importExtension: target.importExtension,
       sourcePath: relative(sourceFile.fileName),
       layer: rootFor(sourceFile.fileName).layer,
       reuse,

@@ -1,0 +1,4 @@
+run,correct,cli_calls,cli_output_bytes,uncached_input,output,cache_read,total_tokens,steps,settled_ms
+1,5/5,23,53116,18958,7843,212096,238897,10,111888
+2,5/5,18,22310,11139,9813,198272,219224,11,89844
+3,5/5,18,30108,10711,5743,156544,172998,10,59835

@@ -1,0 +1,763 @@
+{
+  "summary": {
+    "capturedAt": "2026-10-25T14:29:07.247Z",
+    "calls": 27,
+    "totalOutputBytes": 76931,
+    "estimatedTokens": 19233,
+    "byCommand": {
+      "search": {
+        "calls": 13,
+        "outputBytes": 17140,
+        "truncated": 6,
+        "omittedFields": {}
+      },
+      "get": {
+        "calls": 6,
+        "outputBytes": 11542,
+        "truncated": 2,
+        "omittedFields": {
+          "props": 2
+        }
+      },
+      "scan": {
+        "calls": 7,
+        "outputBytes": 47411,
+        "truncated": 7,
+        "omittedFields": {}
+      },
+      "check": {
+        "calls": 1,
+        "outputBytes": 838,
+        "truncated": 0,
+        "omittedFields": {}
+      }
+    },
+    "queries": {
+      "count": 13,
+      "hits": 13,
+      "bytes": 17140
+    },
+    "get": [
+      {
+        "args": [
+          "ui.button.Button"
+        ],
+        "bytes": 1020,
+        "truncated": true,
+        "omitted": {
+          "fields": [
+            "props"
+          ],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "constraints",
+          "propsSummary",
+          "examples"
+        ],
+        "hasProps": false,
+        "propsSummary": {
+          "total": 281,
+          "inheritedTypes": [],
+          "hint": "use --include props for a bounded prop name index, or --prop for one prop"
+        },
+        "propIndex": null
+      },
+      {
+        "args": [
+          "ui.button.Button",
+          "--include",
+          "props"
+        ],
+        "bytes": 5044,
+        "truncated": true,
+        "omitted": {
+          "fields": [
+            "props"
+          ],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "propIndex"
+        ],
+        "hasProps": false,
+        "propsSummary": null,
+        "propIndex": {
+          "total": 281,
+          "items": 281
+        }
+      },
+      {
+        "args": [
+          "ui.button.Button",
+          "--prop",
+          "isLoading"
+        ],
+        "bytes": 1470,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "constraints",
+          "prop",
+          "propsContext"
+        ],
+        "hasProps": false,
+        "propsSummary": null,
+        "propIndex": null
+      },
+      {
+        "args": [
+          "ui.table.Table"
+        ],
+        "bytes": 1270,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "props",
+          "constraints",
+          "examples"
+        ],
+        "hasProps": true,
+        "propsSummary": null,
+        "propIndex": null
+      },
+      {
+        "args": [
+          "ui.form.Input",
+          "--prop",
+          "registration"
+        ],
+        "bytes": 1140,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "constraints",
+          "prop",
+          "propsContext"
+        ],
+        "hasProps": false,
+        "propsSummary": null,
+        "propIndex": null
+      },
+      {
+        "args": [
+          "ui.form.FormDrawer",
+          "--from",
+          "src/features/users/components/update-profile.tsx"
+        ],
+        "bytes": 1598,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "fields": [
+          "id",
+          "exportName",
+          "exportKind",
+          "kind",
+          "importPath",
+          "sourcePath",
+          "layer",
+          "status",
+          "documentationStatus",
+          "summary",
+          "tasks",
+          "reuse",
+          "props",
+          "constraints",
+          "examples"
+        ],
+        "hasProps": true,
+        "propsSummary": null,
+        "propIndex": null
+      }
+    ],
+    "scan": {
+      "fullPages": [
+        {
+          "offset": 0,
+          "items": 26,
+          "bytes": 8031,
+          "nextOffset": 26
+        },
+        {
+          "offset": 26,
+          "items": 23,
+          "bytes": 8159,
+          "nextOffset": 49
+        },
+        {
+          "offset": 49,
+          "items": 35,
+          "bytes": 7955,
+          "nextOffset": 84
+        },
+        {
+          "offset": 84,
+          "items": 29,
+          "bytes": 6739,
+          "nextOffset": null
+        }
+      ],
+      "briefPages": [
+        {
+          "offset": 0,
+          "items": 50,
+          "bytes": 7266,
+          "nextOffset": 50
+        },
+        {
+          "offset": 50,
+          "items": 50,
+          "bytes": 6903,
+          "nextOffset": 100
+        },
+        {
+          "offset": 100,
+          "items": 13,
+          "bytes": 2358,
+          "nextOffset": null
+        }
+      ]
+    },
+    "check": {
+      "status": "pass",
+      "counts": {
+        "candidates": 122,
+        "marked": 74,
+        "ignored": 48,
+        "ignoredUnsupported": 15,
+        "undecided": 0,
+        "generated": 74,
+        "issues": 0
+      },
+      "issues": 0
+    }
+  },
+  "queryResults": [
+    {
+      "query": "按钮",
+      "expected": "ui.button.Button",
+      "position": 1,
+      "bytes": 469,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.button.Button"
+      ]
+    },
+    {
+      "query": "加载中",
+      "expected": "ui.spinner.Spinner",
+      "position": 1,
+      "bytes": 457,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.spinner.Spinner"
+      ]
+    },
+    {
+      "query": "确认框",
+      "expected": "ui.dialog.confirmation-dialog.ConfirmationDialog",
+      "position": 1,
+      "bytes": 1627,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.dialog.confirmation-dialog.ConfirmationDialog",
+        "comments.DeleteComment",
+        "discussions.DeleteDiscussion",
+        "users.DeleteUser"
+      ]
+    },
+    {
+      "query": "抽屉",
+      "expected": "ui.drawer.DrawerContent",
+      "position": 1,
+      "bytes": 1581,
+      "truncated": true,
+      "omitted": {
+        "items": 1
+      },
+      "ids": [
+        "ui.drawer.DrawerContent",
+        "ui.drawer.DrawerDescription",
+        "ui.drawer.DrawerFooter",
+        "ui.drawer.DrawerHeader",
+        "ui.drawer.DrawerOverlay"
+      ]
+    },
+    {
+      "query": "下拉菜单",
+      "expected": "ui.dropdown.DropdownMenuContent",
+      "position": 2,
+      "bytes": 1737,
+      "truncated": true,
+      "omitted": {
+        "items": 4
+      },
+      "ids": [
+        "ui.dropdown.DropdownMenuCheckboxItem",
+        "ui.dropdown.DropdownMenuContent",
+        "ui.dropdown.DropdownMenuItem",
+        "ui.dropdown.DropdownMenuLabel",
+        "ui.dropdown.DropdownMenuRadioItem"
+      ]
+    },
+    {
+      "query": "表格",
+      "expected": "ui.table.Table",
+      "position": 1,
+      "bytes": 1546,
+      "truncated": true,
+      "omitted": {
+        "items": 6
+      },
+      "ids": [
+        "ui.table.Table",
+        "ui.table.TableBody",
+        "ui.table.TableCaption",
+        "ui.table.TableCell",
+        "ui.table.TableElement"
+      ]
+    },
+    {
+      "query": "分页",
+      "expected": "ui.table.TablePagination",
+      "position": 1,
+      "bytes": 1735,
+      "truncated": true,
+      "omitted": {
+        "items": 3
+      },
+      "ids": [
+        "ui.table.TablePagination",
+        "ui.table.Pagination",
+        "ui.table.PaginationContent",
+        "ui.table.PaginationEllipsis",
+        "ui.table.PaginationItem"
+      ]
+    },
+    {
+      "query": "输入框",
+      "expected": "ui.form.Input",
+      "position": 1,
+      "bytes": 748,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.form.Input",
+        "ui.form.Textarea"
+      ]
+    },
+    {
+      "query": "登录",
+      "expected": "auth.LoginForm",
+      "position": 1,
+      "bytes": 875,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "auth.LoginForm",
+        "auth.RegisterForm"
+      ]
+    },
+    {
+      "query": "评论",
+      "expected": "comments.CommentsList",
+      "position": 2,
+      "bytes": 1591,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "comments.Comments",
+        "comments.CommentsList",
+        "comments.CreateComment",
+        "comments.DeleteComment"
+      ]
+    },
+    {
+      "query": "创建讨论",
+      "expected": "discussions.CreateDiscussion",
+      "position": 1,
+      "bytes": 1963,
+      "truncated": true,
+      "omitted": {
+        "items": 3
+      },
+      "ids": [
+        "discussions.CreateDiscussion",
+        "ui.form.Form",
+        "ui.form.FormDrawer",
+        "auth.LoginForm",
+        "auth.RegisterForm"
+      ]
+    },
+    {
+      "query": "用户列表",
+      "expected": "users.UsersList",
+      "position": 1,
+      "bytes": 1582,
+      "truncated": true,
+      "omitted": {
+        "items": 6
+      },
+      "ids": [
+        "users.UsersList",
+        "ui.table.Table",
+        "ui.table.TableBody",
+        "ui.table.TableCaption",
+        "ui.table.TableCell"
+      ]
+    },
+    {
+      "query": "markdown 预览",
+      "expected": "ui.md-preview.MDPreview",
+      "position": 1,
+      "bytes": 1229,
+      "truncated": false,
+      "omitted": {
+        "items": 0
+      },
+      "ids": [
+        "ui.md-preview.MDPreview",
+        "discussions.DiscussionView",
+        "discussions.CreateDiscussion"
+      ]
+    }
+  ],
+  "getResults": [
+    {
+      "args": [
+        "ui.button.Button"
+      ],
+      "bytes": 1020,
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "propsSummary",
+        "examples"
+      ],
+      "hasProps": false,
+      "propsSummary": {
+        "total": 281,
+        "inheritedTypes": [],
+        "hint": "use --include props for a bounded prop name index, or --prop for one prop"
+      },
+      "propIndex": null
+    },
+    {
+      "args": [
+        "ui.button.Button",
+        "--include",
+        "props"
+      ],
+      "bytes": 5044,
+      "truncated": true,
+      "omitted": {
+        "fields": [
+          "props"
+        ],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "propIndex"
+      ],
+      "hasProps": false,
+      "propsSummary": null,
+      "propIndex": {
+        "total": 281,
+        "items": 281
+      }
+    },
+    {
+      "args": [
+        "ui.button.Button",
+        "--prop",
+        "isLoading"
+      ],
+      "bytes": 1470,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "prop",
+        "propsContext"
+      ],
+      "hasProps": false,
+      "propsSummary": null,
+      "propIndex": null
+    },
+    {
+      "args": [
+        "ui.table.Table"
+      ],
+      "bytes": 1270,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "props",
+        "constraints",
+        "examples"
+      ],
+      "hasProps": true,
+      "propsSummary": null,
+      "propIndex": null
+    },
+    {
+      "args": [
+        "ui.form.Input",
+        "--prop",
+        "registration"
+      ],
+      "bytes": 1140,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "constraints",
+        "prop",
+        "propsContext"
+      ],
+      "hasProps": false,
+      "propsSummary": null,
+      "propIndex": null
+    },
+    {
+      "args": [
+        "ui.form.FormDrawer",
+        "--from",
+        "src/features/users/components/update-profile.tsx"
+      ],
+      "bytes": 1598,
+      "truncated": false,
+      "omitted": {
+        "fields": [],
+        "examples": 0
+      },
+      "fields": [
+        "id",
+        "exportName",
+        "exportKind",
+        "kind",
+        "importPath",
+        "sourcePath",
+        "layer",
+        "status",
+        "documentationStatus",
+        "summary",
+        "tasks",
+        "reuse",
+        "props",
+        "constraints",
+        "examples"
+      ],
+      "hasProps": true,
+      "propsSummary": null,
+      "propIndex": null
+    }
+  ],
+  "fullPages": [
+    {
+      "offset": 0,
+      "items": 26,
+      "bytes": 8031,
+      "nextOffset": 26
+    },
+    {
+      "offset": 26,
+      "items": 23,
+      "bytes": 8159,
+      "nextOffset": 49
+    },
+    {
+      "offset": 49,
+      "items": 35,
+      "bytes": 7955,
+      "nextOffset": 84
+    },
+    {
+      "offset": 84,
+      "items": 29,
+      "bytes": 6739,
+      "nextOffset": null
+    }
+  ],
+  "briefPages": [
+    {
+      "offset": 0,
+      "items": 50,
+      "bytes": 7266,
+      "nextOffset": 50
+    },
+    {
+      "offset": 50,
+      "items": 50,
+      "bytes": 6903,
+      "nextOffset": 100
+    },
+    {
+      "offset": 100,
+      "items": 13,
+      "bytes": 2358,
+      "nextOffset": null
+    }
+  ]
+}
