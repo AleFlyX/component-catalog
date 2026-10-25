@@ -154,5 +154,74 @@
     "steps": 14,
     "toolResultTokens": 6494,
     "wallMs": 61740
+  },
+  {
+    "group": "final",
+    "run": 1,
+    "session": "ec6e0118-decb-4cad-9df6-c032461ffba6",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 11185,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 191617,
+    "uncachedInputTokens": 6385,
+    "outputTokens": 7312,
+    "cacheReadTokens": 177920,
+    "steps": 12,
+    "toolResultTokens": 4001,
+    "wallMs": 47093
+  },
+  {
+    "group": "final",
+    "run": 2,
+    "session": "c2920106-d042-4789-b12e-cdabbb866854",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 14269,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 162184,
+    "uncachedInputTokens": 7769,
+    "outputTokens": 9007,
+    "cacheReadTokens": 145408,
+    "steps": 9,
+    "toolResultTokens": 6163,
+    "wallMs": 57719
+  },
+  {
+    "group": "final",
+    "run": 3,
+    "session": "c3bda3e6-11bd-4c92-995c-54324ac92467",
+    "correct": 5,
+    "correctTotal": 5,
+    "cliCalls": 6,
+    "cliOutputBytes": 11080,
+    "taskCalls": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1,
+      "5": 1
+    },
+    "totalTokens": 155271,
+    "uncachedInputTokens": 6171,
+    "outputTokens": 5100,
+    "cacheReadTokens": 144000,
+    "steps": 11,
+    "toolResultTokens": 3856,
+    "wallMs": 33422
   }
 ]

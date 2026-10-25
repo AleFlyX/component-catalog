@@ -1,0 +1,474 @@
+{
+  "session": {
+    "steps": 11,
+    "turns": 1,
+    "llmMs": 28424,
+    "toolMs": 4977,
+    "settledMs": 33921,
+    "wallMs": 33422,
+    "requests": 11,
+    "activityToolCalls": 10
+  },
+  "label": "final-run3",
+  "usage": {
+    "uncachedInputTokens": 6171,
+    "outputTokens": 5100,
+    "cacheReadTokens": 144000,
+    "cacheWriteTokens": 0,
+    "totalTokens": 155271,
+    "cacheReadShare": 96
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 9797
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792943049352,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 551,
+        "text": "Controlled benchmark run 3/3, condition \"catalog\". Work only in /tmp/oss-trial/b"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792943049353,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792943049353,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-25T23:44:09+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792943051631,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 289,
+        "text": null
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792943051822,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 420,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792943053273,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 187,
+        "text": null
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792943054075,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 544,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792943055768,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 179,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792943056445,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 491,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792943058832,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 372,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792943059531,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 490,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792943061382,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 202,
+        "text": null
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792943062165,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 495,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792943063555,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 158,
+        "text": null
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792943064378,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 546,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792943067596,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 431,
+        "text": null
+      },
+      {
+        "index": 16,
+        "seq": 67,
+        "time": 1792943068269,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 254,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 71,
+        "time": 1792943075344,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 1576,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 75,
+        "time": 1792943075522,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 565,
+        "text": null
+      },
+      {
+        "index": 19,
+        "seq": 79,
+        "time": 1792943077061,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 138,
+        "text": null
+      },
+      {
+        "index": 20,
+        "seq": 83,
+        "time": 1792943077208,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 25,
+        "text": null
+      },
+      {
+        "index": 21,
+        "seq": 87,
+        "time": 1792943080455,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 754,
+        "text": null
+      },
+      {
+        "index": 22,
+        "seq": 89,
+        "time": 1792943080471,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 23,
+        "seq": 93,
+        "time": 1792943083122,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 675,
+        "text": "Benchmark run 3/3 (condition “catalog”) complete. - Wrote `/tmp/audit-b7/catalog"
+      }
+    ],
+    "assistantSteps": 11,
+    "assistantTokens": 4961,
+    "toolCalls": 10,
+    "toolResultTokens": 3856,
+    "toolTokens": {
+      "bash": 3830,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 18,
+        "tool": "bash",
+        "tokens": 565
+      },
+      {
+        "index": 14,
+        "tool": "bash",
+        "tokens": 546
+      },
+      {
+        "index": 6,
+        "tool": "bash",
+        "tokens": 544
+      },
+      {
+        "index": 12,
+        "tool": "bash",
+        "tokens": 495
+      },
+      {
+        "index": 8,
+        "tool": "bash",
+        "tokens": 491
+      }
+    ]
+  },
+  "cli": {
+    "calls": 6,
+    "outputBytes": 11080,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 10096,
+        "truncated": 5,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 1,
+        "outputBytes": 984,
+        "truncated": 1,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 2144
+      },
+      "2": {
+        "calls": 2,
+        "outputBytes": 2914
+      },
+      "3": {
+        "calls": 1,
+        "outputBytes": 1925
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 1948
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2149
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-25T15:44:14.061Z",
+        "task": "1",
+        "command": "search",
+        "argument": "delete discussion confirmation dialog",
+        "outputBytes": 2144,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "discussions.DeleteDiscussion",
+          "comments.DeleteComment",
+          "users.DeleteUser",
+          "ui.dialog.confirmation-dialog.ConfirmationDialog",
+          "discussions.CreateDiscussion"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:44:16.427Z",
+        "task": "2",
+        "command": "search",
+        "argument": "login form input react-hook-form",
+        "outputBytes": 1930,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "ui.form.Input",
+          "ui.form.Textarea",
+          "ui.form.Form",
+          "ui.form.FormDrawer",
+          "auth.LoginForm"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:44:19.507Z",
+        "task": "3",
+        "command": "search",
+        "argument": "discussion list pagination table",
+        "outputBytes": 1925,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "ui.table.TablePagination",
+          "discussions.DiscussionsList",
+          "ui.table.Pagination",
+          "ui.table.PaginationContent",
+          "ui.table.PaginationEllipsis"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:44:22.137Z",
+        "task": "4",
+        "command": "search",
+        "argument": "markdown render",
+        "outputBytes": 1948,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "ui.md-preview.MDPreview",
+          "discussions.DiscussionView",
+          "discussions.CreateDiscussion",
+          "ui.dialog.DialogOverlay",
+          "ui.dialog.DialogTitle"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:44:24.346Z",
+        "task": "5",
+        "command": "search",
+        "argument": "create discussion admin permission",
+        "outputBytes": 2149,
+        "truncated": true,
+        "error": null,
+        "resultIds": [
+          "discussions.CreateDiscussion",
+          "comments.CreateComment",
+          "discussions.UpdateDiscussion",
+          "discussions.DeleteDiscussion",
+          "discussions.DiscussionView"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-25T15:44:28.240Z",
+        "task": "2",
+        "command": "get",
+        "argument": "ui.form.Input",
+        "outputBytes": 984,
+        "truncated": true,
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "ui.form.Input"
+        ]
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 1847,
+    "toolTokensPerAssistantStep": 351,
+    "cacheReadPerCall": 24000
+  }
+}

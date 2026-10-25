@@ -1,0 +1,50 @@
+{
+  "condition": "catalog",
+  "run": 1,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "discussions.DeleteDiscussion",
+      "importPath": "@/features/discussions/components/delete-discussion",
+      "requiredProps": ["id"],
+      "answer": "Use DeleteDiscussion, the feature-level destructive confirmation control for deleting a discussion. It takes the discussion id and wraps the shared confirmation-dialog UI.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "ui.form.Input",
+      "importPath": "@/components/ui/form/input",
+      "requiredProps": ["registration"],
+      "answer": "The login input is Input. It binds to react-hook-form through the required registration prop (Partial<UseFormRegisterReturn>), i.e. the object returned by register(); it must be used inside Form so FieldWrapper supplies the label and error message.",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.table.TablePagination",
+      "importPath": "@/components/ui/table/pagination",
+      "requiredProps": ["totalPages", "currentPage", "rootUrl"],
+      "answer": "The discussion list uses TablePagination. It renders page-number links and needs totalPages, currentPage and rootUrl (it builds hrefs from the root URL and current page).",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "ui.md-preview.MDPreview",
+      "importPath": "@/components/ui/md-preview/md-preview",
+      "requiredProps": ["value"],
+      "answer": "MDPreview renders Markdown as sanitized HTML with prose typography; its input prop is value.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "discussions.CreateDiscussion",
+      "importPath": "@/features/discussions/components/create-discussion",
+      "requiredProps": [],
+      "answer": "CreateDiscussion is the admin-only drawer form for creating a discussion with a title and Markdown body; it requires admin permission/role.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Five searches (one per task) plus one get (ui.form.Input --prop registration for the react-hook-form binding) = 6 catalog calls. Search alone answered tasks 1, 3, 4 and 5, so no further get was used; no IDs were repeated, at most one get per task, no --include props, and no project source or component-catalog.json was read. Budget held."
+}
