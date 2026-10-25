@@ -56,7 +56,33 @@
 4. **skill 指令与工具行为同步**：任何新增 selector/字段都要同步 SKILL.md、README 与 doctor revision，避免安装方看到旧指引。
 5. **compact search 的复测**：`--brief` 已实现并有回归测试，但尚未单独跑 3 次 B；下一步用 `--limit 10 --brief` 做探索任务，确认调用数不增加且目标仍在 top 5。
 
-## 6. 相关产物
+## 7. Setup 成本与 catalog 体积
+
+### Setup 成本（基于本次 trial 的实测文件）
+
+| 项目 | 数值 |
+| --- | --- |
+| 标注补丁 | 76,232 B；新增 857 行 / 39,051 B（约 9.8K tokens，按 4 B/token 估） |
+| 被标注源文件 | 35 个，104,440 B（约 26K tokens） |
+| 配置 + 生成 + 验证 | 未单独计时；按工具调用和读取估算总 setup 约 50–100K tokens |
+
+注意：这是一次性成本，且不包含后续组件变更的维护。按 4 B/token 只是量级估算，并非真实模型 token。
+
+### 回本模型
+
+相对 `source-pristine`（231,028 tokens/5 任务），final catalog 为 169,691，节省约 61,337 tokens/批；相对 before 为 64,278/批。
+
+- **总 token 等权**（cache read 与输出同价）：50–100K setup ÷ 61K/批 ≈ **1–2 批（5–10 个同类任务）**。
+- **只按 output token 计**（更保守，因为 cache read 通常更便宜）：output 9,986 → 7,140，节省 2,846/批；9.8K 标注输出 ÷ 2,846 ≈ **3.4 批（约 17 个任务）**。
+- 两种口径都说明：项目长期使用、任务重复时才可能回本；一次性或低频查询不适合先做完整 setup。此前文档中的 20–30 任务估算偏向 output-only 且使用旧基线，应以此处的双口径为准。
+
+### Catalog 体积
+
+- 未压缩 `component-catalog.json`：3,929,651 B；gzip 后 249 KB。
+- 74 条中 46 条 props >12 KB；props 字段合计约 2.2 MB，主要来自继承的 DOM/aria/event 属性。
+- 当前查询不读全量 catalog，所以体积主要影响仓库 diff、生成/传输和审阅，而不是在线查询 token；若要做 compact catalog，应先标记 inherited/declared props，避免隐藏真实 API。
+
+## 8. 相关产物
 
 - 基线：`test/baselines/bulletproof-react-2026-10-25/`
 - 第一轮优化/审计：`test/audits/2026-10-25-optimization-a/`
