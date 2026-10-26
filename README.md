@@ -48,7 +48,13 @@ component-catalog --config component-catalog.config.json check
 
 `audit` 检查候选、收录决定、元数据、示例和替代关系；`check` 额外检查生成目录是否漂移。两者都不修改目录。首次接入允许尚无目录，但存在未处理候选时 `generate` 会失败。
 
-目录生成/检查通过后，用 `verify` 验证代表性查询确实能找到预期组件：
+目录生成/检查通过后，可以先生成一版自检查询，再补 mixed/missing 场景：
+
+```bash
+component-catalog --config component-catalog.config.json verify --suggest > component-catalog.verify.json
+```
+
+它会为每个组件生成导出名查询，并为 primary task 唯一的组件生成 task/vocabulary 查询；mixed 和 missing 查询需要人工补。然后运行：
 
 ```json
 [

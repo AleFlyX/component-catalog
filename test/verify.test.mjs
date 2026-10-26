@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { loadConfig } from "../skills/component-catalog/scripts/lib/config.mjs";
 import { generateCatalog } from "../skills/component-catalog/scripts/lib/generate.mjs";
-import { verifyCatalog } from "../skills/component-catalog/scripts/lib/verify.mjs";
+import { suggestVerifyQueries, verifyCatalog } from "../skills/component-catalog/scripts/lib/verify.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const config = loadConfig(path.join(root, "examples/basic/component-catalog.config.json"));
@@ -58,4 +58,30 @@ test("verify CLI returns 0/1/2 for pass, miss and invalid invocation", (t) => {
   assert.equal(miss.status, 1);
   const invalid = spawnSync(process.execPath, [cli, "--config", configPath, "verify"], { encoding: "utf8" });
   assert.equal(invalid.status, 2);
+});
+
+test("suggest produces exact export-name and unique task queries", () => {
+  const suggestions = suggestVerifyQueries(catalog, config.vocabulary);
+  assert.deepEqual(
+    suggestions.map((item) => [item.scope, item.query, item.expectedId]),
+    [
+      ["self", "Button", "demo.ui.Button"],
+      ["task", "button", "demo.ui.Button"],
+      ["vocabulary", "按钮", "demo.ui.Button"],
+    ],
+  );
+});
+
+test("verify CLI --suggest prints a query array", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-suggest-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const cli = path.join(root, "bin/component-catalog.mjs");
+  const configPath = path.join(root, "examples/basic/component-catalog.config.json");
+  const run = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest"], { encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr);
+  const queries = JSON.parse(run.stdout);
+  assert.ok(Array.isArray(queries));
+  assert.ok(queries.some((item) => item.query === "Button" && item.expectedId === "demo.ui.Button"));
+  const both = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--queries", path.join(dir, "q.json")], { encoding: "utf8" });
+  assert.equal(both.status, 2);
 });

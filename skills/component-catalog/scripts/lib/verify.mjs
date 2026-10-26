@@ -95,3 +95,37 @@ export function verifyCatalog(catalog, queries, vocabulary = {}, defaultLimit = 
     results,
   };
 }
+
+/**
+ * Build safe first-pass verification queries from the saved catalog.
+ * Exact export-name queries are unambiguous; task-tag queries are only
+ * generated when that primary task belongs to exactly one component.
+ */
+export function suggestVerifyQueries(catalog, vocabulary = {}) {
+  const components = catalog.components ?? [];
+  const taskCounts = new Map();
+  for (const component of components) {
+    const task = component.tasks?.[0];
+    if (task) taskCounts.set(task, (taskCounts.get(task) ?? 0) + 1);
+  }
+  const queries = [];
+  const seen = new Set();
+  const add = (entry) => {
+    const key = `${entry.query}\0${entry.expectedId}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    queries.push(entry);
+  };
+  for (const component of components) {
+    add({ scope: "self", query: component.exportName, expectedId: component.id });
+    const task = component.tasks?.[0];
+    if (!task || taskCounts.get(task) !== 1) continue;
+    add({ scope: "task", query: task, expectedId: component.id });
+    for (const [term, concept] of Object.entries(vocabulary)) {
+      if (concept.primary !== task && !(concept.related ?? []).includes(task)) continue;
+      add({ scope: "vocabulary", query: term, expectedId: component.id });
+      break;
+    }
+  }
+  return queries;
+}
