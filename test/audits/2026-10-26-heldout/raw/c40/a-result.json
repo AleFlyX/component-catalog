@@ -1,0 +1,55 @@
+{
+  "strategy": "catalog40",
+  "group": "A",
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "创建航班延误事件的页面组件为 FlightDelayEventCreateScreen（命名导出，feature 层，experimental）。导入：import { FlightDelayEventCreateScreen } from '@/features/flight-delay-compensation/event-create-screen'。必填 props：无（catalog 的 props.items 为空，组件不接收任何 props）；但运行需要 router、query、i18n 上下文，表单在提交前会把草稿保存到本地。生产用例位于 src/pages/flight-delay-compensation/events/new.tsx。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有空状态（EmptyState）组件，无法给出导出名与导入路径。以 'empty state' 搜索仅返回 3 个不相关条目：business.InfiniteListFooter（无限列表尾部/无更多数据状态，不是空状态占位）、common.AuthRecoveryDialogView（鉴权恢复对话框）和 ui.UiButton（按钮）。这三个都不是可复用的空状态组件，因此按规则明确报告缺失，不臆造 ID。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen, business.BusinessCard",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen, @/components/business/mobile",
+      "requiredProps": ["children"],
+      "missing": false,
+      "answer": "页面：FlightDelayEventCreateScreen（命名导出），导入路径 @/features/flight-delay-compensation/event-create-screen，无必填 props（需 router/query/i18n 上下文）。卡片：BusinessCard（命名导出），导入路径 @/components/business/mobile，必填 props 为 children，可选 className 和 onClick（传 onClick 时整卡可点击）。catalog 中不存在 flight-delay 专用的事件卡片组件，BusinessCard 是唯一的通用移动端业务卡片；business.TaskCard 是任务卡（必填 task），不适用于延误事件。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有标签页（Tabs）组件，无法给出导出名与导入路径。以 'tabs' 搜索仅返回 2 个页面级条目：auth.SignInPage（登录页内置密码/短信标签页）和 flight-delay.FlightDelayCompensationListScreen（列表页内含标签页），二者都是页面而非可复用的 Tabs 组件，catalog 也没有 ui.UiTabs 一类条目，因此明确报告缺失，不臆造 ID。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "catalog 中唯一的状态标签组件是 BookingStatusBadge（命名导出，feature 层），导入路径 @/features/traveler-bookings/BookingStatusBadge。必填 props：无——value?: number | null（可选，null 显示 '--'，未知码显示字符串形式），className?: string 也可选。注意：它面向 traveler booking 的状态码，属于 bookings 领域专用；catalog 里没有通用 StatusBadge/Tag 组件，若需要通用状态标签则应视为缺失。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 8,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only run in /tmp/oss-trial/airport-mobile; no source, config, or component-catalog.json was read, and no repo file was modified. Calls: 5 searches (one per task, --limit 5 --details) + 3 gets (A1 flight-delay.FlightDelayEventCreateScreen, A3 business.BusinessCard, A5 bookings.BookingStatusBadge); 3 initial get attempts failed at the harness layer before execution (missing tool 'description' field) and made no catalog call. A2/A4 returned complete match sets (omitted.items = 0) containing no empty-state or tabs component, so they are reported as missing rather than fitted to unrelated entries."
+}

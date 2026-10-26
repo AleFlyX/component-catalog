@@ -133,7 +133,16 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 关键不是“目录不能大”，而是大目录必须配查询范围：feature 任务用 `--layer feature`，原语任务用 `--layer shared-ui`；无法判断 layer 时 40 条是安全默认。
 - **layer 选择稳定性是新的瓶颈**：明确指定 layer 时 94.9K；agent 自选平均 135.8K（+43%），且有一次把“密码输入框”选成 shared-ui 的 `ui.UiPasswordInput` 而不是 `auth.PasswordInput`。`--layer-fallback` 只处理空层；错层仍有 1 条匹配时不会触发（task4 未完成），平均 173.4K。`--layer auto` 按 top-1 推层，平均 137.4K，但三次 task4 都把多意图查询锁定到 feature，漏掉 shared-ui 的 SearchBar/FilterSheet；auto 只适合单意图查询。
 
-## 10. 相关产物
+## 10. Held-out 任务集第一轮
+
+- 10 个未参与调参的任务（feature 3、shared 3、mixed 2、out-of-catalog 2），每策略 2 组 × 1 次。
+- 结果：40 条 9/10、219.3K tokens；55+明确 layer 9/10、136.9K；**55+`--per-layer 2` 10/10、138.4K**。
+- per-layer 比 40 条 token 低 36.9%、调用少 37.5%，且不需要 agent 选层；比明确 layer 只高 1.1%，但多答对 1 题。
+- 关键失败：明确 layer 在 B4“补偿列表页”返回 BatchScreen 而不是 ListScreen，说明 ranking 歧义仍在；per-layer 同时看两层，反而稳定。
+- 结论：第一轮支持 **55 + `--per-layer 2` 作为默认策略**；40 条是策略不可用时的 fallback。样本仍小（2 组各 1 次），下一轮应扩到 3 次/更多任务。
+- 报告：`test/audits/2026-10-26-heldout/`
+
+## 11. 相关产物
 
 - 基线：`test/baselines/bulletproof-react-2026-10-25/`
 - 第一轮优化/审计：`test/audits/2026-10-25-optimization-a/`
@@ -149,5 +158,6 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 55 条覆盖饱和：`test/audits/2026-10-26-airport-ui55-expanded/`
 - layer 过滤验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-layer/`
 - layer 选择稳定性：`test/audits/2026-10-26-airport-layer-selection/`
+- held-out 第一轮：`test/audits/2026-10-26-heldout/`
 - per-layer 验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-per-layer/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

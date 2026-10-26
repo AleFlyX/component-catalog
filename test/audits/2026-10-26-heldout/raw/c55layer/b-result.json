@@ -1,0 +1,55 @@
+{
+  "strategy": "catalog55-layer",
+  "group": "B",
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "导出名 TravelerBookingDetailScreen；导入路径 @/features/traveler-bookings/booking-detail-screen；必填 prop：bookId（另有约束：操作受权限控制，页面依赖 query 与 router provider）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "answer": "导出名 UiPopup；导入路径 @/components/ui/overlay。底部弹出层，onClose 为必填（open 默认 false，position 默认 bottom，safeArea 默认 false）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage + ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page + @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页：导出名 SignInPage，导入路径 @/features/auth/sign-in-page（feature 层）。顶部导航栏：导出名 UiNavBar，导入路径 @/components/ui/navigation（shared-ui 层）。两者均无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "missing": false,
+      "answer": "导出名 FlightDelayCompensationBatchScreen；导入路径 @/features/flight-delay-compensation/batch-detail-screen；必填 prop：batchId（依赖 query/auth/router provider，处理离线与冲突状态）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有图片查看器组件：在 shared-ui 层搜索无任何条目（items 为空），因此没有可用的导出名与导入路径。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "仅使用 catalog search（每任务 1 次，共 5 次），未执行 get，未读取源码/配置。B1-B4 各命中一条主组件；B3 使用 --per-layer 2 同时命中 SignInPage(feature) 与 UiNavBar(shared-ui)。B5 按策略在 --layer shared-ui 下返回空结果，明确记为 missing；未跨层再搜。"
+}

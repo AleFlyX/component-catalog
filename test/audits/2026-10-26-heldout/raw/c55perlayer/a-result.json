@@ -1,0 +1,55 @@
+{
+  "strategy": "catalog55-per-layer",
+  "group": "A",
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen，无必填 props（requiredProps 为空）。需 router/query/i18n 上下文，表单会先保存本地草稿再提交。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 UiEmptyState，导入路径 @/components/ui/feedback，无必填 props（title/description/action 均可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面：FlightDelayEventCreateScreen，@/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：UiCard，@/components/ui/layout（无必填 props；children 需传入，onClick 时变为可交互卡片）。备选移动业务卡片 BusinessCard，@/components/business/mobile，requiredProps=[children]。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 UiTabs，导入路径 @/components/ui/layout，无必填 props（requiredProps 为空），但 items 必须提供，每项需 key/title；activeKey/onChange 可选（受控）。底部导航条另为 UiTabBar，@/components/ui/navigation，requiredProps=[items]。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有通用的“状态标签/状态徽标”组件（没有 UiStatusBadge/StatusTag 之类共享组件）。唯一近亲是业务专用的 BookingStatusBadge（@/features/traveler-bookings/BookingStatusBadge，用于 traveler booking 状态码，value 可选，null 渲染 --，未知码渲染原字符串，仅 test 覆盖），它不能当作通用状态标签复用。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 10583,
+  "notes": "每个任务一次 search，均 --limit 5 --details --per-layer 2：共 5 次 catalog 调用、0 次 get、0 个源码/配置文件读取（filesRead 为空）。totalBytesRead 为 5 次 CLI 输出字节之和 2357+1601+2288+2207+2130=10583。A5 判定为 missing：通用状态标签组件在 catalog 中不存在，仅存在 domain 专用的 BookingStatusBadge（feature 层，owner=bookings），故标记 missing=true 并明确说明。A3/A4 为多候选任务，已选主答案并列出备选。"
+}
