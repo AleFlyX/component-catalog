@@ -60,3 +60,21 @@
 - B3 的 `login page navbar` 现在返回 6 项并包含 `ui.UiNavBar`。
 - clean B3 重跑 5 次 search，0 get，B2/B3/B4/B5 全对；B1 因 agent 把“special passenger”判为 missing 得 0（语义判断，非检索失败）。
 - 这说明 57 条覆盖已经完整，剩余误差主要是 agent 对“特殊旅客”语义和 mixed 角色的判断，而非目录缺口。
+
+## Final2：57 条完整 3 次（30/30）
+
+在 per-layer limit、A3 mixed 契约、B1 closest-general、B3/B5 aliases 全部到位后，A/B 各 3 次严格运行：
+
+| 组 | 得分 | token 均值 |
+| --- | --- | --- |
+| A | 15/15 | 101,613 |
+| B | 15/15 | 162,486 |
+| **合计** | **30/30** | **132,050** |
+
+- 5 次 search/任务组，0 get，0 第二搜索。
+- A3 三次 page+card 全中；B1 三次都返回 `TravelerBookingDetailScreen` + caveat；B3 三次都返回 `SignInPage + UiNavBar`；B2/B4/B5 全对。
+- 相对 55 条严格版（29.5/30、137,327）：**得分 +0.5，token −3.8%**。
+- 相对 40 条（27.5/30、218,886）：**token −39.7%，得分 +2.5**。
+- 协议：B1 有一次 `ls`（仅目录名）；B2/B3 clean；A 组 clean。
+
+**结论：57 条 + per-layer3 + aliases + 严格一次 search/no-get + mixed/closest-general 契约，当前最优，30/30、132.1K。**

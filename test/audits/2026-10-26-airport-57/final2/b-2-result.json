@@ -1,0 +1,108 @@
+{
+  "strategy": "catalog57-final",
+  "group": "B",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "components": [
+        {
+          "id": "bookings.TravelerBookingDetailScreen",
+          "exportName": "TravelerBookingDetailScreen",
+          "importPath": "@/features/traveler-bookings/booking-detail-screen",
+          "requiredProps": ["bookId"],
+          "missing": false
+        }
+      ],
+      "answer": "TravelerBookingDetailScreen — export name: TravelerBookingDetailScreen; import path: @/features/traveler-bookings/booking-detail-screen; required props: bookId. Caveat: the catalog contains no dedicated special-passenger (特殊旅客) booking-detail component; this is the general traveler booking-detail screen and is the closest same-domain match serving that role. It requires query and router providers, and its actions are permission-gated.",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "components": [
+        {
+          "id": "ui.UiPopup",
+          "exportName": "UiPopup",
+          "importPath": "@/components/ui/overlay",
+          "requiredProps": ["onClose"],
+          "missing": false
+        }
+      ],
+      "answer": "UiPopup — export name: UiPopup; import path: @/components/ui/overlay. Required prop: onClose. Optional: open defaults to false, position defaults to bottom (bottom/side popup with mask, safe-area and scroll handling).",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage",
+      "importPath": "@/features/auth/sign-in-page",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "id": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "id": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "Login page — SignInPage, import @/features/auth/sign-in-page (staff sign-in page with password and SMS tabs, captcha and redirect handling; no required props). Top nav bar — UiNavBar, import @/components/ui/navigation (top navigation bar with back/left/right actions; no required props, back uses router history unless onBack/onClickLeft is supplied). Both components are present.",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "components": [
+        {
+          "id": "flight-delay.FlightDelayCompensationListScreen",
+          "exportName": "FlightDelayCompensationListScreen",
+          "importPath": "@/features/flight-delay-compensation/list-screen",
+          "requiredProps": ["context", "onContextChange"],
+          "missing": false
+        }
+      ],
+      "answer": "FlightDelayCompensationListScreen — export name: FlightDelayCompensationListScreen; import path: @/features/flight-delay-compensation/list-screen; required props: context, onContextChange. It lists delay events and settlement batches with filters and tabs; queries are enabled only with the query permission.",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "ui.UiImageViewer",
+      "importPath": "@/components/ui/image-viewer",
+      "requiredProps": ["image", "open", "onClose"],
+      "missing": false,
+      "components": [
+        {
+          "id": "ui.UiImageViewer",
+          "exportName": "UiImageViewer",
+          "importPath": "@/components/ui/image-viewer",
+          "requiredProps": ["image", "open", "onClose"],
+          "missing": false
+        }
+      ],
+      "answer": "UiImageViewer — export name: UiImageViewer; import path: @/components/ui/image-viewer; required props: image, open, onClose. Fullscreen image viewer; renders null while closed.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "STRICT catalog-only validation: exactly 5 node CLI searches (one per task, --limit 5 --details --per-layer 3), no get, no second search, and no reads of source, component-catalog.json, config, help, ls, cat or grep. No files were read; totalBytesRead is 0. Caveat: B1 has no dedicated special-passenger component in the catalog, so the general traveler booking-detail screen was returned as the same-domain match."
+}

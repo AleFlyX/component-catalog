@@ -149,7 +149,8 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 修复后完整 per-layer3 重跑（允许 get）：29.5/30、180.9K；B2/B3/B4 全修，token 上升来自额外 get/搜索。
 - **最终严格策略**（ranking 修正 + 每任务一次 search + 不 get + mixed components 数组）：**29.5/30、137.3K tokens、5 次调用**；B1–B5 全对，B4 稳定 ListScreen，A5 一次领域 badge 得部分分。相对 40 条 token −37.3%，得分 +2.0。
 - **57 条覆盖补齐**：加入 `UiStatusTag`、`UiImageViewer` + 英文 aliases 后，A/B 各 3 次：**29.5/30、149.2K**；A3 有一次漏卡片，抵消了覆盖收益。
-- 选择：**55 条 = 默认（29.5/30、137.3K）**；57 条仅在需要 StatusTag/ImageViewer 覆盖时启用（+8.7% token，得分相同）。两者都远优于 40 条（218.9K、27.5）。
+- **Final2（57 条完整 3 次）**：per-layer limit、A3 mixed 契约、B1 closest-general、aliases 全部到位后，**30/30、132.1K、5 次调用**；相对 55 条严格版得分 +0.5、token −3.8%。
+- 选择：**57 条 = 当前默认（30/30、132.1K）**；55 条严格版是少 2 条 setup 的 fallback（29.5/30、137.3K）。两者都远优于 40 条（218.9K、27.5）。
 - **per-layer limit 修正**：`--per-layer N` 现在返回每层 top-N，不受全局 `--limit` 截断；修复两层共 6 项时第 6 项（常为 UiNavBar）被丢掉的问题。
 - **Mixed-role 显式校验**：要求先枚举角色、components 每个 role 必须有 ID 或 missing；A3 单独 3 次 **3/3、58.5K、1 次 search、0 get**。mixed 任务缺口主要是输出契约，不是 search 覆盖。
 - **B1 closest-general 策略**：无专用组件但同域通用组件承担角色时，返回通用组件 + caveat；3 次 **3/3、70.6K、1 次 search**，不再在 missing/generic 间摇摆。

@@ -1,0 +1,79 @@
+{
+  "strategy": "catalog57-final",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 FlightDelayEventCreateScreen；导入路径 @/features/flight-delay-compensation/event-create-screen；必填 props：无（catalog requiredProps 为空）。约束：需要 router、query 与 i18n 上下文，表单会先持久化本地草稿再提交。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 UiEmptyState；导入路径 @/components/ui/feedback；无必填 props（title/description/action 均可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "business.BusinessCard",
+          "exportName": "BusinessCard",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["children"],
+          "missing": false,
+          "caveat": "No dedicated flight-delay event card exists in the catalog; BusinessCard is a generic mobile business card wrapper (children required, optional onClick makes the whole card interactive), not flight-delay-specific, so the event summary content must be composed inside it."
+        }
+      ],
+      "answer": "页面：导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen，必填 props 无。卡片：目录中没有航班延误事件专用卡片组件，最接近的通用同域组件为 BusinessCard（@/components/business/mobile，children 必填）——注意它只是通用移动端卡片容器，不是延误事件卡片，需自行组合事件内容；TaskCard 虽带状态徽标但面向 task/plan 数据模型，不适配延误事件。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 UiTabs；导入路径 @/components/ui/layout。catalog 的 requiredProps 为空，但约束说明 items 为必需（每项需 key/title），activeKey 与 onChange 可选。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": ["children"],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 UiStatusTag；导入路径 @/components/ui/display；必填 props：children（注意：catalog 的 requiredProps 字段为空数组，但 constraint 明确写 children are required）；tone 默认 neutral、size 默认 middle、variant 默认 soft，outline 会覆盖 variant。同域另有 bookings.BookingStatusBadge（仅限 traveler booking 状态码，非通用状态标签）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "严格 catalog-only：每个任务恰好一次 search（--limit 5 --details --per-layer 3），无 get、无第二次 search、未读取 source/component-catalog.json/config/help/ls/cat/grep 或任何源码文件，filesRead 为空。唯一写入为所要求的 result.json（/tmp/audit-57-final2/a3/），项目目录 /tmp/oss-trial/airport-mobile 未做任何修改。A3 的卡片为通用兜底（BusinessCard）并已显式标注 caveat；A5 的 requiredProps 依据 constraint 取 children，与结构化字段的空数组存在目录内部不一致，已在 answer 中说明。"
+}
