@@ -150,6 +150,7 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - **最终严格策略**（ranking 修正 + 每任务一次 search + 不 get + mixed components 数组）：**29.5/30、137.3K tokens、5 次调用**；B1–B5 全对，B4 稳定 ListScreen，A5 一次领域 badge 得部分分。相对 40 条 token −37.3%，得分 +2.0。
 - **57 条覆盖补齐**：加入 `UiStatusTag`、`UiImageViewer` + 英文 aliases 后，A/B 各 3 次：**29.5/30、149.2K**；A3 有一次漏卡片，抵消了覆盖收益。
 - 选择：**55 条 = 默认（29.5/30、137.3K）**；57 条仅在需要 StatusTag/ImageViewer 覆盖时启用（+8.7% token，得分相同）。两者都远优于 40 条（218.9K、27.5）。
+- **Mixed-role 显式校验**：要求先枚举角色、components 每个 role 必须有 ID 或 missing；A3 单独 3 次 **3/3、58.5K、1 次 search、0 get**。mixed 任务缺口主要是输出契约，不是 search 覆盖。
 - no-get 约束定点：A 5/5、148.6K；B 5/5、264.7K（B3 因首次搜索未含 NavBar 追加一次）；agent 查询次数仍是主要方差。
 
 ## 11. 相关产物

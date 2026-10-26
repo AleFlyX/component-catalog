@@ -1,0 +1,31 @@
+{
+  "strategy": "mixed-check",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "A3",
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "ui.UiCard",
+          "importPath": "@/components/ui/layout",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "Delay-event create page: compose flight-delay.FlightDelayEventCreateScreen (feature layer, @/features/flight-delay-compensation/event-create-screen) as the page shell; it takes no required props and needs router/query/i18n context, persisting a local draft before submit. For host-card UI pull ui.UiCard (shared-ui, @/components/ui/layout) which has no required props of its own but requires children and becomes interactive (interactive variant) when onClick is supplied. Wrap form sections in UiCard with title/extra, and mount the screen inside the app router/query providers.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 1,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Exactly one search ('创建航班延误事件页面 卡片', --limit 5 --details --per-layer 3); no get calls, no second search, and zero source/component-catalog.json/config/help/ls/grep reads. Only post-search fs touch was reading /tmp/audit-a3/1/usage.jsonl (harness telemetry, not catalog or source content). Result returned 4 items across layers feature and shared-ui (truncated=false). Role mapping: page -> FlightDelayEventCreateScreen (best match for creating a delay event page); card -> ui.UiCard. Both roles present, so missing=false for each. UiCard's 'children are required' is a constraint rather than a declared requiredProp, so requiredProps is [] matching the catalog."
+}

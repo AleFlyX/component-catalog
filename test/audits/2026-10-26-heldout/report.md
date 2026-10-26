@@ -140,3 +140,18 @@ ranking 修正后，用 per-layer3 重跑完整 A/B 各 3 次，并在 mixed 任
 - 失败/协议：A 组少数 agent 做过 `ls`（仅目录名）；已记录，不影响答案。
 
 **最终建议：`55 + --per-layer 3`，每任务一次 search，只有字段缺失才 get；mixed 任务要求 components 数组覆盖所有角色。**
+
+## Mixed-role 显式校验（A3）
+
+A3 之前有一次只答页面、漏掉卡片。加入“先枚举角色，components 数组每个 role 必须有 ID 或 missing”后，A3 单独重跑 3 次：
+
+| 指标 | 结果 |
+| --- | --- |
+| 正确 | **3/3**（page + card 均返回） |
+| CLI 调用 | 1 次/任务 |
+| token 均值 | **58,531** |
+| get | 0 |
+
+- 三次都返回 `FlightDelayEventCreateScreen + UiCard`（或 BusinessCard），无漏角色。
+- 说明 mixed 任务的缺口主要是**输出契约**，不是 search 覆盖；SKILL 已固化“先枚举角色、每个 role 必须有 ID 或 missing”。
+- 结合该契约，55 条严格版可把 A3 从不稳定变为 3/3；A5 仍是唯一部分分来源。

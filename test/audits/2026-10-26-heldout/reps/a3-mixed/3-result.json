@@ -1,0 +1,31 @@
+{
+  "strategy": "mixed-check",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A3",
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "ui.UiCard",
+          "importPath": "@/components/ui/layout",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "Use flight-delay.FlightDelayEventCreateScreen from @/features/flight-delay-compensation/event-create-screen as the create-delay-event page. It requires no props and builds a flight delay event from flight, catalog and price-preview form fields; it needs router, query and i18n context and persists a local draft before submit. Compose its form sections with ui.UiCard from @/components/ui/layout (no required props; pass children, optional title/extra; onClick makes it interactive). If the intent is instead viewing an existing event, the sibling page is flight-delay.FlightDelayEventDetailScreen, which requires eventId.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 1,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Single catalog search (--limit 5 --details --per-layer 3) done in /tmp/oss-trial/airport-mobile; no get, no second search, no source/config/help/ls/cat/grep reads. 4 items returned across feature and shared-ui layers, none truncated. Roles enumerated: page=create screen, card=UiCard."
+}
