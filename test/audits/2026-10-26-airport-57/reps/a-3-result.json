@@ -1,0 +1,78 @@
+{
+  "strategy": "catalog57",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export name: FlightDelayEventCreateScreen. Import path: @/features/flight-delay-compensation/event-create-screen. Required props: none (requiredProps is empty) — it creates a flight delay event with flight, catalog and price-preview form fields. Caveat: it requires router/query/i18n context and persists a local draft before submitting.",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export name: UiEmptyState. Import path: @/components/ui/feedback. Empty-state block with title, description and optional action; title/description/action are all optional.",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "layer": "feature",
+          "requiredProps": [],
+          "role": "page"
+        },
+        {
+          "componentId": "business.BusinessCard",
+          "exportName": "BusinessCard",
+          "importPath": "@/components/business/mobile",
+          "layer": "shared-ui",
+          "requiredProps": ["children"],
+          "role": "card"
+        }
+      ],
+      "answer": "Page: export FlightDelayEventCreateScreen from @/features/flight-delay-compensation/event-create-screen (no required props). Card: export BusinessCard from @/components/business/mobile (required prop: children; passing onClick makes the whole card interactive).",
+      "confidence": "high"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export name: UiTabs. Import path: @/components/ui/layout. Controlled active key; items are required (each item needs key/title) while activeKey/onChange are optional.",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export name: UiStatusTag. Import path: @/components/ui/display. Required props: none reported by requiredProps; functionally children are required (tone defaults to neutral, size to middle, variant to soft, outline overrides variant).",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Held-out group A, 57-entry catalog (component-catalog-57.config.json), English aliases, --per-layer 3, --limit 5 --details. Exactly one search per task (5 total), zero get calls, no source/catalog/config/help/ls/cat/grep inspection (only an initial directory listing to confirm the config filename). All 5 targets hit in the single result. Each response reported omitted.byLimit=1 for A1/A3/A4/A5, but the needed component was in the returned slice. A1 requiredProps is empty; A5's schema lists requiredProps empty although children are used."
+}

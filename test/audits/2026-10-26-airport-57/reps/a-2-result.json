@@ -1,0 +1,79 @@
+{
+  "strategy": "catalog57",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "页面组件为 FlightDelayEventCreateScreen，导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen；无必填 props（requiredProps 为空）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "空状态组件为 UiEmptyState，导出名 UiEmptyState，导入路径 @/components/ui/feedback；无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": true,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": null,
+          "exportName": null,
+          "importPath": null,
+          "missing": true,
+          "reason": "单次 per-layer-3 结果中未出现航班延误事件卡片；feature 层被 Create/Detail/Batch 三个页面占满（omitted 1 by limit），未猜测其导出名/导入路径。"
+        }
+      ],
+      "answer": "页面：导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen。卡片：单次 per-layer-3 搜索结果中未出现航班延误事件卡片（feature 层被 Create/Detail/Batch 三个页面占满），故标记缺失，不做猜测。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "标签页组件为 UiTabs，导出名 UiTabs，导入路径 @/components/ui/layout。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": [
+        "children"
+      ],
+      "missing": false,
+      "components": [],
+      "answer": "状态标签组件为 UiStatusTag，导出名 UiStatusTag，导入路径 @/components/ui/display；constraint 声明 children 为必填（结构化 requiredProps 字段为空，此处以 constraint 为准，故必填 props 为 children）。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "每组任务仅执行一次 catalog search（共 5 次），无 get、无 source/config/help/ls/cat/grep 读取，未修改项目文件。A3：页面已找到，但单次 per-layer-3 结果中无航班延误事件卡片，按规则报告 missing 而未猜测。A5：结构化 requiredProps 为 []，但 constraint 明确 children 为必填，故 requiredProps 记为 [children] 并注明差异。"
+}

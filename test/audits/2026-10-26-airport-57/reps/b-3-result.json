@@ -1,0 +1,102 @@
+{
+  "strategy": "catalog57",
+  "group": "B",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "bookings.TravelerBookingDetailScreen",
+          "exportName": "TravelerBookingDetailScreen",
+          "importPath": "@/features/traveler-bookings/booking-detail-screen",
+          "requiredProps": ["bookId"]
+        }
+      ],
+      "answer": "Export: TravelerBookingDetailScreen; import: @/features/traveler-bookings/booking-detail-screen; required props: bookId.",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiPopup",
+          "exportName": "UiPopup",
+          "importPath": "@/components/ui/overlay",
+          "requiredProps": ["onClose"]
+        }
+      ],
+      "answer": "Export: UiPopup; import: @/components/ui/overlay.",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage",
+      "importPath": "@/features/auth/sign-in-page",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": []
+        },
+        {
+          "componentId": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": []
+        }
+      ],
+      "answer": "Login page: export SignInPage, import @/features/auth/sign-in-page. Top nav bar: export UiNavBar, import @/components/ui/navigation.",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayCompensationListScreen",
+          "exportName": "FlightDelayCompensationListScreen",
+          "importPath": "@/features/flight-delay-compensation/list-screen",
+          "requiredProps": ["context", "onContextChange"]
+        }
+      ],
+      "answer": "Export: FlightDelayCompensationListScreen; import: @/features/flight-delay-compensation/list-screen; required props: context, onContextChange.",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "ui.UiImageViewer",
+      "importPath": "@/components/ui/image-viewer",
+      "requiredProps": ["image", "open", "onClose"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiImageViewer",
+          "exportName": "UiImageViewer",
+          "importPath": "@/components/ui/image-viewer",
+          "requiredProps": ["image", "open", "onClose"]
+        }
+      ],
+      "answer": "Export: UiImageViewer; import: @/components/ui/image-viewer; required props: image, open, onClose.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict protocol: exactly one catalog search per task (5 total), no get, no second search, no file reads. B1 match is 'TravelerBookingDetailScreen' (traveler booking detail); 'special passenger' wording is not literally present in that entry, so confidence medium. B3 result includes both SignInPage (login page) and UiNavBar (top navigation bar) as required."
+}

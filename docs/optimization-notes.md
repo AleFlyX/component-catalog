@@ -148,8 +148,8 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - Post-hoc ranking 修正：嵌套概念只在 related 到长短语 primary 时保留；CJK 空格查询同时匹配 compact form。`航班延误补偿列表页面` 与 `航班延误 补偿 列表` 现在都先返回 ListScreen，B4 的 search 顺序问题已修。
 - 修复后完整 per-layer3 重跑（允许 get）：29.5/30、180.9K；B2/B3/B4 全修，token 上升来自额外 get/搜索。
 - **最终严格策略**（ranking 修正 + 每任务一次 search + 不 get + mixed components 数组）：**29.5/30、137.3K tokens、5 次调用**；B1–B5 全对，B4 稳定 ListScreen，A5 一次领域 badge 得部分分。相对 40 条 token −37.3%，得分 +2.0。
-- **57 条覆盖补齐**：加入 `UiStatusTag`、`UiImageViewer` + 英文 aliases 后，A/B 各一次严格运行 **10/10、176.6K**（A 158.4K、B 194.8K）；比 55 条严格版 +28.6% token，换 A5/B5 完整覆盖。
-- 选择：**55 条 = token 优先（29.5/30、137K）；57 条 = 覆盖优先（10/10、176.6K）**。两者都远优于 40 条（218.9K、27.5）。
+- **57 条覆盖补齐**：加入 `UiStatusTag`、`UiImageViewer` + 英文 aliases 后，A/B 各 3 次：**29.5/30、149.2K**；A3 有一次漏卡片，抵消了覆盖收益。
+- 选择：**55 条 = 默认（29.5/30、137.3K）**；57 条仅在需要 StatusTag/ImageViewer 覆盖时启用（+8.7% token，得分相同）。两者都远优于 40 条（218.9K、27.5）。
 - no-get 约束定点：A 5/5、148.6K；B 5/5、264.7K（B3 因首次搜索未含 NavBar 追加一次）；agent 查询次数仍是主要方差。
 
 ## 11. 相关产物
