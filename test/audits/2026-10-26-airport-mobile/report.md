@@ -36,7 +36,7 @@
 2. **收益来自步骤/上下文，而不是输出更少**：output token 相同，差异几乎全部是 cache read 和 uncached input；catalog 用 6 次调用/11 steps，source 用 20 steps/29 tool calls。
 3. **目录范围不需要覆盖全仓库也能产生收益**：只登记 30 个业务相关组件（约 2% 源文件），就足以回答 5 个跨模块任务；source 却要在 1431 个文件中定位。
 4. **代价是细节置信度**：catalog 的 summary/constraint 足以回答“错误如何显示/如何挂载”这类问题，但精确 DOM 结构与挂载位置仍需要 source；catalog 条件将这些标为 medium 是合理的。
-5. **setup 成本**：30 条标注产生 31 KB patch、308 个新增行（含 JSDoc 与 2 个 preview）；比 bulletproof 的 857 行小，但仍需安装依赖和生成。按本轮 5 任务节省约 258K tokens 估算，setup 回本很快（约 1 批），但依赖安装/人工选择范围未计入。
+5. **setup 成本**：30 条标注产生 30,947 B patch、284 个新增行（13,035 B，含 JSDoc 与 2 个 preview）；比 bulletproof 的 857 行小，但仍需安装依赖和生成。按本轮 5 任务节省约 258K tokens 估算，setup 回本很快（约 1 批），但依赖安装/人工选择范围未计入。
 6. **任务歧义**：“特殊旅客预订列表”没有专用页面组件；catalog 的 vocabulary/摘要无法凭空创造不存在的变体，最终与 source 一致。目录应记录“没有专用组件”这一事实，而不是强行造 ID。
 
 ## 4. 限制

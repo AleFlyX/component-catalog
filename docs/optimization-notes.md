@@ -85,7 +85,7 @@
 ## 8. 大规模陌生仓库复测（airport-internal-mobile）
 
 - 项目：`/home/ccb/airport-workspace/airport-internal-mobile`，约 1431 源文件 / 136 TSX；只登记 30 个业务相关组件（约 2% 候选）。
-- Catalog：30 条，315 KB / gzip 22 KB；标注 patch 31 KB / 新增 308 行；doctor/audit/check 全 pass。
+- Catalog：30 条，315 KB / gzip 22 KB；标注 patch 30,947 B / 新增 284 行；doctor/audit/check 全 pass。
 - 5 个任务 × 3 次：catalog 6 次调用 / 11 steps / 205K tokens；source 读 14 文件 / 94 KB / 20 steps / 29 tool calls / 463K tokens。
 - 正确率均 15/15；catalog 比 source **总 token −55.7% 均值 / −49.4% 中位数**，范围不重叠（162–252K vs 355–637K）；output token 几乎相同，差异来自 cache read 和 uncached input。
 - 结论：**收益随仓库规模和检索空间显著增长**；在小而熟悉的 bulletproof-react 上打平，在这个陌生中大型仓库上明确为正。只覆盖 2% 源文件的精选范围已足够回答跨模块任务；setup 按本轮节省额可在一批任务左右回本（依赖安装成本未计入）。
