@@ -65,13 +65,15 @@ test("expanded UI catalog exposes the core primitives without regressing busines
   const autoSearchBar = search(u55Catalog, "搜索栏", 5, u55Config.vocabulary, false, false, "auto");
   assert.equal(autoSearchBar.layer, "shared-ui");
   assert.equal(autoSearchBar.items[0].id, "business.SearchBar");
-  const perLayer = search(u55Catalog, "预订列表 搜索栏 筛选面板", 5, u55Config.vocabulary, false, false, null, false, 2);
-  assert.equal(perLayer.perLayer, 2);
+  const perLayer = search(u55Catalog, "预订列表 搜索栏 筛选面板", 5, u55Config.vocabulary, false, false, null, false, 3);
+  assert.equal(perLayer.perLayer, 3);
   assert.ok(perLayer.layers.includes("feature"));
   assert.ok(perLayer.layers.includes("shared-ui"));
   const perLayerIds = perLayer.items.map((item) => item.id);
   assert.ok(perLayerIds.includes("business.SearchBar"));
   assert.ok(perLayerIds.includes("business.FilterSheet"));
+  const spacedList = search(u55Catalog, "航班延误 补偿 列表", 5, u55Config.vocabulary, false, false, null, false, 3);
+  assert.equal(spacedList.items[0].id, "flight-delay.FlightDelayCompensationListScreen");
 });
 
 test("55-entry catalog covers the remaining UI queries without losing business entrypoints", () => {
@@ -98,11 +100,13 @@ test("55-entry catalog covers the remaining UI queries without losing business e
   const autoSearchBar = search(u55Catalog, "搜索栏", 5, u55Config.vocabulary, false, false, "auto");
   assert.equal(autoSearchBar.layer, "shared-ui");
   assert.equal(autoSearchBar.items[0].id, "business.SearchBar");
-  const perLayer = search(u55Catalog, "预订列表 搜索栏 筛选面板", 5, u55Config.vocabulary, false, false, null, false, 2);
-  assert.equal(perLayer.perLayer, 2);
+  const perLayer = search(u55Catalog, "预订列表 搜索栏 筛选面板", 5, u55Config.vocabulary, false, false, null, false, 3);
+  assert.equal(perLayer.perLayer, 3);
   assert.ok(perLayer.layers.includes("feature"));
   assert.ok(perLayer.layers.includes("shared-ui"));
   const perLayerIds = perLayer.items.map((item) => item.id);
   assert.ok(perLayerIds.includes("business.SearchBar"));
   assert.ok(perLayerIds.includes("business.FilterSheet"));
+  const spacedList = search(u55Catalog, "航班延误 补偿 列表", 5, u55Config.vocabulary, false, false, null, false, 3);
+  assert.equal(spacedList.items[0].id, "flight-delay.FlightDelayCompensationListScreen");
 });

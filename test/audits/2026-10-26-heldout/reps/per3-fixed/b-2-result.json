@@ -1,0 +1,63 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "B",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": [
+        "bookId"
+      ],
+      "missing": false,
+      "answer": "导出名 TravelerBookingDetailScreen；导入路径 @/features/traveler-bookings/booking-detail-screen；必填 props：bookId（string）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": [
+        "onClose"
+      ],
+      "missing": false,
+      "answer": "导出名 UiPopup；导入路径 @/components/ui/overlay（底部/侧边弹出层，position 默认 'bottom'）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage",
+      "importPath": "@/features/auth/sign-in-page",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页：导出名 SignInPage，导入路径 @/features/auth/sign-in-page。顶部导航栏：catalog 未返回独立的导航栏组件条目；最接近的是 MobilePageShell（导出名 MobilePageShell，导入路径 @/components/business/responsive-layout，提供可选 header），但不能确认存在专用 top nav 组件。",
+      "confidence": "low"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": [
+        "context",
+        "onContextChange"
+      ],
+      "missing": false,
+      "answer": "导出名 FlightDelayCompensationListScreen；导入路径 @/features/flight-delay-compensation/list-screen；必填 props：context、onContextChange。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "answer": "Catalog 中没有图片查看器组件；唯一返回的 FlightDelayEventCreateScreen 是航班延误事件创建页（仅匹配到 price-preview），与图片查看无关。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 8,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "B1 search+get, B2 search+get, B3 search+get, B4 search, B5 search = 8 CLI calls. B3 顶部导航栏未检索到独立条目；MobilePageShell 仅提供可选 header。B5 确认缺失。"
+}

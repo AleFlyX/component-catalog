@@ -75,3 +75,24 @@
 - `config-55.json`、`catalog-55.json.gz`
 - `raw/{c40,c55layer,c55perlayer}/{a,b}-{result,usage}`
 - `reps/r2`、`reps/r3`、`reps/per3`
+
+## Post-hoc ranking 修正（本轮代码改动）
+
+在 3 次 held-out 之后又修了一个 ranking 问题，用于处理 B4：
+
+- **嵌套概念**：长短语不再无条件吞掉被包含的短词。若短词明确 related 到长短语的 primary（如“列表” related 到 `flight-delay-list`），两者都参与；否则（如“补偿”在“补偿列表”中）只保留长短语。
+- **中文空格**：匹配 vocabulary 时同时使用去空格后的 compact query，因此“航班延误 补偿 列表”也能触发“补偿列表”。
+
+验证：
+
+```text
+修复前：航班延误补偿列表页面 -> BatchScreen 第一
+修复后：航班延误补偿列表页面 -> ListScreen 第一
+修复后：航班延误 补偿 列表 -> ListScreen 第一
+```
+
+- 这直接修掉了 held-out B4 的自然查询/空格查询排序；agent 若再选错，属于 agent 选择问题，不是 search 返回顺序问题。
+- 修正后尚未重跑完整 3 次 held-out；B 组定点运行仍受 agent 额外 get/省略 NavBar 影响（13.5/15），因此不把 29/30 当作最终稳定值。
+- `npm test` 86/86 通过。
+
+产物：`reps/per3-fixed/`（修正后 B 组 3 次定点结果）。

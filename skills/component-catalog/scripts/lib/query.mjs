@@ -17,12 +17,27 @@ function includesTerm(text, term) {
 export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null, layerFallback = false, perLayer = null) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
+  // CJK queries are often written with spaces between words. Match vocabulary
+  // against the compact form as well so "补偿 列表" can trigger "补偿列表".
+  const compactQuery = /[\u3400-\u9fff]/.test(query) ? query.replace(/\s+/g, "") : query;
   const matchedTerms = Object.entries(vocabulary)
     .map(([term, values]) => [normalize(term), values])
-    .filter(([term]) => includesTerm(query, term));
-  // A specific phrase owns its contained terms; unrelated concepts still combine.
+    .filter(([term]) => includesTerm(query, term) || includesTerm(compactQuery, term));
+  // A longer phrase owns a contained term unless that shorter term explicitly
+  // relates to the longer phrase's primary. This keeps structural words such
+  // as "列表" (related to flight-delay-list) while dropping generic modifiers
+  // such as "补偿" inside "补偿列表".
   const concepts = matchedTerms
-    .filter(([term]) => !matchedTerms.some(([other]) => other !== term && other.includes(term)))
+    .filter(
+      ([term, values]) =>
+        !matchedTerms.some(
+          ([other, otherValues]) =>
+            other !== term &&
+            other.includes(term) &&
+            (otherValues.primary === values.primary ||
+              !values.related?.includes(otherValues.primary)),
+        ),
+    )
     .map(([, values]) => values);
   const ranked = catalog.components
     .map((item) => {

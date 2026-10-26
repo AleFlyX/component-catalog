@@ -1,0 +1,56 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "B",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "导出名 TravelerBookingDetailScreen，导入路径 @/features/traveler-bookings/booking-detail-screen，必填 prop 为 bookId（string）。catalog 中该条目的 summary 为 traveler booking detail（traveler-bookings 模块）；未单独收录名称含“特殊旅客”的组件。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "answer": "导出名 UiPopup，导入路径 @/components/ui/overlay。必填 prop 为 onClose；open 默认 false，position 默认 bottom。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage, ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page, @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页：导出名 SignInPage，导入路径 @/features/auth/sign-in-page；顶部导航栏：导出名 UiNavBar，导入路径 @/components/ui/navigation。两个组件均无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "missing": false,
+      "answer": "导出名 FlightDelayCompensationBatchScreen，导入路径 @/features/flight-delay-compensation/batch-detail-screen，必填 prop 为 batchId（string）。catalog 未返回独立的“列表页”组件，该条目是航班延误补偿批次工作台页面（batch-detail-screen）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有图片查看器组件：搜索“图片查看器”返回 0 条，无导出名/导入路径。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 8,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "每条任务各 1 次 search（B1“特殊旅客 预订详情”、B2“底部弹出层”、B3“登录页 顶部导航栏”、B4“航班延误 补偿 列表”、B5“图片查看器”），均加 --limit 5 --details --per-layer 3。另按任务各最多 1 次 get：B1 对 bookings.TravelerBookingDetailScreen（首次误带 --details 被拒绝，第二次成功），B4 对 flight-delay.FlightDelayCompensationBatchScreen；usage.jsonl 记录 8 次调用。B1、B4 的 catalog 条目名称与中文描述并非逐字对应（分别为 traveler booking detail 和 batch detail），故 confidence 记 medium；未读取任何源码/配置，filesRead 为空。"
+}

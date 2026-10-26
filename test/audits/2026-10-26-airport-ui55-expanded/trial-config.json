@@ -228,9 +228,7 @@
     },
     "底部弹出": {
       "primary": "ui-popup",
-      "related": [
-        "ui-action-sheet"
-      ]
+      "related": []
     },
     "操作表": {
       "primary": "ui-action-sheet",
@@ -241,6 +239,50 @@
       "related": [
         "ui-form-field"
       ]
+    },
+    "创建航班延误事件": {
+      "primary": "flight-delay-event",
+      "related": []
+    },
+    "补偿列表": {
+      "primary": "flight-delay-list",
+      "related": []
+    },
+    "预订详情": {
+      "primary": "traveler-booking",
+      "related": []
+    },
+    "空状态": {
+      "primary": "ui-empty-state",
+      "related": []
+    },
+    "导航栏": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "顶部导航栏": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "状态标签": {
+      "primary": "ui-status-tag",
+      "related": []
+    },
+    "图片查看器": {
+      "primary": "ui-image-viewer",
+      "related": []
+    },
+    "卡片": {
+      "primary": "ui-card",
+      "related": []
+    },
+    "步骤条": {
+      "primary": "ui-steps",
+      "related": []
+    },
+    "标签页": {
+      "primary": "ui-tabs",
+      "related": []
     }
   }
 }

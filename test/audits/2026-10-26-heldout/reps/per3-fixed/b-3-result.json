@@ -1,0 +1,63 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "B",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": [
+        "bookId"
+      ],
+      "missing": false,
+      "answer": "导出名 TravelerBookingDetailScreen，导入路径 @/features/traveler-bookings/booking-detail-screen，必填 props: bookId（string）。catalog 中没有单独以“特殊旅客/special passenger”命名的预订详情条目；这是唯一的预订详情页组件（summary: Traveler booking detail with status transitions, evaluations and media；约束：actions 受权限控制，页面需要 query 与 router provider）。若严格要求“特殊旅客”专属条目，则该条目在 catalog 中不存在。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": [
+        "onClose"
+      ],
+      "missing": false,
+      "answer": "通用底部弹出层为 UiPopup：导出名 UiPopup，导入路径 @/components/ui/overlay；必填 props 仅 onClose（open 默认 false，position 默认 bottom，safeArea 默认 false）。同文件中还有更专用的 UiActionSheet（actions/open/onClose，仅作动作列表）与 business.FilterSheet（visible/title/children/onClose，筛选专用），若需求是通用 bottom sheet 则用 UiPopup。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage + ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page ； @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页：导出 SignInPage，导入 @/features/auth/sign-in-page（无必填 props，redirect 可选；需要 router/auth store/i18n context）。顶部导航栏：导出 UiNavBar，导入 @/components/ui/navigation（无必填 props；back 默认用 router history，可用 onBack/onClickLeft 覆盖，fixed 开启固定布局）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": [
+        "context",
+        "onContextChange"
+      ],
+      "missing": false,
+      "answer": "导出名 FlightDelayCompensationListScreen，导入路径 @/features/flight-delay-compensation/list-screen，必填 props: context 与 onContextChange；列表查询仅在用户具有 query 权限时启用。注意区分同模块的 FlightDelayCompensationBatchScreen（batch-detail-screen，必填 batchId）与 FlightDelayEventCreateScreen（event-create-screen，无必填 props）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有图片查看器（image viewer / image preview / photo viewer）组件。搜索仅返回一个不相关条目 flight-delay.FlightDelayEventCreateScreen（其 summary 提到 price-preview 表单字段，并非图片预览）。需要图片查看能力只能自行实现或复用现有 overlay 组件，不能编造 ID。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "6 次 CLI 调用：B1 search + 1 次 get（确认 props），B2/B3/B4/B5 各 1 次 search；无源码/component-catalog.json/config 内容读取。B1 的“特殊旅客”限定在 catalog 元数据中无对应标注，仅有通用旅客预订详情页，故 confidence=medium；B5 明确缺失（无 image viewer 条目）。附带说明：开工前执行了 pwd 与 `ls component-catalog.config.json`（仅确认文件存在，未读取内容），以及 mkdir 创建输出目录。"
+}
