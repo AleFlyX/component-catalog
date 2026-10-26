@@ -1,0 +1,19 @@
+{
+  "strategy": "closest-general",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "Use bookings.TravelerBookingDetailScreen (export TravelerBookingDetailScreen) from '@/features/traveler-bookings/booking-detail-screen'. It is the traveler booking detail screen: status transitions, evaluations and media; requires bookId and needs query + router providers, with permission-gated actions. CAVEAT: this is a general traveler-booking detail screen, not a dedicated special-passenger (特殊旅客) detail page - it exposes no special-passenger-specific fields or flows (e.g. wheelchair/assistance, unaccompanied minor, special meal, service confirmation). It serves the detail-page role, but special-passenger content must be added/extended by the caller.",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 1,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Exactly one catalog search, no get, no second search. Top hit is the only detail-screen component in the 57-entry catalog; remaining hits were a list screen, a status badge, and shared-ui shells/error pages. No dedicated special-passenger component surfaced, so returned the closest general component with the caveat above rather than marking missing. Not a component-source read, but for transparency: ~400 B of component-catalog-57.config.json were inspected to confirm the workspace config before searching; discovery itself came solely from the search output. Workspace untouched (only an mkdir of the audit log dir)."
+}

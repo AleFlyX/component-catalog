@@ -155,3 +155,21 @@ A3 之前有一次只答页面、漏掉卡片。加入“先枚举角色，compo
 - 三次都返回 `FlightDelayEventCreateScreen + UiCard`（或 BusinessCard），无漏角色。
 - 说明 mixed 任务的缺口主要是**输出契约**，不是 search 覆盖；SKILL 已固化“先枚举角色、每个 role 必须有 ID 或 missing”。
 - 结合该契约，55 条严格版可把 A3 从不稳定变为 3/3；A5 仍是唯一部分分来源。
+
+## B1 语义策略：closest-general
+
+B1“特殊旅客预订详情页”没有专用组件，但通用旅行者预订详情页覆盖该角色。加入策略：
+
+> 没有专用组件、但同域通用组件明确承担该角色时，返回通用组件 + 显式 caveat；只有连通用角色组件都不存在时才 missing。
+
+单独重跑 3 次：
+
+| 指标 | 结果 |
+| --- | --- |
+| 正确 | **3/3**（返回 TravelerBookingDetailScreen + caveat） |
+| CLI 调用 | 1 次/任务 |
+| token 均值 | **70,580** |
+| get | 0 |
+
+- 三次都明确说明“无专用特殊旅客组件，通用详情页需补 special-passenger 语义”，不再在 missing / generic 之间摇摆。
+- 与 A3 mixed 契约、B3 per-layer limit 修复、A5/B5 覆盖补齐合并后，57 条已具备稳定 30/30 的行为条件；仍待一次完整的 57 条 3 次复测确认。

@@ -1,0 +1,19 @@
+{
+  "strategy": "closest-general",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "No dedicated special-passenger (特殊旅客) component exists in the catalog. The closest general component that serves the special-passenger booking detail page role is bookings.TravelerBookingDetailScreen (export TravelerBookingDetailScreen, import '@/features/traveler-bookings/booking-detail-screen'), a feature-layer traveler booking detail screen providing status transitions, evaluations and media; required prop: bookId. Caveat: this is a general traveler booking detail, NOT a special-passenger-specific page - it has no special-passenger concepts (e.g. wheelchair/UM/medical/assistance service fields or SSR/SSR-style special-service sections), so special-passenger content must be built on top of it (composition/wrapping) or handled separately. Its feature layer is status 'experimental' with reuse scope 'module' owned by 'bookings', and it is permission-gated (actions) and requires query + router providers.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 1,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict protocol followed: exactly one catalog search invocation of component-catalog.mjs (--limit 5 --details --per-layer 3, task B1, usage log /tmp/audit-b1/3/usage.jsonl), NO get call, no second search, no source/component-catalog.json/config/help/ls/cat/grep. Per-layer 3 returned 6 items across layers [feature, shared-ui] (truncated=false, omitted 0). Top hit bookings.TravelerBookingDetailScreen is a general traveler-booking detail screen; no special-passenger-specific component (e.g. SpecialPassenger*, 特殊旅客) appeared in the result set, so per policy I returned the closest general component with an explicit caveat and marked missing=false rather than fabricating a dedicated component. catalogCalls counts the single mandated search (0 get calls). No other candidate was close to the role: TravelerBookingListScreen (list, not detail), BookingStatusBadge (status tag only), MobilePageShell (layout shell), Forbidden/NotFound (error pages)."
+}

@@ -152,6 +152,7 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 选择：**55 条 = 默认（29.5/30、137.3K）**；57 条仅在需要 StatusTag/ImageViewer 覆盖时启用（+8.7% token，得分相同）。两者都远优于 40 条（218.9K、27.5）。
 - **per-layer limit 修正**：`--per-layer N` 现在返回每层 top-N，不受全局 `--limit` 截断；修复两层共 6 项时第 6 项（常为 UiNavBar）被丢掉的问题。
 - **Mixed-role 显式校验**：要求先枚举角色、components 每个 role 必须有 ID 或 missing；A3 单独 3 次 **3/3、58.5K、1 次 search、0 get**。mixed 任务缺口主要是输出契约，不是 search 覆盖。
+- **B1 closest-general 策略**：无专用组件但同域通用组件承担角色时，返回通用组件 + caveat；3 次 **3/3、70.6K、1 次 search**，不再在 missing/generic 间摇摆。
 - no-get 约束定点：A 5/5、148.6K；B 5/5、264.7K（B3 因首次搜索未含 NavBar 追加一次）；agent 查询次数仍是主要方差。
 
 ## 11. 相关产物

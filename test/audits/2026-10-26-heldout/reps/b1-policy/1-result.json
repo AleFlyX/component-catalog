@@ -1,0 +1,19 @@
+{
+  "strategy": "closest-general",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "No dedicated special-passenger booking-detail component is present in the catalog. The closest general component is bookings.TravelerBookingDetailScreen (export TravelerBookingDetailScreen, import \"@/features/traveler-bookings/booking-detail-screen\"). It renders a traveler booking detail page with status transitions, evaluations and media, and requires bookId. Caveat: it is a general traveler-booking detail screen with no special-passenger/assistance-specific fields (e.g. wheelchair, SSR/assistance codes, medical or accompanying-passenger data); special-passenger semantics would have to be added or composed on top, and its actions are permission-gated and the screen needs query and router providers.",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 1,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Executed exactly one catalog search with --limit 5 --details --per-layer 3 in /tmp/oss-trial/airport-mobile; no get and no second search. Returned 6 items across feature and shared-ui layers, truncated=false. Chose the closest general traveler-booking detail component per policy (dedicated special-passenger component absent) with an explicit caveat; missing=false. Confidence medium because Special-passenger-specific behavior is not evidenced in the catalog entry."
+}
