@@ -1,0 +1,75 @@
+{
+  "strategy": "catalog57",
+  "group": "A",
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "FlightDelayEventCreateScreen：导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen，requiredProps 为空（无必填 props）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "UiEmptyState：导出名 UiEmptyState，导入路径 @/components/ui/feedback，无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": []
+        },
+        {
+          "role": "card",
+          "componentId": "business.BusinessCard",
+          "exportName": "BusinessCard",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["children"]
+        }
+      ],
+      "answer": "页面：FlightDelayEventCreateScreen，导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen。卡片：BusinessCard，导出名 BusinessCard，导入路径 @/components/business/mobile（必填 props: children）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "UiTabs：导出名 UiTabs，导入路径 @/components/ui/layout。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "UiStatusTag：导出名 UiStatusTag，导入路径 @/components/ui/display。catalog 的 requiredProps 为空；但约束说明 children 为必填（其余 tone/size/variant 有默认值）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only: exactly one search per task (5 total), no get, no second search, no source/config/help/ls/cat/grep reads. A1/A3 page identified as FlightDelayEventCreateScreen (event-create-screen); A3 card is business.BusinessCard, the only card in the one A3 result. A5 requiredProps is [] per catalog while its constraint says children are required."
+}

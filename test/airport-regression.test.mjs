@@ -22,6 +22,11 @@ const u55Catalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(u55Dir, "catalog.json.gz"))).toString("utf8"),
 );
 const u55Config = JSON.parse(fs.readFileSync(path.join(u55Dir, "trial-config.json"), "utf8"));
+const u57Dir = path.join(root, "test/audits/2026-10-26-airport-57");
+const u57Catalog = JSON.parse(
+  zlib.gunzipSync(fs.readFileSync(path.join(u57Dir, "catalog.json.gz"))).toString("utf8"),
+);
+const u57Config = JSON.parse(fs.readFileSync(path.join(u57Dir, "trial-config.json"), "utf8"));
 
 const top = (query) =>
   search(catalog, query, 5, config.vocabulary).items.map((item) => item.id);
@@ -117,4 +122,18 @@ test("55-entry catalog covers the remaining UI queries without losing business e
   const mixedIds = mixedNav.items.map((item) => item.id);
   assert.ok(mixedIds.includes("auth.SignInPage"));
   assert.ok(mixedIds.includes("ui.UiNavBar"));
+});
+
+test("57-entry catalog closes the status-tag and image-viewer gaps", () => {
+  assert.equal(u57Catalog.components.length, 57);
+  const ids = (query) =>
+    search(u57Catalog, query, 5, u57Config.vocabulary, false, false, null, false, 3).items.map(
+      (item) => item.id,
+    );
+  assert.equal(ids("status tag")[0], "ui.UiStatusTag");
+  assert.equal(ids("image viewer")[0], "ui.UiImageViewer");
+  const mixed = ids("login page navigation bar");
+  assert.ok(mixed.includes("auth.SignInPage"));
+  assert.ok(mixed.includes("ui.UiNavBar"));
+  assert.equal(ids("航班延误补偿列表页面")[0], "flight-delay.FlightDelayCompensationListScreen");
 });

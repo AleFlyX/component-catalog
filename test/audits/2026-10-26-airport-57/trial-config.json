@@ -1,0 +1,330 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": "src",
+  "tsconfig": "tsconfig.json",
+  "catalog": "component-catalog-57.json",
+  "importPathStyle": "direct",
+  "componentRoots": [
+    {
+      "path": "src/components/common",
+      "idPrefix": "common",
+      "importPrefix": "@/components/common",
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": {
+        "scope": "project"
+      }
+    },
+    {
+      "path": "src/components/business",
+      "idPrefix": "business",
+      "importPrefix": "@/components/business",
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": {
+        "scope": "project"
+      }
+    },
+    {
+      "path": "src/features/auth",
+      "idPrefix": "auth",
+      "importPrefix": "@/features/auth",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "auth"
+      }
+    },
+    {
+      "path": "src/features/flight-delay-compensation",
+      "idPrefix": "flight-delay",
+      "importPrefix": "@/features/flight-delay-compensation",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "flight-delay"
+      }
+    },
+    {
+      "path": "src/features/traveler-bookings",
+      "idPrefix": "bookings",
+      "importPrefix": "@/features/traveler-bookings",
+      "layer": "feature",
+      "enrollment": "review",
+      "reuse": {
+        "scope": "module",
+        "owner": "bookings"
+      }
+    },
+    {
+      "path": "src/components/ui",
+      "idPrefix": "ui",
+      "importPrefix": "@/components/ui",
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": {
+        "scope": "project"
+      }
+    }
+  ],
+  "exclude": [
+    "src/components/ui/bootstrap.ts",
+    "src/components/ui/boundary.contract.test.ts",
+    "src/components/ui/cap-widget.test.tsx",
+    "src/components/ui/cap-widget.tsx",
+    "src/components/ui/confirm.ts",
+    "src/components/ui/icon.test.tsx",
+    "src/components/ui/icon.tsx",
+    "src/components/ui/index.ts",
+    "src/components/ui/mdi-icons.ts",
+    "src/components/ui/media-back.ts",
+    "src/components/ui/media.tsx",
+    "src/components/ui/navigation-progress.tsx",
+    "src/components/ui/picker.tsx",
+    "src/components/ui/provider.tsx",
+    "src/components/ui/scroll-lock.ts",
+    "src/components/ui/scroll-owner-context.ts",
+    "src/components/ui/scroll-owner.tsx",
+    "src/components/ui/search.tsx",
+    "src/components/ui/selection.tsx",
+    "src/components/ui/toast.tsx",
+    "src/components/ui/types.ts",
+    "src/components/ui/ui.contract.test.tsx",
+    "src/components/ui/ui.css"
+  ],
+  "previewRoots": [
+    "src/previews"
+  ],
+  "testRoots": [],
+  "vocabulary": {
+    "密码": {
+      "primary": "password-policy",
+      "related": [
+        "auth"
+      ]
+    },
+    "密码输入框": {
+      "primary": "password-input",
+      "related": [
+        "auth"
+      ]
+    },
+    "登录": {
+      "primary": "auth",
+      "related": []
+    },
+    "忘记密码": {
+      "primary": "auth",
+      "related": [
+        "password-policy"
+      ]
+    },
+    "错误页": {
+      "primary": "error-page",
+      "related": []
+    },
+    "404": {
+      "primary": "error-page",
+      "related": []
+    },
+    "列表": {
+      "primary": "infinite-list",
+      "related": [
+        "traveler-booking-list",
+        "flight-delay-list"
+      ]
+    },
+    "任务卡片": {
+      "primary": "task-card",
+      "related": []
+    },
+    "搜索栏": {
+      "primary": "search-bar",
+      "related": []
+    },
+    "筛选": {
+      "primary": "filter-sheet",
+      "related": []
+    },
+    "筛选面板": {
+      "primary": "filter-sheet",
+      "related": []
+    },
+    "时间线": {
+      "primary": "timeline",
+      "related": []
+    },
+    "信息网格": {
+      "primary": "info-grid",
+      "related": []
+    },
+    "页面外壳": {
+      "primary": "page-shell",
+      "related": []
+    },
+    "认证恢复": {
+      "primary": "auth-recovery",
+      "related": []
+    },
+    "恢复登录": {
+      "primary": "auth-recovery",
+      "related": []
+    },
+    "航班延误": {
+      "primary": "flight-delay-compensation",
+      "related": [
+        "flight-delay-event"
+      ]
+    },
+    "赔付": {
+      "primary": "flight-delay-compensation",
+      "related": [
+        "compensation-step"
+      ]
+    },
+    "补偿": {
+      "primary": "compensation-step",
+      "related": [
+        "flight-delay-compensation"
+      ]
+    },
+    "订单": {
+      "primary": "traveler-booking-list",
+      "related": [
+        "traveler-booking"
+      ]
+    },
+    "预订": {
+      "primary": "traveler-booking-list",
+      "related": [
+        "traveler-booking"
+      ]
+    },
+    "预订列表": {
+      "primary": "traveler-booking-list",
+      "related": []
+    },
+    "按钮": {
+      "primary": "ui-button",
+      "related": []
+    },
+    "输入框": {
+      "primary": "ui-input",
+      "related": [
+        "ui-password-input",
+        "ui-textarea"
+      ]
+    },
+    "弹窗": {
+      "primary": "ui-dialog",
+      "related": [
+        "ui-popup"
+      ]
+    },
+    "底部弹出": {
+      "primary": "ui-popup",
+      "related": []
+    },
+    "操作表": {
+      "primary": "ui-action-sheet",
+      "related": []
+    },
+    "表单": {
+      "primary": "ui-form",
+      "related": [
+        "ui-form-field"
+      ]
+    },
+    "创建航班延误事件": {
+      "primary": "flight-delay-event",
+      "related": []
+    },
+    "补偿列表": {
+      "primary": "flight-delay-list",
+      "related": []
+    },
+    "预订详情": {
+      "primary": "traveler-booking",
+      "related": []
+    },
+    "空状态": {
+      "primary": "ui-empty-state",
+      "related": []
+    },
+    "导航栏": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "顶部导航栏": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "状态标签": {
+      "primary": "ui-status-tag",
+      "related": []
+    },
+    "图片查看器": {
+      "primary": "ui-image-viewer",
+      "related": []
+    },
+    "卡片": {
+      "primary": "ui-card",
+      "related": []
+    },
+    "步骤条": {
+      "primary": "ui-steps",
+      "related": []
+    },
+    "标签页": {
+      "primary": "ui-tabs",
+      "related": []
+    },
+    "navigation bar": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "nav bar": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "top navigation": {
+      "primary": "ui-nav-bar",
+      "related": []
+    },
+    "login page": {
+      "primary": "auth",
+      "related": []
+    },
+    "status tag": {
+      "primary": "ui-status-tag",
+      "related": []
+    },
+    "image viewer": {
+      "primary": "ui-image-viewer",
+      "related": []
+    },
+    "bottom sheet": {
+      "primary": "ui-popup",
+      "related": []
+    },
+    "empty state": {
+      "primary": "ui-empty-state",
+      "related": []
+    },
+    "tabs": {
+      "primary": "ui-tabs",
+      "related": []
+    },
+    "flight delay compensation list": {
+      "primary": "flight-delay-list",
+      "related": []
+    },
+    "special passenger booking detail": {
+      "primary": "traveler-booking",
+      "related": []
+    }
+  }
+}
