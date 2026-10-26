@@ -1,0 +1,191 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "types": [
+      "react",
+      "react-dom",
+      "node"
+    ],
+    "paths": {
+      "@documenso/lib/client-only/get-bounding-client-rect": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/client-only/hooks/use-copy-share-link": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/client-only/hooks/use-copy-to-clipboard": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/app": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/document-auth": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/document-visibility": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/envelope-expiration": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/envelope-reminder": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/i18n": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/pdf-viewer": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/template": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/constants/trpc": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/types/document-auth": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/types/document-email": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/types/document-visibility": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/types/recipient": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/universal/generate-twitter-intent": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/utils/i18n": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/utils/recipient-formatter": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/trpc/react": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@lingui/core/macro": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@lingui/react": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@lingui/react/macro": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@prisma/client": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@radix-ui/react-select": [
+        "catalog-external-stub.d.ts"
+      ],
+      "framer-motion": [
+        "catalog-external-stub.d.ts"
+      ],
+      "lucide-react": [
+        "catalog-external-stub.d.ts"
+      ],
+      "luxon": [
+        "catalog-external-stub.d.ts"
+      ],
+      "react-icons/fa6": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/lib": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/trpc/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/trpc": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/email/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/email": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/prisma/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/prisma": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/signing/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/signing": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/assets/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/assets": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@lingui/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@radix-ui/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "react-icons/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/ui/components/*": [
+        "packages/ui/components/*"
+      ],
+      "@documenso/ui/primitives/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/ui/lib/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/ui/icons/*": [
+        "catalog-external-stub.d.ts"
+      ],
+      "@documenso/ui/components/field/*": [
+        "catalog-external-stub.d.ts"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "include": [
+    "catalog-external-stub.d.ts",
+    "packages/ui/components/document/reminder-settings-picker.tsx",
+    "packages/ui/components/document/expiration-period-picker.tsx",
+    "packages/ui/components/document/envelope-recipient-field-tooltip.tsx",
+    "packages/ui/components/document/document-visibility-select.tsx",
+    "packages/ui/components/document/document-signature-settings-tooltip.tsx",
+    "packages/ui/components/document/document-share-button.tsx",
+    "packages/ui/components/document/document-send-email-message-helper.tsx",
+    "packages/ui/components/document/document-read-only-fields.tsx",
+    "packages/ui/components/document/document-global-auth-action-select.tsx",
+    "packages/ui/components/document/document-global-auth-access-select.tsx",
+    "packages/ui/components/document/document-email-checkboxes.tsx",
+    "packages/ui/components/common/local-time.tsx",
+    "packages/ui/components/common/language-switcher-dialog.tsx",
+    "packages/ui/components/common/copy-text-button.tsx",
+    "packages/ui/components/catalog-examples.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

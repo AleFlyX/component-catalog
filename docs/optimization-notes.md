@@ -176,5 +176,13 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - held-out 第一轮：`test/audits/2026-10-26-heldout/`
 - 57 条覆盖补齐：`test/audits/2026-10-26-airport-57/`
 - 第二组 held-out：`test/audits/2026-10-26-heldout-2/`
+- Documenso 大型仓库 scoped trial：`test/audits/2026-10-26-documenso/`
 - per-layer 验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-per-layer/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`
+
+## Documenso 大型仓库 scoped trial
+
+- 708 TSX、151 MB clone；选取 `packages/ui/components/document` + `common` 共 17 条 shared-ui。
+- 依赖安装未完成（tmpfs 约 1 GB 后停滞），用外部模块 stub + `@ts-nocheck` + 包路径改写完成生成；audit/check 17 条通过。
+- 5 个查询 smoke test：5/5、5 次 search、0 get、85,380 tokens；mixed 任务 2/2。
+- 结论：陌生大型仓库上 scoped catalog 可用；但这不是全量 setup，props 中来自 lib/Prisma 的类型多为 any/partial，下一步需完成依赖安装并移除 stubs。

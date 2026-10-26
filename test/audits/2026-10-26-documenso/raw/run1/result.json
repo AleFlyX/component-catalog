@@ -1,0 +1,106 @@
+{
+  "strategy": "documenso17",
+  "tasks": [
+    {
+      "task": "D1",
+      "componentId": "document.DocumentEmailCheckboxes",
+      "importPath": "@documenso/ui/components/document/document-email-checkboxes",
+      "requiredProps": ["value", "onChange"],
+      "missing": false,
+      "components": [
+        {
+          "role": "document email notification checkboxes",
+          "componentId": "document.DocumentEmailCheckboxes",
+          "importPath": "@documenso/ui/components/document/document-email-checkboxes",
+          "requiredProps": ["value", "onChange"]
+        }
+      ],
+      "answer": "DocumentEmailCheckboxes, exported from @documenso/ui/components/document/document-email-checkboxes (shared-ui). Required props: value and onChange (controlled checkbox group for document email notification events; hiddenEvents is optional).",
+      "confidence": "high"
+    },
+    {
+      "task": "D2",
+      "componentId": "document.DocumentVisibilitySelect",
+      "importPath": "@documenso/ui/components/document/document-visibility-select",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "document visibility selector",
+          "componentId": "document.DocumentVisibilitySelect",
+          "importPath": "@documenso/ui/components/document/document-visibility-select",
+          "requiredProps": []
+        }
+      ],
+      "answer": "DocumentVisibilitySelect, exported from @documenso/ui/components/document/document-visibility-select (shared-ui). No mandatory props: it accepts the underlying select props plus optional currentTeamMemberRole, isTeamSettings and canUpdateVisibility. (DocumentVisibilityTooltip lives in the same module if explanatory text is also needed.)",
+      "confidence": "high"
+    },
+    {
+      "task": "D3",
+      "componentId": "document.DocumentShareButton",
+      "importPath": "@documenso/ui/components/document/document-share-button",
+      "requiredProps": ["documentId"],
+      "missing": false,
+      "components": [
+        {
+          "role": "document share button",
+          "componentId": "document.DocumentShareButton",
+          "importPath": "@documenso/ui/components/document/document-share-button",
+          "requiredProps": ["documentId"]
+        }
+      ],
+      "answer": "DocumentShareButton, exported from @documenso/ui/components/document/document-share-button (shared-ui). Required prop: documentId. token and a custom trigger element are optional.",
+      "confidence": "high"
+    },
+    {
+      "task": "D4",
+      "componentId": "document.ReminderSettingsPicker",
+      "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+      "requiredProps": ["value", "onChange"],
+      "missing": false,
+      "components": [
+        {
+          "role": "reminder settings picker",
+          "componentId": "document.ReminderSettingsPicker",
+          "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+          "requiredProps": ["value", "onChange"]
+        },
+        {
+          "role": "expiration time picker",
+          "componentId": "document.ExpirationPeriodPicker",
+          "importPath": "@documenso/ui/components/document/expiration-period-picker",
+          "requiredProps": ["value", "onChange"]
+        }
+      ],
+      "answer": "Two components. ReminderSettingsPicker from @documenso/ui/components/document/reminder-settings-picker, required props value and onChange (disabled, inheritLabel optional). ExpirationPeriodPicker from @documenso/ui/components/document/expiration-period-picker, required props value and onChange (disabled, inheritLabel optional). Both are shared-ui layer.",
+      "confidence": "high"
+    },
+    {
+      "task": "D5",
+      "componentId": "common.LocalTime",
+      "importPath": "@documenso/ui/components/common/local-time",
+      "requiredProps": ["date"],
+      "missing": false,
+      "components": [
+        {
+          "role": "local time display",
+          "componentId": "common.LocalTime",
+          "importPath": "@documenso/ui/components/common/local-time",
+          "requiredProps": ["date"]
+        },
+        {
+          "role": "copy text button",
+          "componentId": "common.CopyTextButton",
+          "importPath": "@documenso/ui/components/common/copy-text-button",
+          "requiredProps": ["value"]
+        }
+      ],
+      "answer": "Two components. LocalTime from @documenso/ui/components/common/local-time, required prop date (className optional), renders a date in the local timezone with copy support. CopyTextButton from @documenso/ui/components/common/copy-text-button, required prop value (badge content and onCopySuccess optional). Both are shared-ui layer.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only validation: 5 searches total (one per task), no get, no second search, no source/config/catalog-file reads. All 17-entry scoped catalog lookups resolved on the first query; no missing components. D4 and D5 are mixed tasks with both requested roles present in components[]. Config: component-catalog-documenso.config.json in /tmp/oss-trial/documenso; no tracked source modified."
+}
