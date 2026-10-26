@@ -14,7 +14,7 @@ function includesTerm(text, term) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null) {
+export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null, layerFallback = false) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
@@ -60,7 +60,12 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
         Number(b.item.status === "stable") - Number(a.item.status === "stable") ||
         compare(a.item.id, b.item.id),
     );
-  const scoped = layer == null ? ranked : ranked.filter(({ item }) => item.layer === layer);
+  let scoped = layer == null ? ranked : ranked.filter(({ item }) => item.layer === layer);
+  let usedLayerFallback = false;
+  if (layer != null && scoped.length === 0 && layerFallback) {
+    scoped = ranked;
+    usedLayerFallback = true;
+  }
   const items = scoped
     .slice(0, limit)
     .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage } }) => ({
@@ -89,6 +94,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     ...(brief ? { brief: true } : {}),
     ...(details ? { details: true } : {}),
     ...(layer == null ? {} : { layer }),
+    ...(usedLayerFallback ? { layerFallback: true } : {}),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.
     truncated: false,

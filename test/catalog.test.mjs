@@ -133,6 +133,9 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   assert.equal(noLayer.items.length, 0);
   assert.equal(noLayer.omitted.byLimit, 0);
   assert.equal(noLayer.truncated, false);
+  const fallback = search(baseCatalog, "button", 5, {}, false, false, "missing", true);
+  assert.ok(fallback.items.length > 0);
+  assert.equal(fallback.layerFallback, true);
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({

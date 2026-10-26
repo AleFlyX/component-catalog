@@ -130,6 +130,7 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 原因：业务查询会带入更多 UI 候选（如“认证恢复弹窗”同时返回 UiDialog/UiPopup），top-1 仍正确但上下文/答案被放大；覆盖率收益不抵 token。
 - 结论：无过滤时 55 条不划算；但 **55 + `--layer` 是当前最佳组合**：**94,902 / 92,507 tokens**，95% 覆盖，比 40 条低 17.2%，比无过滤 55 条低 43.3%。
 - 关键不是“目录不能大”，而是大目录必须配查询范围：feature 任务用 `--layer feature`，原语任务用 `--layer shared-ui`；无法判断 layer 时 40 条是安全默认。
+- **layer 选择稳定性是新的瓶颈**：明确指定 layer 时 94.9K；agent 自选平均 135.8K（+43%），且有一次把“密码输入框”选成 shared-ui 的 `ui.UiPasswordInput` 而不是 `auth.PasswordInput`。`--layer-fallback` 只处理空层；错层仍有 1 条匹配时不会触发（task4 未完成），平均 173.4K。
 
 ## 10. 相关产物
 
@@ -146,4 +147,5 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 40 条扩容：`test/audits/2026-10-26-airport-ui-expanded/`
 - 55 条覆盖饱和：`test/audits/2026-10-26-airport-ui55-expanded/`
 - layer 过滤验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-layer/`
+- layer 选择稳定性：`test/audits/2026-10-26-airport-layer-selection/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

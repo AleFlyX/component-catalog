@@ -1,0 +1,545 @@
+{
+  "session": {
+    "steps": 8,
+    "turns": 1,
+    "llmMs": 66598,
+    "toolMs": 3191,
+    "settledMs": 0,
+    "wallMs": 69801,
+    "requests": 8,
+    "activityToolCalls": 8
+  },
+  "label": "layer-fallback-1",
+  "usage": {
+    "uncachedInputTokens": 4083,
+    "outputTokens": 9923,
+    "cacheReadTokens": 94336,
+    "cacheWriteTokens": 0,
+    "totalTokens": 108342,
+    "cacheReadShare": 96
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 13883
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792995139907,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 540,
+        "text": "Controlled benchmark run 1/3, condition \"u55-layer-fallback\", on /tmp/oss-trial/"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792995139908,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792995139908,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-26T14:12:19+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792995143213,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 444,
+        "text": null
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792995143306,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 16,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792995144929,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 154,
+        "text": null
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792995145332,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 861,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792995147096,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 201,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792995147474,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 198,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792995150961,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 494,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792995151410,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 338,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792995153760,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 287,
+        "text": null
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792995154155,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 445,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792995156557,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 295,
+        "text": null
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792995157041,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 198,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792995185759,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 4716,
+        "text": null
+      },
+      {
+        "index": 16,
+        "seq": 67,
+        "time": 1792995186255,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 32,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 71,
+        "time": 1792995209294,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 3682,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 75,
+        "time": 1792995209795,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 553,
+        "text": null
+      }
+    ],
+    "assistantSteps": 8,
+    "assistantTokens": 10273,
+    "toolCalls": 8,
+    "toolCallsByName": {
+      "bash": 8
+    },
+    "toolResultTokens": 2641,
+    "toolTokens": {
+      "bash": 2641
+    },
+    "topResults": [
+      {
+        "index": 6,
+        "tool": "bash",
+        "tokens": 861
+      },
+      {
+        "index": 18,
+        "tool": "bash",
+        "tokens": 553
+      },
+      {
+        "index": 12,
+        "tool": "bash",
+        "tokens": 445
+      },
+      {
+        "index": 10,
+        "tool": "bash",
+        "tokens": 338
+      },
+      {
+        "index": 8,
+        "tool": "bash",
+        "tokens": 198
+      }
+    ]
+  },
+  "cli": {
+    "calls": 7,
+    "outputBytes": 10171,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 8854,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 2,
+        "outputBytes": 1317,
+        "truncated": 0,
+        "errors": 1,
+        "props": 0
+      }
+    },
+    "searchCalls": 5,
+    "searchDetails": 5,
+    "searchBrief": 0,
+    "searchLayers": 5,
+    "searchLayerFallbacks": 5,
+    "searchTruncated": 0,
+    "searchOmittedByLimit": 1,
+    "searchOmittedByBytes": 0,
+    "searchResultIds": 14,
+    "getCalls": 2,
+    "getBatchCalls": 0,
+    "uniqueGetIds": 1,
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 3412
+      },
+      "2": {
+        "calls": 2,
+        "outputBytes": 2076
+      },
+      "3": {
+        "calls": 1,
+        "outputBytes": 1745
+      },
+      "4": {
+        "calls": 2,
+        "outputBytes": 759
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2179
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-26T06:12:25.317Z",
+        "task": "1",
+        "command": "search",
+        "argument": "航班延误补偿批次工作区",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature",
+          "layerFallback": true
+        },
+        "outputBytes": 3412,
+        "truncated": false,
+        "omitted": {
+          "items": 1,
+          "byLimit": 1,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "flight-delay.FlightDelayCompensationBatchScreen",
+          "flight-delay.batch-workspace.ReviewCompensationStep",
+          "flight-delay.batch-workspace.SpecialCompensationStep",
+          "flight-delay.batch-workspace.StandardCompensationStep",
+          "flight-delay.FlightDelayEventCreateScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:27.460Z",
+        "task": "2",
+        "command": "search",
+        "argument": "特殊旅客预订列表",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature",
+          "layerFallback": true
+        },
+        "outputBytes": 759,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:31.395Z",
+        "task": "2",
+        "command": "get",
+        "argument": "bookings.TravelerBookingListScreen",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null,
+          "layer": null,
+          "layerFallback": null
+        },
+        "outputBytes": 1317,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "bookings.TravelerBookingListScreen"
+        ]
+      },
+      {
+        "ts": "2026-10-26T06:12:34.141Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui",
+          "layerFallback": true
+        },
+        "outputBytes": 1745,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "auth.PasswordInput",
+          "auth.ForgotPasswordPage",
+          "auth.SignInPage"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:37.033Z",
+        "task": "4",
+        "command": "search",
+        "argument": "预订列表 搜索栏 筛选面板",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature",
+          "layerFallback": true
+        },
+        "outputBytes": 759,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:13:06.239Z",
+        "task": "4",
+        "command": "get",
+        "argument": "bookings",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null,
+          "layer": null,
+          "layerFallback": null
+        },
+        "outputBytes": 0,
+        "truncated": null,
+        "omitted": null,
+        "error": "Unknown component ID; use search to find an exact ID",
+        "resultIds": null,
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:13:29.780Z",
+        "task": "5",
+        "command": "search",
+        "argument": "认证恢复弹窗",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui",
+          "layerFallback": true
+        },
+        "outputBytes": 2179,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "common.AuthRecoveryDialog",
+          "common.AuthRecoveryDialogView",
+          "ui.UiDialog",
+          "ui.UiPopup"
+        ],
+        "componentIds": null
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 1453,
+    "toolTokensPerAssistantStep": 330,
+    "cacheReadPerCall": 13477,
+    "observedToolCalls": 8,
+    "nonCliToolCalls": 1,
+    "outputTokensPerCliCall": 1418,
+    "cliSearchResultIdsPerSearch": 2.8
+  }
+}

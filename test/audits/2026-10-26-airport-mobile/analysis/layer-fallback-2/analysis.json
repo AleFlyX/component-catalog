@@ -1,0 +1,557 @@
+{
+  "session": {
+    "steps": 9,
+    "turns": 1,
+    "llmMs": 30456,
+    "toolMs": 3093,
+    "settledMs": 33691,
+    "wallMs": 33563,
+    "requests": 9,
+    "activityToolCalls": 10
+  },
+  "label": "layer-fallback-2",
+  "usage": {
+    "uncachedInputTokens": 6403,
+    "outputTokens": 4840,
+    "cacheReadTokens": 124928,
+    "cacheWriteTokens": 0,
+    "totalTokens": 136171,
+    "cacheReadShare": 95
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 9757
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792995139897,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 540,
+        "text": "Controlled benchmark run 2/3, condition \"u55-layer-fallback\", on /tmp/oss-trial/"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792995139897,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792995139897,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-26T14:12:19+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792995141971,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 153,
+        "text": "I'll start by verifying the project and running task 1's search."
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792995142430,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 861,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792995144804,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 408,
+        "text": "Task 1 resolved directly on `feature`. Now tasks 2 and 3 searches."
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792995145263,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 780,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792995145689,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 695,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792995151039,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 915,
+        "text": "Task 2: no dedicated special-passenger screen appeared — closest is the traveler"
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792995151424,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 654,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792995151847,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 670,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792995157503,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 855,
+        "text": "Task 4 and 5 matched on `shared-ui`. Now one `get` for task 2 to confirm there's"
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792995158015,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 338,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792995160404,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 266,
+        "text": "All five tasks resolved. Writing the results file."
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792995160491,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 9,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792995165174,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "write"
+        ],
+        "tokens": 1043,
+        "text": null
+      },
+      {
+        "index": 16,
+        "seq": 65,
+        "time": 1792995165184,
+        "cat": "tool",
+        "tool": "write",
+        "calls": [],
+        "tokens": 39,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 69,
+        "time": 1792995166525,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 99,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 73,
+        "time": 1792995166855,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 18,
+        "text": null
+      },
+      {
+        "index": 19,
+        "seq": 77,
+        "time": 1792995170329,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 461,
+        "text": null
+      },
+      {
+        "index": 20,
+        "seq": 79,
+        "time": 1792995170341,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 21,
+        "seq": 83,
+        "time": 1792995173551,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 498,
+        "text": "Run 2/3 done. Results file: [catalog-2.json](</tmp/audit-airport-layer-fallback/"
+      }
+    ],
+    "assistantSteps": 9,
+    "assistantTokens": 4698,
+    "toolCalls": 3,
+    "toolCallsByName": {
+      "write": 1,
+      "bash": 1,
+      "send_message": 1
+    },
+    "toolResultTokens": 4090,
+    "toolTokens": {
+      "bash": 4025,
+      "write": 39,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 4,
+        "tool": "bash",
+        "tokens": 861
+      },
+      {
+        "index": 6,
+        "tool": "bash",
+        "tokens": 780
+      },
+      {
+        "index": 7,
+        "tool": "bash",
+        "tokens": 695
+      },
+      {
+        "index": 10,
+        "tool": "bash",
+        "tokens": 670
+      },
+      {
+        "index": 9,
+        "tool": "bash",
+        "tokens": 654
+      }
+    ]
+  },
+  "cli": {
+    "calls": 6,
+    "outputBytes": 15786,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 14469,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 1,
+        "outputBytes": 1317,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "searchCalls": 5,
+    "searchDetails": 5,
+    "searchBrief": 0,
+    "searchLayers": 5,
+    "searchLayerFallbacks": 5,
+    "searchTruncated": 0,
+    "searchOmittedByLimit": 26,
+    "searchOmittedByBytes": 0,
+    "searchResultIds": 25,
+    "getCalls": 1,
+    "getBatchCalls": 0,
+    "uniqueGetIds": 1,
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 3412
+      },
+      "2": {
+        "calls": 2,
+        "outputBytes": 4402
+      },
+      "3": {
+        "calls": 1,
+        "outputBytes": 2746
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 2581
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2645
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-26T06:12:22.415Z",
+        "task": "1",
+        "command": "search",
+        "argument": "航班延误补偿批次工作区 delay compensation batch workspace",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature",
+          "layerFallback": true
+        },
+        "outputBytes": 3412,
+        "truncated": false,
+        "omitted": {
+          "items": 2,
+          "byLimit": 2,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "flight-delay.FlightDelayCompensationBatchScreen",
+          "flight-delay.batch-workspace.ReviewCompensationStep",
+          "flight-delay.batch-workspace.SpecialCompensationStep",
+          "flight-delay.batch-workspace.StandardCompensationStep",
+          "flight-delay.FlightDelayEventCreateScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:25.250Z",
+        "task": "2",
+        "command": "search",
+        "argument": "特殊旅客预订列表 special passenger booking list",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature",
+          "layerFallback": true
+        },
+        "outputBytes": 3085,
+        "truncated": false,
+        "omitted": {
+          "items": 2,
+          "byLimit": 2,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen",
+          "bookings.BookingStatusBadge",
+          "bookings.TravelerBookingDetailScreen",
+          "flight-delay.FlightDelayCompensationListScreen",
+          "flight-delay.batch-workspace.SpecialCompensationStep"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:25.672Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框 password input",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui",
+          "layerFallback": true
+        },
+        "outputBytes": 2746,
+        "truncated": false,
+        "omitted": {
+          "items": 3,
+          "byLimit": 3,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "ui.UiPasswordInput",
+          "common.PasswordPolicyFeedback",
+          "ui.UiInput",
+          "business.BottomActionBar",
+          "business.MobilePageShell"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:31.412Z",
+        "task": "4",
+        "command": "search",
+        "argument": "移动端预订列表 搜索栏 筛选面板 booking list search bar filter panel",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui",
+          "layerFallback": true
+        },
+        "outputBytes": 2581,
+        "truncated": false,
+        "omitted": {
+          "items": 13,
+          "byLimit": 13,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "business.SearchBar",
+          "business.FilterSheet",
+          "business.BottomActionBar",
+          "business.InfiniteListFooter",
+          "ui.UiList"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:31.839Z",
+        "task": "5",
+        "command": "search",
+        "argument": "全局认证恢复弹窗 auth recovery modal",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui",
+          "layerFallback": true
+        },
+        "outputBytes": 2645,
+        "truncated": false,
+        "omitted": {
+          "items": 6,
+          "byLimit": 6,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "common.AuthRecoveryDialog",
+          "common.AuthRecoveryDialogView",
+          "ui.UiDialog",
+          "ui.UiPopup",
+          "business.BottomActionBar"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:12:37.999Z",
+        "task": "2",
+        "command": "get",
+        "argument": "bookings.TravelerBookingListScreen",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null,
+          "layer": null,
+          "layerFallback": null
+        },
+        "outputBytes": 1317,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "bookings.TravelerBookingListScreen"
+        ]
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 2631,
+    "toolTokensPerAssistantStep": 454,
+    "cacheReadPerCall": 20821,
+    "observedToolCalls": 10,
+    "nonCliToolCalls": 4,
+    "outputTokensPerCliCall": 807,
+    "cliSearchResultIdsPerSearch": 5
+  }
+}

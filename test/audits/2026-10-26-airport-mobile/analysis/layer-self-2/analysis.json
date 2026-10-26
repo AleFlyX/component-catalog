@@ -1,0 +1,613 @@
+{
+  "session": {
+    "steps": 8,
+    "turns": 1,
+    "llmMs": 57511,
+    "toolMs": 2846,
+    "settledMs": 60511,
+    "wallMs": 60370,
+    "requests": 8,
+    "activityToolCalls": 11
+  },
+  "label": "layer-self-2",
+  "usage": {
+    "uncachedInputTokens": 5144,
+    "outputTokens": 8315,
+    "cacheReadTokens": 112000,
+    "cacheWriteTokens": 0,
+    "totalTokens": 125459,
+    "cacheReadShare": 96
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 12217
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792995021567,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 554,
+        "text": "Controlled benchmark run 2/3, condition \"u55-layer-self\", on /tmp/oss-trial/airp"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792995021568,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792995021568,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-26T14:10:21+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792995024413,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash",
+          "bash"
+        ],
+        "tokens": 367,
+        "text": null
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792995024516,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 9,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792995024802,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 861,
+        "text": null
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792995027191,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash",
+          "bash"
+        ],
+        "tokens": 341,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792995027514,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 198,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792995027831,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 63,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792995035745,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "tokens": 1353,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792995036099,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 434,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792995036461,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 300,
+        "text": null
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792995036819,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 553,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792995043156,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 991,
+        "text": null
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792995043480,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 338,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792995048857,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 851,
+        "text": null
+      },
+      {
+        "index": 16,
+        "seq": 67,
+        "time": 1792995049264,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 247,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 71,
+        "time": 1792995062981,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "write"
+        ],
+        "tokens": 2443,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 73,
+        "time": 1792995062996,
+        "cat": "tool",
+        "tool": "write",
+        "calls": [],
+        "tokens": 38,
+        "text": null
+      },
+      {
+        "index": 19,
+        "seq": 77,
+        "time": 1792995067415,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 611,
+        "text": null
+      },
+      {
+        "index": 20,
+        "seq": 79,
+        "time": 1792995067422,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 21,
+        "seq": 90,
+        "time": 1792995082032,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 1210,
+        "text": "Completed run 2/3. Result written to [catalog-2.json](</tmp/audit-airport-layer-"
+      }
+    ],
+    "assistantSteps": 8,
+    "assistantTokens": 8167,
+    "toolCalls": 11,
+    "toolCallsByName": {
+      "bash": 9,
+      "write": 1,
+      "send_message": 1
+    },
+    "toolResultTokens": 3067,
+    "toolTokens": {
+      "bash": 3003,
+      "write": 38,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 5,
+        "tool": "bash",
+        "tokens": 861
+      },
+      {
+        "index": 12,
+        "tool": "bash",
+        "tokens": 553
+      },
+      {
+        "index": 10,
+        "tool": "bash",
+        "tokens": 434
+      },
+      {
+        "index": 14,
+        "tool": "bash",
+        "tokens": 338
+      },
+      {
+        "index": 11,
+        "tool": "bash",
+        "tokens": 300
+      }
+    ]
+  },
+  "cli": {
+    "calls": 8,
+    "outputBytes": 11711,
+    "byCommand": {
+      "search": {
+        "calls": 6,
+        "outputBytes": 9440,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 2,
+        "outputBytes": 2271,
+        "truncated": 1,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "searchCalls": 6,
+    "searchDetails": 6,
+    "searchBrief": 0,
+    "searchLayers": 5,
+    "searchLayerFallbacks": 0,
+    "searchTruncated": 0,
+    "searchOmittedByLimit": 1,
+    "searchOmittedByBytes": 0,
+    "searchResultIds": 15,
+    "getCalls": 2,
+    "getBatchCalls": 0,
+    "uniqueGetIds": 2,
+    "repeatedArguments": [
+      [
+        "密码输入框",
+        2
+      ]
+    ],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 3412
+      },
+      "2": {
+        "calls": 2,
+        "outputBytes": 2076
+      },
+      "3": {
+        "calls": 3,
+        "outputBytes": 2877
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 1167
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2179
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-26T06:10:24.786Z",
+        "task": "1",
+        "command": "search",
+        "argument": "航班延误补偿批次工作区",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature"
+        },
+        "outputBytes": 3412,
+        "truncated": false,
+        "omitted": {
+          "items": 1,
+          "byLimit": 1,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "flight-delay.FlightDelayCompensationBatchScreen",
+          "flight-delay.batch-workspace.ReviewCompensationStep",
+          "flight-delay.batch-workspace.SpecialCompensationStep",
+          "flight-delay.batch-workspace.StandardCompensationStep",
+          "flight-delay.FlightDelayEventCreateScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:27.499Z",
+        "task": "2",
+        "command": "search",
+        "argument": "特殊旅客预订列表",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "feature"
+        },
+        "outputBytes": 759,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:27.814Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui"
+        },
+        "outputBytes": 219,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:36.085Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null
+        },
+        "outputBytes": 1704,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "auth.PasswordInput",
+          "auth.ForgotPasswordPage",
+          "auth.SignInPage"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:36.451Z",
+        "task": "4",
+        "command": "search",
+        "argument": "搜索栏 筛选面板",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui"
+        },
+        "outputBytes": 1167,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "business.FilterSheet",
+          "business.SearchBar"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:36.804Z",
+        "task": "5",
+        "command": "search",
+        "argument": "认证恢复弹窗",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": "shared-ui"
+        },
+        "outputBytes": 2179,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "common.AuthRecoveryDialog",
+          "common.AuthRecoveryDialogView",
+          "ui.UiDialog",
+          "ui.UiPopup"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:10:43.461Z",
+        "task": "2",
+        "command": "get",
+        "argument": "bookings.TravelerBookingListScreen",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null,
+          "layer": null
+        },
+        "outputBytes": 1317,
+        "truncated": false,
+        "omitted": {
+          "fields": [],
+          "examples": 0
+        },
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "bookings.TravelerBookingListScreen"
+        ]
+      },
+      {
+        "ts": "2026-10-26T06:10:49.244Z",
+        "task": "3",
+        "command": "get",
+        "argument": "auth.PasswordInput",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null,
+          "layer": null
+        },
+        "outputBytes": 954,
+        "truncated": true,
+        "omitted": {
+          "fields": [
+            "props"
+          ],
+          "examples": 0
+        },
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "auth.PasswordInput"
+        ]
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 1464,
+    "toolTokensPerAssistantStep": 383,
+    "cacheReadPerCall": 14000,
+    "observedToolCalls": 11,
+    "nonCliToolCalls": 3,
+    "outputTokensPerCliCall": 1039,
+    "cliSearchResultIdsPerSearch": 2.5
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "condition": "u55-layer-fallback",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "layerUsed": "feature",
+      "answer": "“航班延误补偿批次工作区”对应 flight-delay.FlightDelayCompensationBatchScreen（导出名 FlightDelayCompensationBatchScreen，kind=component，layer=feature，reuse.scope=module，owner=flight-delay，status=experimental）。导入路径 @/features/flight-delay-compensation/batch-detail-screen。必填 props：batchId（唯一必填项）。摘要为 “Batch compensation workspace for standard, special and review steps.”；约束：batchId 必填，且需要 query、auth、router 三类 provider，并自行处理 offline/conflict 状态。生产使用 1 处（含该模块的批次详情路由）。同模块下另有 ReviewCompensationStep / SpecialCompensationStep / StandardCompensationStep（均来自 @/features/flight-delay-compensation/batch-workspace/step-components），是工作区内部的步骤组件而非页面组件，按“页面组件”口径未选它们。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "layerUsed": "feature",
+      "answer": "目录中没有“特殊旅客预订列表”的专用变体；与“预订列表”最接近且唯一命中列表页语义的是 bookings.TravelerBookingListScreen（导出名 TravelerBookingListScreen，layer=feature，owner=bookings，status=experimental，documentationStatus=complete）。导入路径 @/features/traveler-bookings/booking-list-screen，源文件 src/features/traveler-bookings/booking-list-screen.tsx。必填 props 只有 navigate（类型 (options: NavigateOptions) => void | Promise<void>）；可选 initialStatus?: number（用于初始化状态筛选）。摘要：“Paginated traveler booking list with search and filters.”；约束：navigate 必填，查询与操作受权限门控。生产用法示例：src/pages/traveler-bookings/index.tsx。说明：搜索结果中不含任何以 special-passenger / 特殊旅客 命名的列表组件；唯一带 Special 字样的命中是 flight-delay.batch-workspace.SpecialCompensationStep（延误补偿的特补步骤编辑器，与特殊旅客预订无关），故判断目录未提供特殊旅客专用变体，特殊旅客场景只能复用通用旅客预订列表（或需新增组件）。",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "ui.UiPasswordInput",
+      "importPath": "@/components/ui/form",
+      "requiredProps": ["hideLabel", "showLabel"],
+      "layerUsed": "shared-ui",
+      "answer": "“密码输入框”对应 ui.UiPasswordInput（导出名 UiPasswordInput，layer=shared-ui，reuse.scope=project，status=experimental）。导入路径 @/components/ui/form（与 UiInput 同模块 barrel）。必填 props：showLabel、hideLabel（两者均为显示/隐藏切换按钮的文案，必需）。错误显示方式：组件只接收布尔型 error prop 用于切换错误态样式（红框/错误视觉），本身不渲染错误文案；必须配合 UiFormField 使用，由外层 UiFormField 负责渲染错误消息。摘要：“Password input with show/hide labels and error styling.”；约束原文：“showLabel/hideLabel are required for the toggle labels; error is boolean; must be used inside UiFormField for the error message.”",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value", "placeholder", "onChange"],
+      "layerUsed": "shared-ui",
+      "answer": "移动端预订列表的“搜索栏”= business.SearchBar，“筛选面板”= business.FilterSheet，二者同属 @/components/business/mobile 模块（layer=shared-ui，reuse.scope=project，均 status=experimental）。1) business.SearchBar（导出名 SearchBar）：必填 props value、placeholder、onChange；可选 onFilter 会额外渲染筛选图标按钮，即与 FilterSheet 的联动入口。摘要：“Mobile search bar with an optional filter action.” 2) business.FilterSheet（导出名 FilterSheet）：必填 props visible、title、children、onClose；onConfirm 在面板关闭前执行（resets/confirm 动作内置）。摘要：“Bottom filter sheet with reset and confirm actions.” 导入路径两者均为 @/components/business/mobile（src/components/business/mobile 的 barrel；该 barrel 亦导出 MobilePageShell 等移动端页面骨架之外的其他 business/mobile 组件可能同名，按 barrel 导入即可）。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "layerUsed": "shared-ui",
+      "answer": "全局“认证恢复弹窗”对应 common.AuthRecoveryDialog（导出名 AuthRecoveryDialog，layer=shared-ui，reuse.scope=project，status=experimental，usage: production 1 / test 1）。导入路径 @/components/common/auth-recovery-dialog（源文件 src/components/common/auth-recovery-dialog）。必填 props：无（requiredProps 为空）；组件自行订阅 auth recovery store，并 lazy 渲染内部视图。约束：需在 app root 附近挂载一次；无待处理恢复事件时渲染 null。若需自定义该视图可另用 common.AuthRecoveryDialogView（@/components/common/auth-recovery-dialog-view，必填 detail，detail.state 决定标题/内容/操作，登录动作会清空会话并跳转 /sign-in）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Budget respected: exactly 1 search per task (5 searches) + 1 get (task 2, bookings.TravelerBookingListScreen) = 6 catalog calls; no config/help/ls/cat/grep on project files, no source or component-catalog.json reads. Layer choices (guessed from task semantics, --layer-fallback always passed): task 1 feature (page/feature screen), task 2 feature (feature list screen), tasks 3-5 shared-ui (form primitive, business/mobile primitives, global common dialog). All five chosen layers were correct first try: every result set came back with layer=feature (tasks 1-2) or layer=shared-ui (tasks 3-5); the layer-filter fallback never had to drop the filter, so the effective layerFallback fallback path was NOT exercised. Note on flag semantics: the usage log (/tmp/audit-airport-layer-fallback/usage/catalog-3.jsonl) records options.layerFallback=true for each of the 5 search entries because that is the echoed CLI flag, not evidence of an actual retry; a real fallback would have surfaced off-layer items, which did not occur (task 1: 5 items layer=feature, omitted 1 byLimit; task 2: 5 items layer=feature, omitted 2 byLimit; task 3: 5 items layer=shared-ui, omitted 3 byLimit; task 4: 5 items layer=shared-ui, omitted 2 byLimit; task 5: 4 items layer=shared-ui, omitted 0). Open question: task 2 likely has no dedicated special-passenger list variant in the catalog; answer flags the closest general component and states the absence explicitly, hence confidence medium. The only file read beyond catalog CLI output was the harness usage log itself (~2.5KB, harness telemetry, not project source) to report catalog call counts and layerFallback semantics; filesRead/totalBytesRead above track project source only."
+}
