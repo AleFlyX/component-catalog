@@ -7,22 +7,22 @@ import { fileURLToPath } from "node:url";
 import { search } from "../skills/component-catalog/scripts/lib/query.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const dir = path.join(root, "test/audits/2026-10-26-airport-mobile");
+const dir = path.join(root, "test/fixtures/airport-30");
 const catalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(dir, "catalog.json.gz"))).toString("utf8"),
 );
 const config = JSON.parse(fs.readFileSync(path.join(dir, "trial-config.json"), "utf8"));
-const expandedDir = path.join(root, "test/audits/2026-10-26-airport-ui-expanded");
+const expandedDir = path.join(root, "test/fixtures/airport-40");
 const expandedCatalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(expandedDir, "catalog.json.gz"))).toString("utf8"),
 );
 const expandedConfig = JSON.parse(fs.readFileSync(path.join(expandedDir, "trial-config.json"), "utf8"));
-const u55Dir = path.join(root, "test/audits/2026-10-26-airport-ui55-expanded");
+const u55Dir = path.join(root, "test/fixtures/airport-55");
 const u55Catalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(u55Dir, "catalog.json.gz"))).toString("utf8"),
 );
 const u55Config = JSON.parse(fs.readFileSync(path.join(u55Dir, "trial-config.json"), "utf8"));
-const u57Dir = path.join(root, "test/audits/2026-10-26-airport-57");
+const u57Dir = path.join(root, "test/fixtures/airport-57");
 const u57Catalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(u57Dir, "catalog.json.gz"))).toString("utf8"),
 );

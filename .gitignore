@@ -36,3 +36,18 @@ examples/basic/component-catalog.json
 Thumbs.db
 
 .trial/
+
+# Local evaluation evidence and private trial artifacts (keep minimal fixtures in test/fixtures)
+/test/audits/
+/docs/optimization-notes.md
+/test/baselines/**/*.patch
+
+# Keep only the reusable baseline catalog; evaluation reports/outputs are local
+/test/baselines/**/checks.json
+/test/baselines/**/config.json
+/test/baselines/**/get-outputs.json
+/test/baselines/**/metrics.json
+/test/baselines/**/queries.json
+/test/baselines/**/query-outputs.json
+/test/baselines/**/scan-pages.json
+/test/baselines/**/trial-report.md

@@ -13,7 +13,7 @@ const catalog = JSON.parse(
 );
 const config = JSON.parse(
   fs.readFileSync(
-    path.join(root, "test/audits/2026-10-25-ai-detail/trial-config.json"),
+    path.join(root, "test/fixtures/query-config.json"),
     "utf8",
   ),
 );
