@@ -326,3 +326,5 @@ search 与所有 get 选择（包括 --prop）始终保留 reuse；输出超限�
 直接运行 CLI 不带参数会显示上手流程；每个子命令支持 `--help`。正常数据输出保持 JSON，错误输出到 stderr 并非零退出。
 
 真实项目上的调用/token 测量、已完成的优化与后续方向见 [优化记录](docs/optimization-notes.md)。
+
+维护者跨 agent/模型评测方法见 `skills/component-catalog/references/evaluation.md`。评测任务与答案保留在 trial/audit 目录，不写入 SKILL.md。

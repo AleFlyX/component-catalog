@@ -91,6 +91,8 @@ node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation -
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.
 
+For maintainer comparisons across agents or models, use [evaluation.md](references/evaluation.md). Keep concrete benchmark prompts, expected answers and fixture paths outside this skill; do not treat an evaluation prompt as a user task or add it to the normal query path.
+
 ## Decisions and completion
 
 Reuse established scope and enrollment policies. Supported new public components in a `public` root are maintained without asking per component; `review` roots need a source-based ownership decision. Selecting business components does not make them globally reusable. Only unresolved scope/ownership choices need a user decision: prefer the client's eligible structured choice tool, asynchronous when available. See [scope decisions](references/setup.md#scope-decisions) when needed; no timeout or preselected option constitutes consent.
