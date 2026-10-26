@@ -61,6 +61,17 @@ Candidates include unmarked, ignored and unsupported declarations. Check their p
 
 If scanning is inconclusive, use `rg` or equivalent on source/imports, including private declarations, export-star barrels and source formats beyond JS/JSX/TS/TSX. Narrow a scan that fails on unrelated syntax. Missing documentation may block enrollment but must not block source inspection. Read-only discovery never adds annotations, generates artifacts or changes ownership. Report remaining uncertainty instead of claiming no component exists.
 
+## Large repositories and type scope
+
+Choose `typeScope` before the first `generate`; it is a config decision, not a query flag.
+
+| Project shape | Use | Why |
+| --- | --- | --- |
+| Small/medium React project, components import only project UI | `typeScope: "project"` (default) | Full dependency types and inherited Props |
+| Large monorepo where components import a server/lib/trpc/Prisma graph | `typeScope: "componentRoots"` | Loads only the component-root type graph; imports outside roots become shallow any-types |
+
+If `generate` runs out of memory, approaches 2 GB, or its compiler program pulls server packages into a UI catalog, do not raise `--max-old-space-size` as the fix and do not add `@ts-nocheck`, manual stub files, or rewrite imports. Set `typeScope: "componentRoots"`, regenerate, then `audit` and `check` under the default Node heap. Report the tradeoff explicitly: local Props remain typed, but Props inherited from modules outside the roots may be `any`/partial. If those inherited types are essential, bring the shared primitive package into `componentRoots` instead of claiming full fidelity.
+
 ## Installation and upgrade diagnosis
 
 Skill revision **9** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
