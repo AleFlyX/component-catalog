@@ -1,0 +1,56 @@
+{
+  "strategy": "catalog40",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面组件为 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen，无必填 props（需要 router、query 与 i18n 上下文）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有空状态（EmptyState/NoData 等）组件条目，无法给出导出名与导入路径；需明确说明缺失，不能编造 ID。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面：FlightDelayEventCreateScreen，导入 @/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：BusinessCard，导入 @/components/business/mobile（必填 children）。catalog 中没有航班延误事件专用的卡片组件，BusinessCard 是通用的移动端业务卡片。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有标签页（Tabs/TabBar 等）组件条目，无法给出导出名与导入路径。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有通用状态标签组件（无 StatusTag/StatusBadge/DictionaryBadge 等通用条目）。唯一相近的是业务专用的 bookings.BookingStatusBadge（预订状态标签，导入 @/features/traveler-bookings/BookingStatusBadge），它只处理旅客预订状态码，不是通用状态标签，故按题意回答：没有。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only run: exactly one `search --limit 5 --details` per task (5 CLI calls total), no get used, no source/config/help/ls/cat/grep. A1: FlightDelayEventCreateScreen is the create-flight-delay-event page. A2/A4: no empty-state or tabs entry surfaced (search returned all matches, none relevant). A3: page matches A1; the only card in catalog is the generic BusinessCard (no flight-delay-specific card). A5: only bookings.BookingStatusBadge exists, which is booking-specific; no generic status tag, so reported missing per instruction."
+}

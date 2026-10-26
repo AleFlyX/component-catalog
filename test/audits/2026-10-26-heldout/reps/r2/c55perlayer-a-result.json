@@ -1,0 +1,56 @@
+{
+  "strategy": "catalog55-per-layer",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 FlightDelayEventCreateScreen，导入自 @/features/flight-delay-compensation/event-create-screen。必填 props：无（requiredProps 为空）；需要 router/query/i18n 上下文，提交前会本地保存草稿。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 UiEmptyState，导入自 @/components/ui/feedback。无必填 props（title/description/action 均可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen; ui.UiCard",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen; @/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面：FlightDelayEventCreateScreen，@/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：UiCard，@/components/ui/layout（requiredProps 为空，但注释说明 children 必填，onClick 会使卡片变为 interactive 变体）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 UiTabs，导入自 @/components/ui/layout。无必填 props，但需传 items（每项含 key/title）；activeKey/onChange 可选。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有状态标签组件：以“状态标签”检索返回 0 条（items 为空，per-layer 2）。未找到对应导出名/导入路径。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "catalog-only run: 5 次 search（每任务 1 次，均 --per-layer 2 --limit 5 --details），0 次 get；usage.jsonl 记录 5 行与 catalogCalls 一致。未读取任何源文件/catalog.json/config，未修改仓库文件。A5 的一次检索为空，未重试（受每任务一次 search 限制），故按缺失处理。"
+}

@@ -1,0 +1,56 @@
+{
+  "strategy": "catalog40",
+  "group": "B",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "特殊旅客预订详情页（traveler booking detail）= TravelerBookingDetailScreen（命名导出），导入自 @/features/traveler-bookings/booking-detail-screen；必填 props：bookId。约束：bookId 必填，操作受权限控制，需要 query 与 router provider。",
+      "confidence": "high"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "answer": "通用底部弹出层 = UiPopup（bottom/side popup，带遮罩、安全区与滚动处理；position 默认 bottom，safeArea 默认 false），命名导出，导入自 @/components/ui/overlay；必填 prop：onClose（open 默认 false）。FilterSheet / UiActionSheet 是特定场景弹层，非通用底部弹出层。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage",
+      "importPath": "@/features/auth/sign-in-page",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页：SignInPage（auth.SignInPage），导入 @/features/auth/sign-in-page，无必填 props（redirect 可选）。顶部导航栏：本次 catalog 搜索（6 条命中中被 limit 截断 1 条）未出现独立的顶部导航栏组件；最接近的是 business.MobilePageShell（@/components/business/responsive-layout），但它只是带可选 header 插槽的移动端页面骨架，不是导航栏组件，不能确认为答案。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "answer": "航班延误补偿列表页面 = FlightDelayCompensationListScreen（命名导出），导入自 @/features/flight-delay-compensation/list-screen；必填 props：context、onContextChange（仅在用户具备 query 权限时启用查询）。注意 FlightDelayCompensationBatchScreen 是批次详情，不是列表页。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有图片查看器组件：搜索“图片查看器 image viewer preview”仅返回无关的 FlightDelayEventCreateScreen（命中 price-preview 表单字段），没有 image viewer / photo viewer / media preview 类条目。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "5 次 search（B1-B5）+ 1 次 get（B3 的 business.MobilePageShell）= 6 次 catalog CLI 调用；usage log: /tmp/audit-heldout-r3/c40-b/usage.jsonl。未读取/修改任何 repo 源码、config 或 component-catalog.json。B5 确为缺失（唯一命中与图片无关）。B3 登录页已确认；顶部导航栏在 top-5 结果中不存在（search 报告 omitted.items=1/byLimit=1，即共 6 条只显示 5 条），MobilePageShell 仅提供 header 插槽，故该子项为未确认/可能缺失。B1 搜索结果唯一，即 traveler booking detail screen。"
+}

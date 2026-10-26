@@ -1,0 +1,56 @@
+{
+  "strategy": "catalog40",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 FlightDelayEventCreateScreen；导入路径 @/features/flight-delay-compensation/event-create-screen；无必填 props（requiredProps=[]，即不需要传任何必填属性）。约束：需要 router、query 与 i18n 上下文，表单提交前会把草稿保存在本地。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有空状态组件（没有 EmptyState / EmptyPlaceholder / NoData 一类导出）。单次检索「空状态 empty state placeholder」只命中 InfiniteListFooter（无限列表尾部 loading/no-more 状态）、AuthRecoveryDialogView、UiButton、PasswordInput、BottomActionBar，均不是可复用的空状态组件。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen + business.BusinessCard",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen + @/components/business/mobile",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面：导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen（无必填 props，但依赖 router/query/i18n 上下文）。卡片：导出名 BusinessCard，导入路径 @/components/business/mobile，必填 props 为 children；传 onClick 时整张卡片可交互。注意：catalog 中没有航班延误事件专用的卡片组件，BusinessCard 是项目里的通用卡片容器。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有独立的标签页（Tabs / SegmentedControl）组件。单次检索「tabs tab 标签页 segmented control 切换」命中的 SignInPage（密码/SMS 两个 tab）与 FlightDelayCompensationListScreen（filters and tabs）只是页面内部使用了 tab，并没有导出可复用的标签页组件。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "导出名 BookingStatusBadge；导入路径 @/features/traveler-bookings/BookingStatusBadge；无必填 props（value 可选：null 渲染「--」，未知状态码渲染其字符串本身）。注意：它是 traveler booking 状态码专用的状态标签，并非通用状态标签；若需要与业务无关的通用状态标签，catalog 中没有对应条目。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "catalog-only 执行：5 次 search（每任务 1 次，均 --limit 5 --details），0 次 get，未读取 src/、component-catalog-40.json 或任何配置文件，未使用 cat/grep。唯一例外：开工时用一次 ls -la 做目录定位（只看到文件名与大小，未打开任何文件内容）。catalog CLI stdout 合计约 14.6 KB，不计入 totalBytesRead。可信度说明：A2/A4 判定为 missing 依据是单次检索的前 5 条（各自还有 6/7 条被 --limit 截断，无法查看），但排序中完全没有 EmptyState/Tabs 类名称命中，故判断该 40 组件目录不含这两类组件；若 ground truth 认为存在，这两项是最大风险点。A3 的卡片取通用 BusinessCard（无 flight-delay 专用卡片），A5 取 booking 专用的 BookingStatusBadge（存在通用性不匹配的风险）。"
+}

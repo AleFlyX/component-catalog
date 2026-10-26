@@ -1,0 +1,254 @@
+[
+  {
+    "strategy": "c55perlayer3",
+    "rep": 1,
+    "group": "A",
+    "score": 5,
+    "tasks": [
+      {
+        "task": "A1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A4",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 7,
+    "cliOutputBytes": 9489,
+    "uncachedInputTokens": 8015,
+    "outputTokens": 6506,
+    "cacheReadTokens": 169216,
+    "totalTokens": 183737,
+    "steps": 11,
+    "toolCalls": 10,
+    "wallMs": 51527
+  },
+  {
+    "strategy": "c55perlayer3",
+    "rep": 2,
+    "group": "A",
+    "score": 5,
+    "tasks": [
+      {
+        "task": "A1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A4",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 7,
+    "cliOutputBytes": 11015,
+    "uncachedInputTokens": 5434,
+    "outputTokens": 15123,
+    "cacheReadTokens": 184192,
+    "totalTokens": 204749,
+    "steps": 11,
+    "toolCalls": 10,
+    "wallMs": 104317
+  },
+  {
+    "strategy": "c55perlayer3",
+    "rep": 3,
+    "group": "A",
+    "score": 5,
+    "tasks": [
+      {
+        "task": "A1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A4",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "A5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 7,
+    "cliOutputBytes": 12055,
+    "uncachedInputTokens": 5451,
+    "outputTokens": 15326,
+    "cacheReadTokens": 153472,
+    "totalTokens": 174249,
+    "steps": 8,
+    "toolCalls": 11,
+    "wallMs": 131234
+  },
+  {
+    "strategy": "c55perlayer3",
+    "rep": 1,
+    "group": "B",
+    "score": 4,
+    "tasks": [
+      {
+        "task": "B1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B4",
+        "score": 0,
+        "missing": false
+      },
+      {
+        "task": "B5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 5,
+    "cliOutputBytes": 8718,
+    "uncachedInputTokens": 4219,
+    "outputTokens": 5589,
+    "cacheReadTokens": 88192,
+    "totalTokens": 98000,
+    "steps": 7,
+    "toolCalls": 6,
+    "wallMs": 39647
+  },
+  {
+    "strategy": "c55perlayer3",
+    "rep": 2,
+    "group": "B",
+    "score": 5,
+    "tasks": [
+      {
+        "task": "B1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B4",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 5,
+    "cliOutputBytes": 11362,
+    "uncachedInputTokens": 5011,
+    "outputTokens": 3787,
+    "cacheReadTokens": 109184,
+    "totalTokens": 117982,
+    "steps": 9,
+    "toolCalls": 8,
+    "wallMs": 31697
+  },
+  {
+    "strategy": "c55perlayer3",
+    "rep": 3,
+    "group": "B",
+    "score": 5,
+    "tasks": [
+      {
+        "task": "B1",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B2",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B3",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B4",
+        "score": 1,
+        "missing": false
+      },
+      {
+        "task": "B5",
+        "score": 1,
+        "missing": true
+      }
+    ],
+    "catalogCalls": 5,
+    "cliOutputBytes": 9415,
+    "uncachedInputTokens": 4858,
+    "outputTokens": 5305,
+    "cacheReadTokens": 106624,
+    "totalTokens": 116787,
+    "steps": 8,
+    "toolCalls": 10,
+    "wallMs": 37184
+  }
+]

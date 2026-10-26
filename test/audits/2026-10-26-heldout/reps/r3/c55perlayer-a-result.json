@@ -1,0 +1,56 @@
+{
+  "strategy": "catalog55-per-layer",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面组件为 FlightDelayEventCreateScreen（id: flight-delay.FlightDelayEventCreateScreen），导入路径：@/features/flight-delay-compensation/event-create-screen。无必填 props（requiredProps 为空）；使用时需要 router、query 与 i18n 上下文，表单会先在本地保存草稿再提交。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "空状态组件为 UiEmptyState（id: ui.UiEmptyState），导入路径：@/components/ui/feedback。无必填 props；title、description、action 均为可选。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "页面：FlightDelayEventCreateScreen（id: flight-delay.FlightDelayEventCreateScreen），导入路径 @/features/flight-delay-compensation/event-create-screen，无必填 props。卡片：UiCard（id: ui.UiCard），导入路径 @/components/ui/layout；catalog 的 requiredProps 为空，但约束注明 children 必填，onClick 会使卡片变为可交互。",
+      "confidence": "high"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "标签页组件为 UiTabs（id: ui.UiTabs），导入路径：@/components/ui/layout。catalog 的 requiredProps 为空；约束注明 items 必填（每项需 key/title），activeKey 与 onChange 可选。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有状态标签组件：以「状态标签」搜索返回 0 条（各 layer 均无匹配，未截断）。明确没有该条目。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Per-layer 2, limit 5, --details on every search; 5 searches total (one per task) and 0 get calls. All results came from search --details output, which already included exportName/importPath/requiredProps. A5 returned zero items and is reported as missing; confidence medium because only one search term was allowed and the component could exist under different naming. No source, component-catalog.json, config, help, ls, cat, or grep used; no files read."
+}

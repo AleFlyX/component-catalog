@@ -1,0 +1,101 @@
+{
+  "strategy": "catalog55-per-layer",
+  "group": "B",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "answer": "Export name: TravelerBookingDetailScreen (named export). Import path: @/features/traveler-bookings/booking-detail-screen. Required props: bookId (string). Props type: { bookId: string }. Constraint: bookId is required; actions are permission-gated and the screen needs query and router providers. Note: the catalog describes this as the traveler booking detail screen (status transitions, evaluations, media); no separate entry named for 'special passenger' (特殊旅客) exists, so this is the only booking-detail screen available.",
+      "confidence": "medium",
+      "components": [
+        {
+          "componentId": "bookings.TravelerBookingDetailScreen",
+          "exportName": "TravelerBookingDetailScreen",
+          "importPath": "@/features/traveler-bookings/booking-detail-screen",
+          "requiredProps": ["bookId"]
+        }
+      ]
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "answer": "Export name: UiPopup (named export). Import path: @/components/ui/overlay. Required props: onClose. Constraint: onClose is required; open defaults to false; position defaults to bottom and safeArea to false. Alternative: FilterSheet from @/components/business/mobile (required props visible, title, children, onClose) if a filter-specific bottom sheet is wanted.",
+      "confidence": "high",
+      "components": [
+        {
+          "componentId": "ui.UiPopup",
+          "exportName": "UiPopup",
+          "importPath": "@/components/ui/overlay",
+          "requiredProps": ["onClose"]
+        },
+        {
+          "componentId": "business.FilterSheet",
+          "exportName": "FilterSheet",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["visible", "title", "children", "onClose"]
+        }
+      ]
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage / ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page / @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "Login page: export name SignInPage, import path @/features/auth/sign-in-page (staff sign-in with password and SMS tabs, captcha and redirect handling; no required props, redirect is optional). Top navigation bar: export name UiNavBar, import path @/components/ui/navigation (no required props; back uses router history unless onBack/onClickLeft is supplied; fixed enables the fixed layout).",
+      "confidence": "high",
+      "components": [
+        {
+          "componentId": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": []
+        },
+        {
+          "componentId": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": []
+        }
+      ]
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "answer": "Export name: FlightDelayCompensationListScreen (named export). Import path: @/features/flight-delay-compensation/list-screen. Required props: context and onContextChange. Constraint: context and onContextChange are required; queries are enabled only when the user holds the query permission.",
+      "confidence": "high",
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayCompensationListScreen",
+          "exportName": "FlightDelayCompensationListScreen",
+          "importPath": "@/features/flight-delay-compensation/list-screen",
+          "requiredProps": ["context", "onContextChange"]
+        }
+      ]
+    },
+    {
+      "task": "B5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "Missing: the catalog has no image viewer / image preview component. A single search ('图片查看器 image viewer preview', --per-layer 2, limit 5) returned only one unrelated entry (flight-delay.FlightDelayEventCreateScreen), and the response reported truncated=false with 0 items omitted, so no image-viewer entry exists under these terms. No export name or import path can be given.",
+      "confidence": "high",
+      "components": []
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only: 4 searches (B1,B2,B3,B4,B5 = 5 searches total, one each) plus 1 successful get (B1: bookings.TravelerBookingDetailScreen) plus 1 rejected CLI attempt (get with --details, exit 1 before any lookup). So 6 CLI invocations, 5 searches + 1 effective get. All searches used --limit 5 --details --per-layer 2. No source files, component-catalog.json, config, help, ls, cat or grep were used. B5 image viewer explicitly absent. B1 flagged medium confidence because the only match is named 'TravelerBookingDetailScreen' (traveler, not 'special passenger') and no dedicated special-passenger detail entry surfaced."
+}

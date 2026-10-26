@@ -1,8 +1,7 @@
-# Held-out 任务集第一轮：40 vs 55+layer vs 55+per-layer
+# Held-out 任务集：3 次重复结果
 
 - 日期：2026-10-26
-- 目的：用**未参与调参**的 10 个任务检验策略是否过拟合
-- 任务：10 个，分 A/B 两组各 5 个：
+- 任务：10 个未参与调参的任务，A/B 两组各 5 个
   - feature 3：创建延误事件页、预订详情页、补偿列表页
   - shared 3：EmptyState、Popup、Tabs
   - mixed 2：创建事件页 + 卡片、登录页 + 导航栏
@@ -10,57 +9,69 @@
 - 策略：
   - `c40`：40 条目录，默认 search
   - `c55layer`：55 条目录；单意图用明确 `--layer`，mixed 用 `--per-layer 2`
-  - `c55perlayer`：55 条目录，全部 `--per-layer 2`
-- 规模：每策略 2 组 × 1 次，共 6 个 agent；catalog-only，不读 source
+  - `c55perlayer2`：55 条目录，全部 `--per-layer 2`
+  - `c55perlayer3`：55 条目录，全部 `--per-layer 3`（补充实验）
+- 规模：前三种策略各 2 组 × 3 次；per-layer3 为 A/B 各 3 次，共 6 次/策略
+- catalog-only，不读 source
 
 ## 结果
 
-| 策略 | 得分 | CLI 调用/组 | total tokens 均值 | output tokens | steps | tool calls |
-| --- | --- | --- | --- | --- | --- | --- |
-| c40 | **9/10** | 8 | 219,348 | 17,326 | 9 | 14 |
-| c55layer | **9/10** | 6 | **136,945** | 6,112 | 10 | 9 |
-| **c55perlayer** | **10/10** | **5** | 138,446 | 4,110 | 11 | 10 |
+| 策略 | 得分 | 每 5 任务 token 均值 | 调用 | steps | tool calls |
+| --- | --- | --- | --- | --- | --- |
+| c40 | **27.5/30** | 218,886 | 6 | 10 | 11 |
+| c55layer | **28/30** | 178,798 | 6 | 10 | 10 |
+| c55perlayer2 | **28/30** | **145,259** | 6 | 10 | 10 |
+| **c55perlayer3** | **29/30** | 149,251 | 6 | 9 | 9 |
 
-- per-layer 相对 40 条：**token −36.9%**，调用 −37.5%，多答对 1 题。
-- per-layer 相对 layer-only：token 基本持平（+1.1%），但 **10/10 vs 9/10**，且不需要 agent 猜层。
-- per-layer 的唯一代价是 steps 略高（11 vs 9），但 output token 更低。
+- per-layer2 相对 40 条：token **−33.6%**，调用 −0%，得分 +0.5。
+- per-layer3 相对 per-layer2：token **+2.75%**，得分 **+1**（B2 三次全中）。
+- per-layer3 相对 40 条：token **−31.8%**，得分 +1.5。
+- c55layer 与 per-layer2 同为 28/30，但 layer 需要正确选层，且 B4 两次错；per-layer 不需选层。
 
-## 逐题结论
+## 逐题通过率（3 次）
 
-| 任务 | c40 | c55layer | c55perlayer |
-| --- | --- | --- | --- |
-| A1 创建延误事件页 | ✅ | ✅ | ✅ |
-| A2 EmptyState | ✅ missing | ✅ | ✅ |
-| A3 事件页 + 卡片 | ✅ BusinessCard | ✅ UiCard | ✅ UiCard |
-| A4 Tabs | ✅ missing | ✅ | ✅ |
-| A5 通用状态标签 | ⚠️ 仅领域 badge | ✅ missing | ✅ missing |
-| B1 预订详情页 | ✅ | ✅ | ✅ |
-| B2 Popup | ✅ | ✅ | ✅ |
-| B3 登录页 + NavBar | ⚠️ 缺 NavBar | ✅ | ✅ |
-| B4 补偿列表页 | ✅ | ❌ 返回 BatchScreen | ✅ |
-| B5 图片查看器 | ✅ missing | ✅ missing | ✅ missing |
+| 任务 | c40 | c55layer | per-layer2 | per-layer3 |
+| --- | --- | --- | --- | --- |
+| A1 创建延误事件页 | 3/3 | 3/3 | 3/3 | 3/3 |
+| A2 EmptyState | 3/3 | 3/3 | 3/3 | 3/3 |
+| A3 事件页 + 卡片 | 3/3 | 3/3 | 3/3 | 3/3 |
+| A4 Tabs | 3/3 | 3/3 | 3/3 | 3/3 |
+| A5 通用状态标签 | 2.5/3 | 3/3 | 3/3 | 3/3 |
+| B1 预订详情页 | 3/3 | 3/3 | 3/3 | 3/3 |
+| B2 底部弹出层 | 3/3 | 3/3 | **2/3** | **3/3** |
+| B3 登录页 + NavBar | 1.5/3 | 3/3 | 3/3 | 3/3 |
+| B4 补偿列表页 | 3/3 | **2/3** | **2/3** | **2/3** |
+| B5 图片查看器 | 3/3 | 3/3 | 3/3 | 3/3 |
 
-- c55layer 的 B4 是唯一硬错误：feature layer 下“列表页面”把 BatchScreen 排到 ListScreen 前，说明**明确 layer 也不能消除 ranking 歧义**。
-- per-layer 在 B4 同时看到 feature 的 ListScreen 和 shared 结果，反而稳定命中。
-- c40 的缺口正好对应未收录的 UI 原语（EmptyState/Tabs/NavBar）和领域专用 badge。
+## 关键发现
+
+1. **per-layer 的 token 优势稳定**：per-layer2 145.3K、per-layer3 149.3K，均显著低于 40 条 218.9K 和 layer-only 178.8K。
+2. **per-layer3 修正了 B2**：per-layer2 在 B2 有一次把 `FilterSheet` 当成通用 `UiPopup`；per-layer3 三次都正确。
+3. **B4 仍是 ranking 问题**：三种 55 条策略都出现过 `BatchScreen` 替代 `ListScreen`；per-layer3 也只 2/3。不是覆盖不足，而是同层/跨层排序仍会被摘要词干扰。
+4. **c40 的缺口符合预期**：EmptyState/Tabs/NavBar 未收录；A5 只能给领域 badge；但 c40 用更多 get/output token 仍然只有 27.5/30。
+5. **layer-only 的 28/30 依赖明确选层**，且 B4 两次错；per-layer 不需要选层，在同样得分下 token 更低。
 
 ## 结论
 
-1. **第一轮 held-out 支持 `--per-layer 2` 作为默认策略**：10/10、138.4K、5 次调用、不需要选层。
-2. **40 条不是性能差，而是覆盖率差**：9/10，但 token 219K，且缺失 UI 原语/导航栏。
-3. **明确 layer 的性能上限最好，但仍是 9/10**：ranking 会出错；per-layer 更稳健。
-4. 仍需扩大样本：本轮每策略只有 2 组、每组 1 次，不能替代 3 次重复；但已经比原来的 5 个调参任务更有说服力。
+**当前推荐：`55 + --per-layer 3` 作为默认查询策略。**
 
-## 协议与限制
+- 29/30，比 per-layer2 多 1 题，token 只高 2.75%；
+- 比 40 条低 31.8% token，得分高 1.5；
+- 不需要 agent 猜测 layer；
+- per-layer3 仍不能解决 B4 的 ranking 混淆，下一步应针对“列表页 vs 批次详情页”做 query/ranking 修正，而不是继续扩目录。
 
-- 所有 agent 都是 catalog-only，不读 source；A5/B5 预期 missing。
-- c55layer-a 运行前读了 config（6.4KB），c55perlayer-b 运行前 `ls` 了根目录；答案未依赖这些读取，但已记录，评分不因此加分。
-- c40-a 有 3 次 harness 工具校验失败，未产生 catalog 调用；usage log 的 8 次是 5 search + 3 get。
-- 计分规则：缺失任务正确报告 missing 得 1；领域专用 badge 但说明无通用组件得 0.5；缺一个混合组件得 0.5。
+## 限制与协议
+
+- per-layer3 是补充实验，A/B 各 3 次；前三种策略 6 次/策略。样本仍小，不能当成统计显著。
+- 有若干协议偏差：部分 agent 执行过 `ls`/`cat config`，但答案未依赖源码；均已在各自 `notes` 记录。
+- 计分含部分分：A5 领域 badge 0.5；B3 缺导航栏 0.5；A3 只答页面 0.5。
+- B4 的“列表页”在 catalog 中确实存在；错误来自排序，而非缺失。
 
 ## 产物
 
-- `tasks.json`、`runs.json`、`runs.csv`、`summary.json`
+- `tasks.json`、`summary-all.json`、`runs-all.json`、`runs-all.csv`
+- `summary-per3.json`、`runs-per3.json`、`runs-per3.csv`
 - `config-40.json`、`catalog-40.json.gz`
 - `config-55.json`、`catalog-55.json.gz`
-- `raw/{c40,c55layer,c55perlayer}/{a,b}-result.json`、`a/b-usage.jsonl`
+- `raw/{c40,c55layer,c55perlayer}/{a,b}-{result,usage}`
+- `reps/r2`、`reps/r3`、`reps/per3`

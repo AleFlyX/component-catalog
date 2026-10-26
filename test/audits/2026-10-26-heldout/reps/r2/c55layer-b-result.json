@@ -1,0 +1,63 @@
+{
+  "strategy": "catalog55-layer",
+  "group": "B",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": [
+        "bookId"
+      ],
+      "missing": false,
+      "answer": "特殊旅客/旅客预订详情页组件为 TravelerBookingDetailScreen，从 '@/features/traveler-bookings/booking-detail-screen' 导入（named export）。必填 props 只有 bookId: string；该组件还需要 query 与 router provider，动作按权限门控。注意：catalog 中未出现名字里带 special-passenger 的独立条目，feature 层 bookings 模块唯一的预订详情页就是它（检索结果与 get 详情均已确认）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": [
+        "onClose"
+      ],
+      "missing": false,
+      "answer": "底部弹出层组件为 UiPopup，从 '@/components/ui/overlay' 导入（named export）。required props 只有 onClose: () => void；open 默认 false，position 默认 'bottom'，safeArea 默认 false，另有 closeOnMaskClick/destroyOnClose 等可选属性。catalog 中另有业务专用的 business.FilterSheet（@/components/business/mobile，底部筛选弹层，必填 visible/title/children/onClose），若指的是通用底部弹层则选 UiPopup。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage + ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page + @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "answer": "登录页 = SignInPage，导入自 '@/features/auth/sign-in-page'（feature 层，无必填 props；redirect 可选，需要 router/auth store/i18n）。顶部导航栏 = UiNavBar，导入自 '@/components/ui/navigation'（shared-ui 层，无必填 props；title/left/right/onBack 等均可选，fixed 控制固定布局）。catalog 中 UiNavBar 的示例正是 src/features/auth/sign-in-page.tsx（Login page top bar），与登录页配套。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": [
+        "context",
+        "onContextChange"
+      ],
+      "missing": false,
+      "answer": "航班延误补偿列表页面为 FlightDelayCompensationListScreen，从 '@/features/flight-delay-compensation/list-screen' 导入（named export）。必填 props 为 context 与 onContextChange；delay 事件/结算批次带筛选与标签页，只有具备 query 权限时才启用查询。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": null,
+      "importPath": null,
+      "requiredProps": [],
+      "missing": true,
+      "answer": "catalog 中没有图片查看器（image viewer）组件：search \"image viewer\" 返回 0 条结果（omitted.items=0，说明完全无匹配）。未找到任何导出名为 ImageViewer/PhotoViewer 之类、或导入路径为图片查看器的条目。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 10,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "仅使用 catalog CLI（5 次 search + 5 次 get 调用，其中 1 次 get 误加 --details 被拒、1 次 get 探测不存在的 special-passengers.SpecialPassengerBookingDetailScreen 失败，两者均未返回组件数据），未读取任何仓库源码/配置。关键发现：该 catalog 的 search 结果在命中分数相同时按 component id 字母序排列并截断到 --limit，因此排序靠后的正确条目可能被截断（B3 的 UiNavBar 就被 --per-layer 2 截掉，靠 get 探测找回；其示例即登录页顶栏）。B5 为真实缺失。B1 的 '特殊旅客' 在 catalog 中没有专门的 special-passenger 条目，bookings 模块下（按字母序全部可见）只有 TravelerBookingDetailScreen 这一详情页，故按此作答，置信度 medium。"
+}
