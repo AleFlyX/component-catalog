@@ -257,7 +257,7 @@ component-catalog generate --check
 component-catalog check
 ```
 
-search 默认最多 5 项、上限 10 项，返回 ID、导出名、kind、`importPath`、`layer`、`requiredProps`（组件才有的必填 Prop 名数组）、摘要、任务标签和状态。`--brief` 省略摘要以在 4 KiB 内放入更多候选，适合先做宽泛发现；`--details` 增加第一条约束和 usage 计数，用于避免只为约束/使用次数再 get 一次。`truncated` 只表示响应因 4 KiB 字节上限丢弃了字段/条目；匹配数超过 `--limit` 时 `truncated` 为 false，`omitted.byLimit` 给出更多匹配数，`omitted.byBytes` 给出字节裁剪数。常见查找可只用 search 回答“导入路径 + 必填 props”，不必再 get。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
+search 默认最多 5 项、上限 10 项，返回 ID、导出名、kind、`importPath`、`layer`、`requiredProps`（组件才有的必填 Prop 名数组）、摘要、任务标签和状态。`--brief` 省略摘要以在 4 KiB 内放入更多候选，适合先做宽泛发现；`--details` 增加第一条约束和 usage 计数，用于避免只为约束/使用次数再 get 一次；`--layer` 只返回指定 layer 的条目，适合在共享 UI 与 feature 组件混合的大目录中缩小范围。`truncated` 只表示响应因 4 KiB 字节上限丢弃了字段/条目；匹配数超过 `--limit` 时 `truncated` 为 false，`omitted.byLimit` 给出更多匹配数，`omitted.byBytes` 给出字节裁剪数。常见查找可只用 search 回答“导入路径 + 必填 props”，不必再 get。排名为精确 ID/名称、任务、部分 ID/名称、摘要、精确 API 名、部分 API 名；同等级再考虑任务匹配数、主要任务、stable、ID 字典序。NFKC/大小写归一化，空格分词为 OR 匹配，中文等术语通过配置词表支持；不承诺任意自然语言理解。
 
 get 接受 1–5 个精确 ID；单个 ID 保持原有 `component` 响应，多个 ID 返回 `components` 数组并在 16 KiB 总预算内独立压缩、必要时从尾部丢弃并计入 `omitted.components`。多个 ID 不能与 `--prop`/`--from` 组合；`--include` 对所有条目生效。单 ID 默认返回定位信息、Props 或 namespace members、约束和最多两个示例。`--include` 替换默认详情字段，接受 props/members/constraints/examples/usage。`--prop` 精确且区分大小写地选择单个 Prop，保留泛型/继承上下文和约束，与 --include 互斥；不是完整组件契约。继承大量 DOM 属性的组件（例如 `React.ButtonHTMLAttributes`）可能使完整 props 超出 16 KiB；默认响应此时给出很小的 `propsSummary`（`total`、`inheritedTypes`、提示），并把 `props` 记入 `omitted.fields`；显式 `--include props` 时返回 `propIndex`（`names` 全部 Prop 名、`required` 必填名、`total`、inheritedTypes 的紧凑索引），若仍放不下则退化为 `propsOmitted`。按需用 `--prop` 取单个属性，或用 `--include constraints` 避开属性列表。`propIndex` 不是完整类型契约，读源码才能确认继承类型的细节。
 
@@ -265,7 +265,7 @@ get 接受 1–5 个精确 ID；单个 ID 保持原有 `component` 响应，多�
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
 
-设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief/details 等选项；失败时保留 command、task、arguments、options 和 error；search 记录 `resultIds`，get 记录 `componentIds`，可选的 `COMPONENT_CATALOG_TASK` 会写入 `task` 标签。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
+设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief/details/layer 等选项；失败时保留 command、task、arguments、options 和 error；search 记录 `resultIds`，get 记录 `componentIds`，可选的 `COMPONENT_CATALOG_TASK` 会写入 `task` 标签。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
 
 查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。本版生成目录格式 **7**，支持可为空的 importPath、importExtension、JS/JSX 路径及 reuse/deprecationReason；查询仍支持 v3/v4/v5/v6 快照，其中 v3/v4 的复用范围显示为 unspecified。迁移通过重新生成完成，不直接修改版本号。旧版 CLI 无法读取 v7，需与 skill 同步升级；配置版本仍为 1/2。
 

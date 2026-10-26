@@ -52,6 +52,12 @@ test("expanded UI catalog exposes the core primitives without regressing busines
   assert.equal(top("UiDialog")[0], "ui.UiDialog");
   assert.equal(top("密码输入框")[0], "auth.PasswordInput");
   assert.equal(top("航班延误补偿批次")[0], "flight-delay.FlightDelayCompensationBatchScreen");
+  const featurePassword = search(u55Catalog, "密码输入框", 5, u55Config.vocabulary, false, false, "feature");
+  assert.equal(featurePassword.layer, "feature");
+  assert.equal(featurePassword.items[0].id, "auth.PasswordInput");
+  assert.ok(featurePassword.items.every((item) => item.layer === "feature"));
+  const sharedButton = search(u55Catalog, "UiButton", 5, u55Config.vocabulary, false, false, "feature");
+  assert.equal(sharedButton.items.length, 0);
 });
 
 test("55-entry catalog covers the remaining UI queries without losing business entrypoints", () => {
@@ -65,4 +71,10 @@ test("55-entry catalog covers the remaining UI queries without losing business e
   assert.equal(top("UiNavBar")[0], "ui.UiNavBar");
   assert.equal(top("密码输入框")[0], "auth.PasswordInput");
   assert.equal(top("航班延误补偿批次")[0], "flight-delay.FlightDelayCompensationBatchScreen");
+  const featurePassword = search(u55Catalog, "密码输入框", 5, u55Config.vocabulary, false, false, "feature");
+  assert.equal(featurePassword.layer, "feature");
+  assert.equal(featurePassword.items[0].id, "auth.PasswordInput");
+  assert.ok(featurePassword.items.every((item) => item.layer === "feature"));
+  const sharedButton = search(u55Catalog, "UiButton", 5, u55Config.vocabulary, false, false, "feature");
+  assert.equal(sharedButton.items.length, 0);
 });

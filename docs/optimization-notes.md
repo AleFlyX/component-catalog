@@ -26,6 +26,7 @@
 | search `--brief` + `truncated` 语义拆分 | 省略 summary 的紧凑视图；`truncated` 只表示字节裁剪，更多匹配用 `omitted.byLimit` |
 | 查询回归集（`test/query-regression.test.mjs`） | 25 个查询 + 5 个必须排第一的入口，使用真实 trial catalog 防止 task 2/3 排序回退 |
 | search `--details` + 非 CLI 预算 | 第一条 constraint + usage 计数；禁止 config/help/shell 探索。airport：6→5 次调用，205K→100K tokens |
+| search `--layer` | 55 条目录 + layer 过滤：95% 覆盖，94.9K tokens；比无过滤 55 条低 43% |
 
 ## 3. 测量结果
 
@@ -127,7 +128,8 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 再加入 date-picker/feedback/layout/navigation 的 15 个导出：outside-catalog 4/10 → **9/10**、整体 **70% → 95%**；仅 UiSearchBar 因工具不支持仍缺失。
 - B：55 条 **167,283 / 170,475 tokens**，相对 40 条 **+46.0% 均值 / +62.5% 中位数**，相对 30 条 +67.0%；steps 10 vs 8，output 9,445 vs 5,441。`--limit 3` 只降到 151,929 / 154,178（−9.2%），仍比 40 条高 32.6%。
 - 原因：业务查询会带入更多 UI 候选（如“认证恢复弹窗”同时返回 UiDialog/UiPopup），top-1 仍正确但上下文/答案被放大；覆盖率收益不抵 token。
-- 结论：**默认保留 40 条**；55 条仅作覆盖上限研究。下一步应做**查询范围过滤**（layer / ID 前缀 / 更小 limit），把 55 条的 token 拉回 120K 以下，而不是继续扩目录。
+- 结论：无过滤时 55 条不划算；但 **55 + `--layer` 是当前最佳组合**：**94,902 / 92,507 tokens**，95% 覆盖，比 40 条低 17.2%，比无过滤 55 条低 43.3%。
+- 关键不是“目录不能大”，而是大目录必须配查询范围：feature 任务用 `--layer feature`，原语任务用 `--layer shared-ui`；无法判断 layer 时 40 条是安全默认。
 
 ## 10. 相关产物
 
@@ -143,4 +145,5 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 覆盖率抽样：`test/audits/2026-10-26-airport-coverage/`
 - 40 条扩容：`test/audits/2026-10-26-airport-ui-expanded/`
 - 55 条覆盖饱和：`test/audits/2026-10-26-airport-ui55-expanded/`
+- layer 过滤验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-layer/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

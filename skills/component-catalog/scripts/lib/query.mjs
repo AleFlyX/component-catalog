@@ -14,7 +14,7 @@ function includesTerm(text, term) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false) {
+export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
@@ -60,7 +60,8 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
         Number(b.item.status === "stable") - Number(a.item.status === "stable") ||
         compare(a.item.id, b.item.id),
     );
-  const items = ranked
+  const scoped = layer == null ? ranked : ranked.filter(({ item }) => item.layer === layer);
+  const items = scoped
     .slice(0, limit)
     .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage } }) => ({
       id,
@@ -80,13 +81,14 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
       status,
       reuse: reuse ?? { scope: "unspecified" },
     }));
-  const byLimit = ranked.length - items.length;
+  const byLimit = scoped.length - items.length;
   const response = {
     schemaVersion: catalog.schemaVersion,
     sourceDigest: catalog.sourceDigest,
     items,
     ...(brief ? { brief: true } : {}),
     ...(details ? { details: true } : {}),
+    ...(layer == null ? {} : { layer }),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.
     truncated: false,

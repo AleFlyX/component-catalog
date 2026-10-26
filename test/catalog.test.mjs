@@ -125,6 +125,14 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   const detailedBrief = search(baseCatalog, "button", 5, {}, true, true);
   assert.equal(detailedBrief.items[0].summary, undefined);
   assert.ok(detailedBrief.items[0].constraint);
+  const layered = search(baseCatalog, "button", 5, {}, false, false, "shared");
+  assert.equal(layered.layer, "shared");
+  assert.ok(layered.items.length > 0);
+  assert.ok(layered.items.every((item) => item.layer === "shared"));
+  const noLayer = search(baseCatalog, "button", 5, {}, false, false, "missing");
+  assert.equal(noLayer.items.length, 0);
+  assert.equal(noLayer.omitted.byLimit, 0);
+  assert.equal(noLayer.truncated, false);
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({

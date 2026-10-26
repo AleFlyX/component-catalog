@@ -89,6 +89,7 @@ export function analyzeSession(session, log = []) {
   let searchTruncated = 0;
   let searchDetails = 0;
   let searchBrief = 0;
+  let searchLayers = 0;
   let searchOmittedByLimit = 0;
   let searchOmittedByBytes = 0;
   let searchResultIds = 0;
@@ -126,6 +127,7 @@ export function analyzeSession(session, log = []) {
       if (entry.truncated) searchTruncated += 1;
       if (entry.options?.details) searchDetails += 1;
       if (entry.options?.brief) searchBrief += 1;
+      if (entry.options?.layer) searchLayers += 1;
       searchOmittedByLimit += num(entry.omitted?.byLimit);
       searchOmittedByBytes += num(entry.omitted?.byBytes);
       searchResultIds += Array.isArray(entry.resultIds) ? entry.resultIds.length : 0;
@@ -188,6 +190,7 @@ export function analyzeSession(session, log = []) {
       searchCalls: byCommand.search?.calls ?? 0,
       searchDetails,
       searchBrief,
+      searchLayers,
       searchTruncated,
       searchOmittedByLimit,
       searchOmittedByBytes,
@@ -256,7 +259,7 @@ export function renderMarkdown(analysis, label = "run") {
     "",
     "## CLI vs non-CLI",
     "",
-    `- CLI calls: ${analysis.cli.calls} (search ${analysis.cli.searchCalls}, details ${analysis.cli.searchDetails}, brief ${analysis.cli.searchBrief}, get ${analysis.cli.getCalls}, batch get ${analysis.cli.getBatchCalls})`,
+    `- CLI calls: ${analysis.cli.calls} (search ${analysis.cli.searchCalls}, details ${analysis.cli.searchDetails}, brief ${analysis.cli.searchBrief}, layer ${analysis.cli.searchLayers}, get ${analysis.cli.getCalls}, batch get ${analysis.cli.getBatchCalls})`,
     `- observed tool calls: ${analysis.derived.observedToolCalls}; non-CLI: ${analysis.derived.nonCliToolCalls}`,
     `- search truncated: ${analysis.cli.searchTruncated}; omitted by limit ${analysis.cli.searchOmittedByLimit}, by bytes ${analysis.cli.searchOmittedByBytes}`,
   );

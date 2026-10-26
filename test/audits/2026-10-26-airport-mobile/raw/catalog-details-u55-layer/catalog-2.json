@@ -1,0 +1,53 @@
+{
+  "condition": "u55-layer",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "FlightDelayCompensationBatchScreen (export FlightDelayCompensationBatchScreen) from '@/features/flight-delay-compensation/batch-detail-screen'. Required prop: batchId. It is the batch compensation workspace covering standard, special and review steps; it needs query, auth and router providers and handles offline/conflict states.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "No dedicated special-passenger (=special traveler) list component exists in the feature layer: the only hit is the generic TravelerBookingListScreen (export TravelerBookingListScreen) from '@/features/traveler-bookings/booking-list-screen', required prop navigate, optional initialStatus. It is a paginated traveler booking list with search and filters, permission-gated queries/actions. Use it for special passengers (optionally pre-setting initialStatus/filters); there is no special-traveler-specific variant to import.",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "auth.PasswordInput (export PasswordInput) from '@/features/auth/password-input'; no required props. It is a password field with show/hide labels and a form-field error. Errors are not rendered by the input itself: the component must be used inside UiFormField, and the error is passed as a string that the field wrapper displays.",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar + business.FilterSheet",
+      "importPath": "@/components/business/mobile (both)",
+      "requiredProps": [
+        "SearchBar: value, placeholder, onChange",
+        "FilterSheet: visible, title, children, onClose"
+      ],
+      "answer": "Both live in the shared-ui module '@/components/business/mobile': business.SearchBar (export SearchBar) — required value, placeholder, onChange; onFilter adds the filter icon button; and business.FilterSheet (export FilterSheet) — required visible, title, children, onClose; reset/confirm actions, onConfirm runs before the sheet closes. Wire SearchBar's onFilter to open FilterSheet.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "common.AuthRecoveryDialog (export AuthRecoveryDialog) from '@/components/common/auth-recovery-dialog'; no required props. It is a global dialog that subscribes to the auth recovery store and lazily renders its view, so mount it once near the app root (global mount, not per-page); it renders null while no recovery event is pending. The inner view is common.AuthRecoveryDialogView (required detail) which the dialog mounts itself.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "5 searches (one per task, --details plus the mandated --layer) and 1 get (bookings.TravelerBookingListScreen, task 2) to confirm no special-traveler variant. No project source, config or catalog JSON read directly; no files modified. Task 2 confidence medium only because the absence of a dedicated special-passenger list is inferred from the single search hit rather than from a full catalog scan."
+}

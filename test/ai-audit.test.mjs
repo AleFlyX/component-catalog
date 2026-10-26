@@ -46,6 +46,7 @@ test("analyzeSession combines token usage, timeline, and CLI logs", () => {
   assert.equal(analysis.cli.byCommand.get.truncated, 0);
   assert.equal(analysis.cli.searchCalls, 2);
   assert.equal(analysis.cli.searchTruncated, 1);
+  assert.equal(analysis.cli.searchLayers, 0);
   assert.equal(analysis.cli.getCalls, 2);
   assert.equal(analysis.cli.getBatchCalls, 1);
   assert.equal(analysis.cli.uniqueGetIds, 2);
