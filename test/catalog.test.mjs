@@ -740,7 +740,10 @@ test("componentRoots typeScope reports suppressed diagnostics instead of silentl
     },
     include: ["src/**/*.ts", "src/**/*.tsx"],
   }));
-  write("src/components/Foo.ts", `/**
+  write("node_modules/external-lib/package.json", JSON.stringify({ name: "external-lib", types: "index.d.ts" }));
+  write("node_modules/external-lib/index.d.ts", "export const external: any;\n");
+  write("src/components/Foo.ts", `import { external } from "external-lib";
+/**
  * Test component.
  * @componentCatalog
  * @catalogStatus experimental
@@ -749,6 +752,7 @@ test("componentRoots typeScope reports suppressed diagnostics instead of silentl
  * @catalogExample production src/example.ts | example
  */
 export function Foo(props: { label: string }) {
+  void external;
   const broken: number = "not a number";
   return null;
 }
@@ -786,4 +790,10 @@ export function Foo(props: { label: string }) {
   assert.equal(output.typeScope, "componentRoots");
   assert.equal(output.typeCheck, "partial");
   assert.ok(output.suppressedTypeDiagnostics > 0);
+
+  // A file that does not import any stubbed module must still fail on a real type error.
+  write("src/components/Foo.ts", `/**\n * Test component.\n * @componentCatalog\n * @catalogStatus experimental\n * @catalogTask foo\n * @catalogConstraint none\n * @catalogExample production src/example.ts | example\n */\nexport function Foo(props: { label: string }) {\n  const broken: number = "not a number";\n  return null;\n}\n`);
+  const untainted = run(args, dir);
+  assert.notEqual(untainted.status, 0);
+  assert.match(untainted.stderr, /not a number|TS2322/);
 });

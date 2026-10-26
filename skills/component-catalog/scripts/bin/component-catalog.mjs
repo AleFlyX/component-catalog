@@ -282,6 +282,9 @@ try {
                 typeScope: catalog.generation.typeScope,
                 typeCheck: catalog.generation.typeCheck,
                 suppressedTypeDiagnostics: catalog.generation.suppressedTypeDiagnostics,
+                ...(catalog.generation.suppressedTypeCodes
+                  ? { suppressedTypeCodes: catalog.generation.suppressedTypeCodes }
+                  : {}),
               }
             : {}),
         };

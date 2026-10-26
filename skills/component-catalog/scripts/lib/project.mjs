@@ -36,6 +36,7 @@ function createScopedTypeHost(workspace, options, config, files) {
     name.startsWith("react-dom/");
   const stubNames = new Map();
   const virtual = new Map();
+  const stubbedFiles = new Set();
   const virtualContents = new Map();
   const moduleKey = (name, containing) => {
     const resolved = ts.resolveModuleName(name, containing, options, host).resolvedModule;
@@ -92,6 +93,7 @@ function createScopedTypeHost(workspace, options, config, files) {
     if (keep(name)) return resolved;
     if (!resolved) return undefined;
     if (config.componentRoots.some((root) => inside(root.path, resolved.resolvedFileName))) return resolved;
+    stubbedFiles.add(containing);
     return {
       resolvedFileName: stubPath(resolved.resolvedFileName),
       extension: ts.Extension.Dts,
@@ -106,6 +108,7 @@ function createScopedTypeHost(workspace, options, config, files) {
       return ts.createSourceFile(file, content, languageVersion, true, ts.ScriptKind.TS);
     return baseGetSourceFile(file, languageVersion, onError);
   };
+  host.stubbedFiles = stubbedFiles;
   return host;
 }
 

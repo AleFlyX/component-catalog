@@ -90,6 +90,9 @@ export function auditResponse(result, { command = "audit", offset = 0, limit = 2
           typeScope: result.generation.typeScope,
           typeCheck: result.generation.typeCheck,
           suppressedTypeDiagnostics: result.generation.suppressedTypeDiagnostics,
+          ...(result.generation.suppressedTypeCodes
+            ? { suppressedTypeCodes: result.generation.suppressedTypeCodes }
+            : {}),
         }
       : {}),
     discovery: {

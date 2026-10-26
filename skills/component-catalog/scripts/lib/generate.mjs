@@ -470,12 +470,34 @@ export function generateCatalog(config, options = {}) {
     oldProgram: program,
     ...(host ? { host } : {}),
   });
-  const diagnostics = ts.getPreEmitDiagnostics(extraction);
-  // componentRoots scope intentionally treats imports outside the catalog roots as
-  // shallow any-types. Diagnostics caused by those stubs are not catalog failures;
+  const allDiagnostics = ts.getPreEmitDiagnostics(extraction);
+  let diagnostics = allDiagnostics;
+  let suppressedDiagnostics = 0;
+  let suppressedTypeCodes = {};
+  if (config.typeScope === "componentRoots") {
+    // Imports outside the component roots are shallow any-stubs. A source file
+    // that imports one is "tainted": secondary semantic errors there may be
+    // stub artifacts. Keep syntax errors and unresolved imports fatal; suppress
+    // only semantic diagnostics in tainted files, and report the count/codes.
+    const stubbedFiles = host?.stubbedFiles ?? new Set();
+    diagnostics = allDiagnostics.filter(
+      (item) =>
+        !item.file ||
+        !stubbedFiles.has(item.file.fileName) ||
+        item.code === 2307 ||
+        (item.code >= 1000 && item.code < 2000),
+    );
+    suppressedDiagnostics = allDiagnostics.length - diagnostics.length;
+    suppressedTypeCodes = Object.fromEntries(
+      [...new Set(allDiagnostics
+        .filter((item) => !diagnostics.includes(item))
+        .map((item) => item.code))]
+        .map((code) => [code, allDiagnostics.filter((item) => item.code === code && !diagnostics.includes(item)).length])
+        .sort((a, b) => b[1] - a[1]),
+    );
+  }
   // unresolved imports and metadata are still checked below.
-  if (config.typeScope !== "componentRoots" && diagnostics.length)
-    throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
+  if (diagnostics.length) throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
   const missing = unresolvedImports(
     extraction.getSourceFiles().filter((source) => !source.isDeclarationFile),
     extraction.getTypeChecker(),
@@ -555,7 +577,8 @@ export function generateCatalog(config, options = {}) {
     value: {
       typeScope: config.typeScope ?? "project",
       typeCheck: config.typeScope === "componentRoots" ? "partial" : "full",
-      suppressedTypeDiagnostics: config.typeScope === "componentRoots" ? diagnostics.length : 0,
+      suppressedTypeDiagnostics: suppressedDiagnostics,
+      ...(Object.keys(suppressedTypeCodes).length ? { suppressedTypeCodes } : {}),
     },
     enumerable: false,
   });
