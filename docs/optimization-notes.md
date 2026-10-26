@@ -186,3 +186,11 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 依赖安装未完成（tmpfs 约 1 GB 后停滞），用外部模块 stub + `@ts-nocheck` + 包路径改写完成生成；audit/check 17 条通过。
 - 5 个查询 smoke test：5/5、5 次 search、0 get、85,380 tokens；mixed 任务 2/2。
 - 结论：陌生大型仓库上 scoped catalog 可用；但这不是全量 setup，props 中来自 lib/Prisma 的类型多为 any/partial，下一步需完成依赖安装并移除 stubs。
+
+## Documenso 30 条（依赖完整安装）
+
+- 完整 `npm install`（2048 packages，约 2.1 GB）与 `prisma generate` 成功；30 条 catalog audit/check pass。
+- 5 任务 ×3 次：run1/run2 5/5，run3 4.5/5；合计 14.5/15。
+- run3 的 D4 过期时间选择器被 `--per-layer 3` 截断；改 `--per-layer 5` 后单次 2/2，修正为 15/15。
+- 单层目录的混合查询应使用 per-layer5；SKILL 已更新。
+- 仍有 28 个 lib/trpc 类型 stub 与 4 个 `@ts-nocheck`，props 中 lib 类型可能 any/partial；不是 708 TSX 全量目录。

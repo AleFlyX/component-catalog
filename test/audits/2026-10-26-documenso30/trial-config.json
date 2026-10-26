@@ -1,0 +1,177 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": ".",
+  "tsconfig": "tsconfig.catalog.json",
+  "catalog": "component-catalog-documenso.json",
+  "importPathStyle": "direct",
+  "componentRoots": [
+    {
+      "path": "packages/ui/components",
+      "idPrefix": "ui",
+      "importPrefix": "@documenso/ui/components",
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": {
+        "scope": "project"
+      }
+    }
+  ],
+  "exclude": [],
+  "previewRoots": [],
+  "testRoots": [],
+  "vocabulary": {
+    "document email": {
+      "primary": "document-email",
+      "related": []
+    },
+    "email preferences": {
+      "primary": "email-preferences",
+      "related": []
+    },
+    "auth access": {
+      "primary": "auth-access",
+      "related": []
+    },
+    "auth action": {
+      "primary": "auth-action",
+      "related": []
+    },
+    "read only fields": {
+      "primary": "read-only-fields",
+      "related": []
+    },
+    "document fields": {
+      "primary": "document-fields",
+      "related": []
+    },
+    "signature settings": {
+      "primary": "signature-settings",
+      "related": []
+    },
+    "document visibility": {
+      "primary": "document-visibility",
+      "related": []
+    },
+    "visibility select": {
+      "primary": "visibility-select",
+      "related": []
+    },
+    "recipient field": {
+      "primary": "recipient-tooltip",
+      "related": []
+    },
+    "expiration period": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "reminder settings": {
+      "primary": "reminder-picker",
+      "related": []
+    },
+    "copy text": {
+      "primary": "copy-text",
+      "related": []
+    },
+    "language switcher": {
+      "primary": "language-switcher",
+      "related": []
+    },
+    "local time": {
+      "primary": "local-time",
+      "related": []
+    },
+    "field tooltip": {
+      "primary": "field-tooltip",
+      "related": []
+    },
+    "field container": {
+      "primary": "field-container",
+      "related": []
+    },
+    "recipient auth": {
+      "primary": "recipient-auth",
+      "related": []
+    },
+    "recipient input": {
+      "primary": "recipient-input",
+      "related": []
+    },
+    "recipient role": {
+      "primary": "recipient-role",
+      "related": []
+    },
+    "template type": {
+      "primary": "template-type",
+      "related": []
+    },
+    "animation": {
+      "primary": "animation",
+      "related": []
+    },
+    "client only": {
+      "primary": "client-only",
+      "related": []
+    },
+    "signing card": {
+      "primary": "signing-card",
+      "related": []
+    },
+    "邮件通知": {
+      "primary": "document-email",
+      "related": []
+    },
+    "权限": {
+      "primary": "auth-access",
+      "related": []
+    },
+    "只读字段": {
+      "primary": "read-only-fields",
+      "related": []
+    },
+    "分享按钮": {
+      "primary": "document-share",
+      "related": []
+    },
+    "可见性": {
+      "primary": "document-visibility",
+      "related": []
+    },
+    "提醒": {
+      "primary": "reminder-picker",
+      "related": []
+    },
+    "过期": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "复制": {
+      "primary": "copy-text",
+      "related": []
+    },
+    "语言切换": {
+      "primary": "language-switcher",
+      "related": []
+    },
+    "本地时间": {
+      "primary": "local-time",
+      "related": []
+    },
+    "字段提示": {
+      "primary": "field-tooltip",
+      "related": []
+    },
+    "收件人": {
+      "primary": "recipient-input",
+      "related": []
+    },
+    "模板类型": {
+      "primary": "template-type",
+      "related": []
+    },
+    "签名卡片": {
+      "primary": "signing-card",
+      "related": []
+    }
+  }
+}

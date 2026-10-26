@@ -1,0 +1,114 @@
+{
+  "strategy": "documenso30",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "D1",
+      "componentId": "ui.document.DocumentEmailCheckboxes",
+      "importPath": "@documenso/ui/components/document/document-email-checkboxes",
+      "requiredProps": ["value", "onChange"],
+      "missing": false,
+      "components": [
+        {
+          "role": "文档邮件通知复选框",
+          "componentId": "ui.document.DocumentEmailCheckboxes",
+          "exportName": "DocumentEmailCheckboxes",
+          "importPath": "@documenso/ui/components/document/document-email-checkboxes",
+          "requiredProps": ["value", "onChange"]
+        }
+      ],
+      "answer": "导出名 DocumentEmailCheckboxes；导入路径 @documenso/ui/components/document/document-email-checkboxes；必填 props: value, onChange（hiddenEvents 可隐藏部分事件，可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "D2",
+      "componentId": "ui.document.DocumentVisibilitySelect",
+      "importPath": "@documenso/ui/components/document/document-visibility-select",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "文档可见性选择器",
+          "componentId": "ui.document.DocumentVisibilitySelect",
+          "exportName": "DocumentVisibilitySelect",
+          "importPath": "@documenso/ui/components/document/document-visibility-select",
+          "requiredProps": []
+        }
+      ],
+      "answer": "导出名 DocumentVisibilitySelect；导入路径 @documenso/ui/components/document/document-visibility-select；无必填 props（可传 Select props 及可选 currentTeamMemberRole、isTeamSettings、canUpdateVisibility）。同文件另有 DocumentVisibilityTooltip。",
+      "confidence": "high"
+    },
+    {
+      "task": "D3",
+      "componentId": "ui.document.DocumentShareButton",
+      "importPath": "@documenso/ui/components/document/document-share-button",
+      "requiredProps": ["documentId"],
+      "missing": false,
+      "components": [
+        {
+          "role": "文档分享按钮",
+          "componentId": "ui.document.DocumentShareButton",
+          "exportName": "DocumentShareButton",
+          "importPath": "@documenso/ui/components/document/document-share-button",
+          "requiredProps": ["documentId"]
+        }
+      ],
+      "answer": "导出名 DocumentShareButton；导入路径 @documenso/ui/components/document/document-share-button；必填 props: documentId（token、自定义 trigger 可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "D4",
+      "componentId": "ui.document.ReminderSettingsPicker",
+      "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+      "requiredProps": ["value", "onChange"],
+      "missing": true,
+      "components": [
+        {
+          "role": "提醒设置选择器",
+          "componentId": "ui.document.ReminderSettingsPicker",
+          "exportName": "ReminderSettingsPicker",
+          "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+          "requiredProps": ["value", "onChange"]
+        },
+        {
+          "role": "过期时间选择器",
+          "componentId": null,
+          "importPath": null,
+          "requiredProps": [],
+          "missing": true
+        }
+      ],
+      "answer": "提醒设置选择器：导出名 ReminderSettingsPicker，导入路径 @documenso/ui/components/document/reminder-settings-picker，必填 props: value, onChange（disabled、inheritLabel 可选）。过期时间选择器：单次检索结果中缺失（未返回任何 expiry 相关组件，且 omitted.byLimit=0、truncated=false），按规则不再二次检索，故该角色记为 missing。",
+      "confidence": "medium"
+    },
+    {
+      "task": "D5",
+      "componentId": "ui.common.LocalTime",
+      "importPath": "@documenso/ui/components/common/local-time",
+      "requiredProps": ["date"],
+      "missing": false,
+      "components": [
+        {
+          "role": "本地时间显示",
+          "componentId": "ui.common.LocalTime",
+          "exportName": "LocalTime",
+          "importPath": "@documenso/ui/components/common/local-time",
+          "requiredProps": ["date"]
+        },
+        {
+          "role": "复制文本按钮",
+          "componentId": "ui.common.CopyTextButton",
+          "exportName": "CopyTextButton",
+          "importPath": "@documenso/ui/components/common/copy-text-button",
+          "requiredProps": ["value"]
+        }
+      ],
+      "answer": "本地时间显示：LocalTime，@documenso/ui/components/common/local-time，必填 props: date（className 可选）。复制文本按钮：CopyTextButton，@documenso/ui/components/common/copy-text-button，必填 props: value（badge 内容、onCopySuccess 可选）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict catalog-only：每任务恰好一次 search --limit 5 --details --per-layer 3，未使用 get/ls/cat/grep，未读取 config 或 source。D4 为混合任务，提醒设置选择器命中；过期时间选择器未出现在单次检索的 3 条命中中（omitted.byLimit=0，未截断），故按缺失上报而非猜测。D5 两角色均命中且为独立 import 路径。"
+}

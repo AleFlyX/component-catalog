@@ -1,0 +1,34 @@
+{
+  "repo": "https://github.com/documenso/documenso",
+  "commit": "8707e33",
+  "scope": "packages/ui/components",
+  "catalogEntries": 30,
+  "install": "2048 packages, ~2.1GB, prisma generate ok",
+  "runs": [
+    {
+      "run": 1,
+      "score": 5,
+      "tokens": 117457
+    },
+    {
+      "run": 2,
+      "score": 5,
+      "tokens": 116292
+    },
+    {
+      "run": 3,
+      "score": 4.5,
+      "tokens": 141748
+    },
+    {
+      "task": "D4-per5",
+      "score": 2,
+      "tokens": 51717
+    }
+  ],
+  "scorePerLayer3": "14.5/15",
+  "scoreAfterPer5": "15/15",
+  "meanTokens3": 125166,
+  "totalTokens": 427214,
+  "limitations": "28 lib/trpc type stubs and 4 @ts-nocheck files; lib/Prisma prop types may be any/partial; not full 708-TSX catalog"
+}

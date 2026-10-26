@@ -1,0 +1,94 @@
+{
+  "strategy": "documenso30",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "D1",
+      "componentId": "ui.document.DocumentEmailCheckboxes",
+      "importPath": "@documenso/ui/components/document/document-email-checkboxes",
+      "requiredProps": ["value", "onChange"],
+      "missing": false,
+      "components": [],
+      "answer": "Export: DocumentEmailCheckboxes. Import: @documenso/ui/components/document/document-email-checkboxes. Required props: value, onChange.",
+      "confidence": "high"
+    },
+    {
+      "task": "D2",
+      "componentId": "ui.document.DocumentVisibilitySelect",
+      "importPath": "@documenso/ui/components/document/document-visibility-select",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export: DocumentVisibilitySelect. Import: @documenso/ui/components/document/document-visibility-select. No required props (optional currentTeamMemberRole, isTeamSettings, canUpdateVisibility).",
+      "confidence": "high"
+    },
+    {
+      "task": "D3",
+      "componentId": "ui.document.DocumentShareButton",
+      "importPath": "@documenso/ui/components/document/document-share-button",
+      "requiredProps": ["documentId"],
+      "missing": false,
+      "components": [],
+      "answer": "Export: DocumentShareButton. Import: @documenso/ui/components/document/document-share-button. Required props: documentId (token and custom trigger optional).",
+      "confidence": "high"
+    },
+    {
+      "task": "D4",
+      "componentId": "ui.document.ReminderSettingsPicker",
+      "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+      "requiredProps": ["value", "onChange"],
+      "missing": false,
+      "components": [
+        {
+          "role": "reminder-settings-selector",
+          "componentId": "ui.document.ReminderSettingsPicker",
+          "exportName": "ReminderSettingsPicker",
+          "importPath": "@documenso/ui/components/document/reminder-settings-picker",
+          "requiredProps": ["value", "onChange"],
+          "missing": false
+        },
+        {
+          "role": "expiration-time-selector",
+          "componentId": "ui.document.ExpirationPeriodPicker",
+          "exportName": "ExpirationPeriodPicker",
+          "importPath": "@documenso/ui/components/document/expiration-period-picker",
+          "requiredProps": ["value", "onChange"],
+          "missing": false
+        }
+      ],
+      "answer": "Reminder settings selector: ReminderSettingsPicker from @documenso/ui/components/document/reminder-settings-picker, required props value, onChange. Expiration time selector: ExpirationPeriodPicker from @documenso/ui/components/document/expiration-period-picker, required props value, onChange.",
+      "confidence": "high"
+    },
+    {
+      "task": "D5",
+      "componentId": "ui.common.LocalTime",
+      "importPath": "@documenso/ui/components/common/local-time",
+      "requiredProps": ["date"],
+      "missing": false,
+      "components": [
+        {
+          "role": "local-time-display",
+          "componentId": "ui.common.LocalTime",
+          "exportName": "LocalTime",
+          "importPath": "@documenso/ui/components/common/local-time",
+          "requiredProps": ["date"],
+          "missing": false
+        },
+        {
+          "role": "copy-text-button",
+          "componentId": "ui.common.CopyTextButton",
+          "exportName": "CopyTextButton",
+          "importPath": "@documenso/ui/components/common/copy-text-button",
+          "requiredProps": ["value"],
+          "missing": false
+        }
+      ],
+      "answer": "Local time display: LocalTime from @documenso/ui/components/common/local-time, required prop date. Copy text button: CopyTextButton from @documenso/ui/components/common/copy-text-button, required prop value.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only validation: exactly one search per task (5 total), no get, no second search. Never read component-catalog-documenso.json, config, help, ls, cat, grep, or source files. All 5 tasks found exact matches; D4 and D5 resolved both requested roles."
+}

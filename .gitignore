@@ -34,3 +34,5 @@ examples/basic/component-catalog.json
 *.swo
 .DS_Store
 Thumbs.db
+
+.trial/
