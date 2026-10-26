@@ -44,10 +44,19 @@ test("analyzeSession combines token usage, timeline, and CLI logs", () => {
   assert.equal(analysis.cli.byCommand.search.calls, 2);
   assert.equal(analysis.cli.byCommand.get.calls, 2);
   assert.equal(analysis.cli.byCommand.get.truncated, 0);
+  assert.equal(analysis.cli.searchCalls, 2);
+  assert.equal(analysis.cli.searchTruncated, 1);
+  assert.equal(analysis.cli.getCalls, 2);
+  assert.equal(analysis.cli.getBatchCalls, 1);
+  assert.equal(analysis.cli.uniqueGetIds, 2);
+  assert.equal(analysis.cli.searchResultIds, 1);
+  assert.equal(analysis.derived.nonCliToolCalls, 0);
+  assert.equal(analysis.timeline.toolCallsByName.bash, 3);
   assert.deepEqual(analysis.cli.repeatedComponents, [["ui.Button", 2]]);
   assert.equal(analysis.cli.tasks["1"].calls, 2);
   assert.equal(analysis.session.wallMs, 100);
   assert.match(renderMarkdown(analysis, "fixture"), /cache read 900/);
+  assert.match(renderMarkdown(analysis, "fixture"), /CLI vs non-CLI/);
 });
 
 test("analyzeSession tolerates missing session fields", () => {

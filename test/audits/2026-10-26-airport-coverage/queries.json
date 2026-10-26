@@ -1,0 +1,22 @@
+[
+  { "scope": "in-catalog", "query": "航班延误补偿批次", "expectedId": "flight-delay.FlightDelayCompensationBatchScreen" },
+  { "scope": "in-catalog", "query": "特殊旅客预订列表", "expectedId": "bookings.TravelerBookingListScreen" },
+  { "scope": "in-catalog", "query": "密码输入框", "expectedId": "auth.PasswordInput" },
+  { "scope": "in-catalog", "query": "搜索栏", "expectedId": "business.SearchBar" },
+  { "scope": "in-catalog", "query": "筛选面板", "expectedId": "business.FilterSheet" },
+  { "scope": "in-catalog", "query": "认证恢复弹窗", "expectedId": "common.AuthRecoveryDialog" },
+  { "scope": "in-catalog", "query": "任务卡片", "expectedId": "business.TaskCard" },
+  { "scope": "in-catalog", "query": "时间线", "expectedId": "business.TimelinePanel" },
+  { "scope": "in-catalog", "query": "页面外壳", "expectedId": "business.MobilePageShell" },
+  { "scope": "in-catalog", "query": "航班延误事件", "expectedId": "flight-delay.FlightDelayEventCreateScreen" },
+  { "scope": "outside-catalog", "query": "UiButton", "expectedExport": "UiButton" },
+  { "scope": "outside-catalog", "query": "UiInput", "expectedExport": "UiInput" },
+  { "scope": "outside-catalog", "query": "UiDialog", "expectedExport": "UiDialog" },
+  { "scope": "outside-catalog", "query": "UiSearchBar", "expectedExport": "UiSearchBar" },
+  { "scope": "outside-catalog", "query": "UiDatePicker", "expectedExport": "UiDatePicker" },
+  { "scope": "outside-catalog", "query": "UiEmptyState", "expectedExport": "UiEmptyState" },
+  { "scope": "outside-catalog", "query": "UiTabs", "expectedExport": "UiTabs" },
+  { "scope": "outside-catalog", "query": "UiPopup", "expectedExport": "UiPopup" },
+  { "scope": "outside-catalog", "query": "UiCard", "expectedExport": "UiCard" },
+  { "scope": "outside-catalog", "query": "UiNavBar", "expectedExport": "UiNavBar" }
+]

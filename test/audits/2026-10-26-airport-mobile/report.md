@@ -41,6 +41,29 @@
 5. **setup 成本**：30 条标注产生 30,947 B patch、284 个新增行（13,035 B，含 JSDoc 与 2 个 preview）；比 bulletproof 的 857 行小，但仍需安装依赖和生成。按 details 相对 source 节省约 363K tokens/5 任务估算，setup 回本更快（约 1 批），但依赖安装/人工选择范围未计入。
 6. **任务歧义**：“特殊旅客预订列表”没有专用页面组件；catalog 的 vocabulary/摘要无法凭空创造不存在的变体，最终与 source 一致。目录应记录“没有专用组件”这一事实，而不是强行造 ID。
 
+### AI 埋点（本轮加强）
+
+`test/audits/tools/analyze-ai-run.mjs` 现在额外输出：
+
+- `cli.searchDetails` / `searchBrief` / `searchTruncated` / `searchOmittedByLimit` / `searchOmittedByBytes`
+- `cli.getBatchCalls` / `uniqueGetIds`
+- `timeline.toolCallsByName`
+- `derived.observedToolCalls` / `derived.nonCliToolCalls`
+- CLI 失败日志也带 `task`、`arguments`、`options`
+
+airport 的 observed/non-CLI 对比：
+
+| 条件 | CLI 调用 | observed tools | non-CLI | total tokens |
+| --- | --- | --- | --- | --- |
+| catalog run1/2/3 | 6 | 9 / 15 / 16 | 3 / 9 / 10 | 161,961 / 200,600 / 252,127 |
+| details run1/2/3 | 5 | 7 / 9 / 9 | 2 / 4 / 4 | 78,024 / 134,834 / 87,723 |
+
+non-CLI 调用和 token 有相关性，但不是唯一因素（details-2 与 details-3 non-CLI 都是 4，token 差 47K），所以埋点只能定位“探索动作”，不能替代逐任务输出/上下文分析。
+
+### 覆盖率抽样
+
+[cverage report](../2026-10-26-airport-coverage/report.md)：20 个查询中 in-catalog 10/10、outside-catalog 0/10，整体 50%。30 条只覆盖 103 个 supported 候选的 29.1%、519 个总候选的 5.8%；`src/components/ui` 的 40 个 supported 组件完全未登记。下一步应先扩 top 10 UI 原语，而不是全量 40。
+
 ## 4. 限制
 
 - Catalog 只覆盖选定 30 条，不是全部 519 个候选；未选范围的查询仍需 source。
@@ -54,5 +77,6 @@
 - `trial-config.json`、`catalog.json.gz`、`annotations.patch`
 - `raw/catalog/*.json`、`raw/catalog-details/*.json`、`raw/source/*.json`
 - `usage/catalog-*.jsonl`、`usage/details-*.jsonl`
+- `analysis/catalog-*`、`analysis/details-*`（增强后的 AI 埋点）
 - `runs.json`、`runs.csv`、`summary.json`
 - 查询回归：`test/airport-regression.test.mjs`

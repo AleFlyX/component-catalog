@@ -97,7 +97,25 @@
 - 质量教训：第一次 details 测试中 `TravelerBookingListScreen` 的 constraint 误写“initialStatus 必填”，实际可选；修正后重跑。AI 生成的 constraint 必须做类型/源码复核。
 - 限制：未覆盖全部 519 个候选；任务 2 的“特殊旅客列表”没有专用变体，catalog/source 都收敛到同一组件；精确 DOM 结构仍需 source。
 
-## 9. 相关产物
+## 9. AI 埋点与覆盖率（2026-10-26）
+
+### AI 埋点增强
+
+`test/audits/tools/analyze-ai-run.mjs` 新增：
+
+- CLI 维度：`searchDetails`、`searchBrief`、`searchTruncated`、`searchOmittedByLimit/ByBytes`、`getBatchCalls`、`uniqueGetIds`
+- 会话维度：`toolCallsByName`、`observedToolCalls`、`nonCliToolCalls`
+- CLI 失败日志补全 `task`、`arguments`、`options`
+
+airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non-CLI 与 token 有相关性，但 details-2/3 都是 4 次而 token 差 47K，说明埋点只能定位探索开销，不能单独解释全部方差。
+
+### 覆盖率抽样
+
+- 20 个查询：in-catalog 10/10（top-5），outside-catalog 0/10，整体 50%。
+- 30 条覆盖 103 个 supported 候选的 **29.1%**、519 个总候选的 **5.8%**；`src/components/ui` 40 个 supported 全部未登记。
+- 结论：目录内检索已够好，下一阶段瓶颈是覆盖；建议先扩 top 10 UI 原语（Button/Input/Dialog/SearchBar/DatePicker/EmptyState/Tabs/Popup/Card/NavBar），预计 supported 覆盖 29.1%→38.8%，再用同一查询集复测。
+
+## 10. 相关产物
 
 - 基线：`test/baselines/bulletproof-react-2026-10-25/`
 - 第一轮优化/审计：`test/audits/2026-10-25-optimization-a/`
@@ -108,3 +126,5 @@
 - 分析器：`test/audits/tools/analyze-ai-run.mjs`
 - 大规模陌生仓库：`test/audits/2026-10-26-airport-mobile/`
 - 机场查询回归：`test/airport-regression.test.mjs`
+- 覆盖率抽样：`test/audits/2026-10-26-airport-coverage/`
+- 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

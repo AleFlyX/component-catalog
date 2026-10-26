@@ -265,7 +265,7 @@ get 接受 1–5 个精确 ID；单个 ID 保持原有 `component` 响应，多�
 
 数据命令的 stdout 为 JSON（--help 和无参数帮助除外）；搜索最多 4 KiB，详情最多 16 KiB，含换行，按 UTF-8 字节计算。响应带 schemaVersion、sourceDigest、truncated、omitted；按完整条目或字段裁剪。单 Prop 的必需上下文无法容纳时失败，不返回误导性残片。字节限制不是 token 实测收益。用 npm/pnpm scripts 调用时加 `--silent`，避免包管理器横幅混入 JSON。
 
-设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief 等选项；search 记录 `resultIds`，get 记录 `componentIds`，可选的 `COMPONENT_CATALOG_TASK` 会写入 `task` 标签；失败时记录 `error`。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
+设置 `COMPONENT_CATALOG_LOG=<path>` 可开启本地、仅追加的 JSONL 使用审计：每次命令成功时记录时间、命令、查询/ID/目录、`outputBytes`、`durationMs`、`status`、`truncated`、`omitted` 以及 limit/offset/include/prop/from/brief/details 等选项；失败时保留 command、task、arguments、options 和 error；search 记录 `resultIds`，get 记录 `componentIds`，可选的 `COMPONENT_CATALOG_TASK` 会写入 `task` 标签。它不记录源码内容，不改变 stdout，也不联网；日志写入失败会被忽略，不能作为安全审计或计费依据。未设置该环境变量时 CLI 不产生任何日志。
 
 查询不生成、不检查仓库漂移；`generate --check` 重新计算并比较字节，无写入。目录缺失、损坏、参数错误或版本不兼容时 stderr 提示并非零退出。本版生成目录格式 **7**，支持可为空的 importPath、importExtension、JS/JSX 路径及 reuse/deprecationReason；查询仍支持 v3/v4/v5/v6 快照，其中 v3/v4 的复用范围显示为 unspecified。迁移通过重新生成完成，不直接修改版本号。旧版 CLI 无法读取 v7，需与 skill 同步升级；配置版本仍为 1/2。
 

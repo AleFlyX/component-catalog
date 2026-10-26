@@ -1,0 +1,269 @@
+{
+  "catalogEntries": 30,
+  "limit": 5,
+  "overall": {
+    "queries": 20,
+    "hits": 10,
+    "rate": 50
+  },
+  "byScope": {
+    "in-catalog": {
+      "queries": 10,
+      "hits": 10,
+      "rate": 100
+    },
+    "outside-catalog": {
+      "queries": 10,
+      "hits": 0,
+      "rate": 0
+    }
+  },
+  "results": [
+    {
+      "scope": "in-catalog",
+      "query": "航班延误补偿批次",
+      "expected": "flight-delay.FlightDelayCompensationBatchScreen",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "flight-delay.FlightDelayCompensationBatchScreen",
+          "exportName": "FlightDelayCompensationBatchScreen"
+        },
+        {
+          "id": "flight-delay.batch-workspace.ReviewCompensationStep",
+          "exportName": "ReviewCompensationStep"
+        },
+        {
+          "id": "flight-delay.batch-workspace.SpecialCompensationStep",
+          "exportName": "SpecialCompensationStep"
+        },
+        {
+          "id": "flight-delay.batch-workspace.StandardCompensationStep",
+          "exportName": "StandardCompensationStep"
+        },
+        {
+          "id": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "特殊旅客预订列表",
+      "expected": "bookings.TravelerBookingListScreen",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "bookings.TravelerBookingListScreen",
+          "exportName": "TravelerBookingListScreen"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "密码输入框",
+      "expected": "auth.PasswordInput",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "auth.PasswordInput",
+          "exportName": "PasswordInput"
+        },
+        {
+          "id": "auth.ForgotPasswordPage",
+          "exportName": "ForgotPasswordPage"
+        },
+        {
+          "id": "auth.SignInPage",
+          "exportName": "SignInPage"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "搜索栏",
+      "expected": "business.SearchBar",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "business.SearchBar",
+          "exportName": "SearchBar"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "筛选面板",
+      "expected": "business.FilterSheet",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "business.FilterSheet",
+          "exportName": "FilterSheet"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "认证恢复弹窗",
+      "expected": "common.AuthRecoveryDialog",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "common.AuthRecoveryDialog",
+          "exportName": "AuthRecoveryDialog"
+        },
+        {
+          "id": "common.AuthRecoveryDialogView",
+          "exportName": "AuthRecoveryDialogView"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "任务卡片",
+      "expected": "business.TaskCard",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "business.TaskCard",
+          "exportName": "TaskCard"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "时间线",
+      "expected": "business.TimelinePanel",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "business.TimelinePanel",
+          "exportName": "TimelinePanel"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "页面外壳",
+      "expected": "business.MobilePageShell",
+      "hit": true,
+      "rank": 1,
+      "results": [
+        {
+          "id": "business.MobilePageShell",
+          "exportName": "MobilePageShell"
+        }
+      ]
+    },
+    {
+      "scope": "in-catalog",
+      "query": "航班延误事件",
+      "expected": "flight-delay.FlightDelayEventCreateScreen",
+      "hit": true,
+      "rank": 2,
+      "results": [
+        {
+          "id": "flight-delay.FlightDelayCompensationBatchScreen",
+          "exportName": "FlightDelayCompensationBatchScreen"
+        },
+        {
+          "id": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen"
+        },
+        {
+          "id": "flight-delay.FlightDelayEventDetailScreen",
+          "exportName": "FlightDelayEventDetailScreen"
+        }
+      ]
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiButton",
+      "expected": "UiButton",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiInput",
+      "expected": "UiInput",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiDialog",
+      "expected": "UiDialog",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiSearchBar",
+      "expected": "UiSearchBar",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiDatePicker",
+      "expected": "UiDatePicker",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiEmptyState",
+      "expected": "UiEmptyState",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiTabs",
+      "expected": "UiTabs",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiPopup",
+      "expected": "UiPopup",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiCard",
+      "expected": "UiCard",
+      "hit": false,
+      "rank": null,
+      "results": []
+    },
+    {
+      "scope": "outside-catalog",
+      "query": "UiNavBar",
+      "expected": "UiNavBar",
+      "hit": false,
+      "rank": null,
+      "results": []
+    }
+  ]
+}

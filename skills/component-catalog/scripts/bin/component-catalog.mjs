@@ -31,6 +31,8 @@ const taskLabel = (() => {
 })();
 const startedAt = Date.now();
 let activeCommand;
+let activeInputs = [];
+let activeValues = null;
 // Opt-in, local-only usage audit. Never changes command output; a failed log
 // write is ignored so instrumentation cannot break the CLI.
 function writeUsageLog(entry) {
@@ -86,6 +88,7 @@ try {
     tokens: true,
     options: cliOptions,
   });
+  activeValues = values;
   const options = tokens.filter((token) => token.kind === "option").map((token) => token.name);
   if (new Set(options).size !== options.length) throw new Error("Options cannot be repeated");
   if (values.version && !positionals.length && options.length === 1) {
@@ -109,6 +112,7 @@ try {
     const [command, ...inputs] = positionals;
     const input = inputs[0];
     activeCommand = command;
+    activeInputs = inputs;
     const allowed = {
       init: [],
       scan: ["limit", "offset", "summary", "query", "brief"],
@@ -281,6 +285,20 @@ try {
 } catch (error) {
   writeUsageLog({
     command: activeCommand ?? null,
+    argument: activeInputs[0]?.slice(0, 200) ?? null,
+    arguments: activeInputs.length ? activeInputs.map((value) => value.slice(0, 200)) : null,
+    task: taskLabel,
+    options: activeValues
+      ? {
+          limit: activeValues.limit ?? null,
+          offset: activeValues.offset ?? null,
+          include: activeValues.include ?? null,
+          prop: activeValues.prop ?? null,
+          from: activeValues.from ?? null,
+          brief: activeValues.brief ?? null,
+          details: activeValues.details ?? null,
+        }
+      : null,
     error: error.message,
     durationMs: Date.now() - startedAt,
   });

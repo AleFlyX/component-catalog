@@ -670,4 +670,25 @@ test("opt-in usage log records command metadata without changing output", (t) =>
   assert.equal(entry.truncated, output.truncated);
   assert.equal(entry.status, null);
   assert.ok(entry.durationMs >= 0);
+
+  const failureLog = path.join(f.dir, "failure.jsonl");
+  const failed = spawnSync(
+    process.execPath,
+    [cli, "--config", f.configFile, "search", "--limit", "2"],
+    {
+      cwd: os.tmpdir(),
+      encoding: "utf8",
+      env: { ...process.env, COMPONENT_CATALOG_LOG: failureLog, COMPONENT_CATALOG_TASK: "task-fail" },
+    },
+  );
+  assert.notEqual(failed.status, 0);
+  const [failure] = fs
+    .readFileSync(failureLog, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  assert.equal(failure.command, "search");
+  assert.equal(failure.task, "task-fail");
+  assert.equal(failure.options.limit, "2");
+  assert.match(failure.error, /search/i);
 });

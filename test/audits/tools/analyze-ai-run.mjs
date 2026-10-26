@@ -48,6 +48,8 @@ export function analyzeSession(session, log = []) {
   let assistantTokens = 0;
   let assistantSteps = 0;
   let toolCallsFromTimeline = 0;
+  let observedToolCalls = activityTotals.toolCalls;
+  const toolCallsByName = {};
   const topResults = [];
   const timelineRows = timeline.map((entry, index) => {
     const tool = entry?.tool ?? null;
@@ -60,6 +62,11 @@ export function analyzeSession(session, log = []) {
       assistantTokens += num(entry.tokens);
       assistantSteps += 1;
       toolCallsFromTimeline += calls.length;
+      observedToolCalls = Math.max(observedToolCalls, toolCallsFromTimeline);
+      for (const call of calls) {
+        const name = typeof call === "string" ? call : (call?.name ?? "unknown");
+        toolCallsByName[name] = (toolCallsByName[name] ?? 0) + 1;
+      }
     }
     return {
       index,
@@ -79,6 +86,14 @@ export function analyzeSession(session, log = []) {
   const repeatedComponents = {};
   const tasks = {};
   let logOutputBytes = 0;
+  let searchTruncated = 0;
+  let searchDetails = 0;
+  let searchBrief = 0;
+  let searchOmittedByLimit = 0;
+  let searchOmittedByBytes = 0;
+  let searchResultIds = 0;
+  let getBatchCalls = 0;
+  const uniqueGetIds = new Set();
   for (const entry of log) {
     if (entry.parseError) continue;
     const command = entry.command ?? "unknown";
@@ -106,6 +121,19 @@ export function analyzeSession(session, log = []) {
       const t = (tasks[task] ??= { calls: 0, outputBytes: 0 });
       t.calls += 1;
       t.outputBytes += num(entry.outputBytes);
+    }
+    if (command === "search") {
+      if (entry.truncated) searchTruncated += 1;
+      if (entry.options?.details) searchDetails += 1;
+      if (entry.options?.brief) searchBrief += 1;
+      searchOmittedByLimit += num(entry.omitted?.byLimit);
+      searchOmittedByBytes += num(entry.omitted?.byBytes);
+      searchResultIds += Array.isArray(entry.resultIds) ? entry.resultIds.length : 0;
+    }
+    if (command === "get") {
+      const ids = Array.isArray(entry.componentIds) ? entry.componentIds : [];
+      if (ids.length > 1) getBatchCalls += 1;
+      for (const id of ids) uniqueGetIds.add(String(id));
     }
   }
 
@@ -148,6 +176,7 @@ export function analyzeSession(session, log = []) {
       assistantSteps,
       assistantTokens,
       toolCalls: toolCallsFromTimeline,
+      toolCallsByName,
       toolResultTokens,
       toolTokens,
       topResults: topResults.slice(0, 5),
@@ -156,6 +185,16 @@ export function analyzeSession(session, log = []) {
       calls: log.length,
       outputBytes: logOutputBytes,
       byCommand,
+      searchCalls: byCommand.search?.calls ?? 0,
+      searchDetails,
+      searchBrief,
+      searchTruncated,
+      searchOmittedByLimit,
+      searchOmittedByBytes,
+      searchResultIds,
+      getCalls: byCommand.get?.calls ?? 0,
+      getBatchCalls,
+      uniqueGetIds: uniqueGetIds.size,
       repeatedArguments: Object.entries(repeatedArguments).filter(([, count]) => count > 1),
       repeatedComponents: Object.entries(repeatedComponents).filter(([, count]) => count > 1),
       tasks,
@@ -164,8 +203,10 @@ export function analyzeSession(session, log = []) {
         task: entry.task ?? null,
         command: entry.command ?? null,
         argument: entry.argument ?? null,
+        options: entry.options ?? null,
         outputBytes: num(entry.outputBytes),
         truncated: entry.truncated ?? null,
+        omitted: entry.omitted ?? null,
         error: entry.error ?? null,
         resultIds: entry.resultIds ?? null,
         componentIds: entry.componentIds ?? null,
@@ -177,6 +218,12 @@ export function analyzeSession(session, log = []) {
         ? Math.round(toolResultTokens / assistantSteps)
         : null,
       cacheReadPerCall: log.length && usage ? Math.round(usage.cacheReadTokens / log.length) : null,
+      observedToolCalls,
+      nonCliToolCalls: Math.max(0, observedToolCalls - log.length),
+      outputTokensPerCliCall: log.length && usage ? Math.round(usage.outputTokens / log.length) : null,
+      cliSearchResultIdsPerSearch: byCommand.search?.calls
+        ? Math.round((searchResultIds / byCommand.search.calls) * 10) / 10
+        : null,
     },
   };
 }
@@ -205,6 +252,20 @@ export function renderMarkdown(analysis, label = "run") {
   lines.push("", "## Most expensive tool results", "");
   for (const item of analysis.timeline.topResults)
     lines.push(`- #${item.index} ${item.tool ?? "?"}: ${item.tokens} tokens`);
+  lines.push(
+    "",
+    "## CLI vs non-CLI",
+    "",
+    `- CLI calls: ${analysis.cli.calls} (search ${analysis.cli.searchCalls}, details ${analysis.cli.searchDetails}, brief ${analysis.cli.searchBrief}, get ${analysis.cli.getCalls}, batch get ${analysis.cli.getBatchCalls})`,
+    `- observed tool calls: ${analysis.derived.observedToolCalls}; non-CLI: ${analysis.derived.nonCliToolCalls}`,
+    `- search truncated: ${analysis.cli.searchTruncated}; omitted by limit ${analysis.cli.searchOmittedByLimit}, by bytes ${analysis.cli.searchOmittedByBytes}`,
+  );
+  if (Object.keys(analysis.timeline.toolCallsByName).length)
+    lines.push(
+      `- tool calls by name: ${Object.entries(analysis.timeline.toolCallsByName)
+        .map(([name, count]) => `${name}=${count}`)
+        .join(", ")}`,
+    );
   lines.push("", "## CLI calls", "");
   for (const [command, bucket] of Object.entries(analysis.cli.byCommand))
     lines.push(
