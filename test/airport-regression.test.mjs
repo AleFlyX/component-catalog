@@ -17,6 +17,11 @@ const expandedCatalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(expandedDir, "catalog.json.gz"))).toString("utf8"),
 );
 const expandedConfig = JSON.parse(fs.readFileSync(path.join(expandedDir, "trial-config.json"), "utf8"));
+const u55Dir = path.join(root, "test/audits/2026-10-26-airport-ui55-expanded");
+const u55Catalog = JSON.parse(
+  zlib.gunzipSync(fs.readFileSync(path.join(u55Dir, "catalog.json.gz"))).toString("utf8"),
+);
+const u55Config = JSON.parse(fs.readFileSync(path.join(u55Dir, "trial-config.json"), "utf8"));
 
 const top = (query) =>
   search(catalog, query, 5, config.vocabulary).items.map((item) => item.id);
@@ -45,6 +50,19 @@ test("expanded UI catalog exposes the core primitives without regressing busines
   assert.equal(top("UiButton")[0], "ui.UiButton");
   assert.equal(top("UiInput")[0], "ui.UiInput");
   assert.equal(top("UiDialog")[0], "ui.UiDialog");
+  assert.equal(top("密码输入框")[0], "auth.PasswordInput");
+  assert.equal(top("航班延误补偿批次")[0], "flight-delay.FlightDelayCompensationBatchScreen");
+});
+
+test("55-entry catalog covers the remaining UI queries without losing business entrypoints", () => {
+  assert.equal(u55Catalog.components.length, 55);
+  const top = (query) =>
+    search(u55Catalog, query, 5, u55Config.vocabulary).items.map((item) => item.id);
+  assert.equal(top("UiDatePicker")[0], "ui.UiDatePicker");
+  assert.equal(top("UiEmptyState")[0], "ui.UiEmptyState");
+  assert.equal(top("UiTabs")[0], "ui.UiTabs");
+  assert.equal(top("UiCard")[0], "ui.UiCard");
+  assert.equal(top("UiNavBar")[0], "ui.UiNavBar");
   assert.equal(top("密码输入框")[0], "auth.PasswordInput");
   assert.equal(top("航班延误补偿批次")[0], "flight-delay.FlightDelayCompensationBatchScreen");
 });

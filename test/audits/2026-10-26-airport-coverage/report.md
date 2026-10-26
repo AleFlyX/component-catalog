@@ -27,27 +27,29 @@
 
 ## 扩容实验（已完成）
 
-新增 `src/components/ui` 根，只保留 button/form/overlay 三个文件，登记 10 个核心原语，30→40 条：
+两步扩容：
 
-| 范围 | 30 条 | 40 条 |
-| --- | --- | --- |
-| in-catalog | 10/10 | 10/10 |
-| outside-catalog | 0/10 | **4/10** |
-| 合计 | 50% | **70%** |
+| 范围 | 30 条 | 40 条 | 55 条 |
+| --- | --- | --- | --- |
+| in-catalog | 10/10 | 10/10 | 10/10 |
+| outside-catalog | 0/10 | 4/10 | **9/10** |
+| 合计 | 50% | 70% | **95%** |
 
-- 新增覆盖：UiButton、UiInput、UiDialog、UiPopup；仍未覆盖 SearchBar/DatePicker/EmptyState/Tabs/Card/NavBar。
-- 3 次 details B：15/15，114,586 / 104,914 tokens，相对 30 条 +14.4% 均值，相对 source 仍 −75.2%。
-- 详细结果：[expanded report](../2026-10-26-airport-ui-expanded/report.md)。
+- 40 条新增 UiButton/UiInput/UiDialog/UiPopup；55 条再新增 DatePicker/EmptyState/Tabs/Card/NavBar 等。
+- 40 条 3 次 details B：114,586 / 104,914 tokens，相对 30 条 +14.4%。
+- 55 条 3 次 details B：**167,283 / 170,475 tokens**，相对 40 条 **+46.0%**；覆盖率 +25pp，但 token 代价明显过高。`--limit 3` 只降到 151,929 / 154,178（−9.2%），仍比 40 条高 32.6%。
+- 详细结果：[40 条](../2026-10-26-airport-ui-expanded/report.md)、[55 条](../2026-10-26-airport-ui55-expanded/report.md)。
 
 ## 建议的下一步
 
-- 保留“业务 30 + 核心 UI 10”的 40 条目录，不继续无差别扩到全部 40 个 UI 导出。
-- 若要覆盖剩余 6 个查询，优先评估真实 UI 查询比例；这些组件分散在 search/date-picker/feedback/layout/navigation，文件粒度会一次带入多个导出，setup 成本高于 10 条。
-- 若继续扩，目标 50–60 条，并同时监控 search 输出字节/截断与 B token。
+- **默认保留 40 条**；“业务 30 + 核心 UI 10”是当前 token/覆盖的较优折中。
+- 55 条只作为覆盖上限研究，不建议默认启用；覆盖 95% 但业务查询被 UI 候选放大，token 增加 46%。
+- 若确实要 95% 覆盖，下一步应做**查询范围过滤**（layer / ID 前缀 / 更小 limit），把 55 条的 token 拉回 120K 以下，而不是继续扩目录。
 
 ## 产物
 
 - `queries.json`：20 个查询及期望
 - `coverage.json`：30 条目录的逐查询 top-5
 - `coverage-expanded.json`：40 条目录的逐查询 top-5
+- `coverage-55.json`：55 条目录的逐查询 top-5
 - `coverage-sample.mjs`：可复用工具（`test/audits/tools/`）

@@ -1,0 +1,50 @@
+{
+  "condition": "u55-limit3",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "页面组件为 FlightDelayCompensationBatchScreen（catalog ID: flight-delay.FlightDelayCompensationBatchScreen），导入路径 @/features/flight-delay-compensation/batch-detail-screen；必填 prop 为 batchId。它是覆盖标准、特殊与复核步骤的补偿批次工作区，需要 query、auth 和 router providers，并处理离线/冲突状态。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "未发现“特殊旅客预订列表”的专用变体；catalog 中仅匹配到通用旅客预订列表 TravelerBookingListScreen（ID: bookings.TravelerBookingListScreen），导入路径 @/features/traveler-bookings/booking-list-screen；必填 prop 为 navigate（initialStatus 可选）。该列表含搜索和筛选，查询与操作受权限控制。",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "密码输入框为 auth.PasswordInput，导入路径 @/features/auth/password-input；无必填 props。错误显示方式：必须嵌套在 UiFormField 内使用，错误以 string 形式由字段包装器（form-field wrapper）显示；组件自身带 show/hide 标签和 form-field error。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar, business.FilterSheet",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value", "placeholder", "onChange", "visible", "title", "children", "onClose"],
+      "answer": "两个组件同来自 @/components/business/mobile：搜索栏 business.SearchBar，必填 props 为 value、placeholder、onChange（onFilter 可选，传入后显示筛选按钮）；筛选面板 business.FilterSheet，必填 props 为 visible、title、children、onClose（onConfirm 在面板关闭前执行）。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "全局认证恢复弹窗为 common.AuthRecoveryDialog，导入路径 @/components/common/auth-recovery-dialog；无必填 props。挂载方式：在应用根节点附近挂载一次即可；它订阅 auth recovery store 并惰性渲染视图，没有待处理的恢复事件时渲染 null。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Ran exactly one search per task (5 total, all with --limit 3 --details) from /tmp/oss-trial/airport-mobile with task-tagged COMPONENT_CATALOG_LOG. No get calls were needed. No project/source/config files were read, and no project files were modified."
+}

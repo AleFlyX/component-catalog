@@ -68,6 +68,52 @@
     "toolCalls": 8,
     "wallMs": 33631
   },
+  "catalog-details-u55": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 5,
+    "cliOutputBytes": 11838,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 167283,
+      "median": 170475,
+      "values": [
+        179703,
+        151672,
+        170475
+      ]
+    },
+    "uncachedInputTokens": 5433,
+    "outputTokens": 9445,
+    "cacheReadTokens": 152405,
+    "steps": 10,
+    "toolCalls": 9,
+    "wallMs": 57609
+  },
+  "catalog-details-u55-limit3": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 5,
+    "cliOutputBytes": 8801,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 151929,
+      "median": 154178,
+      "values": [
+        155699,
+        145909,
+        154178
+      ]
+    },
+    "uncachedInputTokens": 4839,
+    "outputTokens": 9149,
+    "cacheReadTokens": 137941,
+    "steps": 10,
+    "toolCalls": 9,
+    "wallMs": 54663
+  },
   "source": {
     "runs": 3,
     "correct": "15/15",

@@ -120,7 +120,14 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 新增 `src/components/ui` 根，保留 button/form/overlay 三个文件，登记 10 个核心原语（Button、IconButton、Input、PasswordInput、TextArea、Form、FormField、Dialog、Popup、ActionSheet）；其余 UI 文件 exclude。
 - 覆盖：outside-catalog 0/10 → **4/10**，整体 **50% → 70%**；supported 覆盖 29.1% → 38.8%。
 - B：40 条 114,586 / 104,914 tokens，相对 30 条 **+14.4% / +19.6%**，相对 source 仍 **−75.2% / −73.5%**；5 个业务任务仍 15/15，search 输出字节没有增加。
-- 结论：+10 条换 +20pp 覆盖率、+14% token，交换合理但仍远优于 source；剩余 SearchBar/DatePicker/EmptyState/Tabs/Card/NavBar 分散在多个文件，文件粒度会一次带入多个导出，暂不无差别扩到全部 40 个 UI 导出。
+- 结论：+10 条换 +20pp 覆盖率、+14% token，交换合理但仍远优于 source；剩余 SearchBar/DatePicker/EmptyState/Tabs/Card/NavBar 分散在多个文件，文件粒度会一次带入多个导出。
+
+### 覆盖饱和实验（40 → 55 条）
+
+- 再加入 date-picker/feedback/layout/navigation 的 15 个导出：outside-catalog 4/10 → **9/10**、整体 **70% → 95%**；仅 UiSearchBar 因工具不支持仍缺失。
+- B：55 条 **167,283 / 170,475 tokens**，相对 40 条 **+46.0% 均值 / +62.5% 中位数**，相对 30 条 +67.0%；steps 10 vs 8，output 9,445 vs 5,441。`--limit 3` 只降到 151,929 / 154,178（−9.2%），仍比 40 条高 32.6%。
+- 原因：业务查询会带入更多 UI 候选（如“认证恢复弹窗”同时返回 UiDialog/UiPopup），top-1 仍正确但上下文/答案被放大；覆盖率收益不抵 token。
+- 结论：**默认保留 40 条**；55 条仅作覆盖上限研究。下一步应做**查询范围过滤**（layer / ID 前缀 / 更小 limit），把 55 条的 token 拉回 120K 以下，而不是继续扩目录。
 
 ## 10. 相关产物
 
@@ -135,4 +142,5 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 机场查询回归：`test/airport-regression.test.mjs`
 - 覆盖率抽样：`test/audits/2026-10-26-airport-coverage/`
 - 40 条扩容：`test/audits/2026-10-26-airport-ui-expanded/`
+- 55 条覆盖饱和：`test/audits/2026-10-26-airport-ui55-expanded/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

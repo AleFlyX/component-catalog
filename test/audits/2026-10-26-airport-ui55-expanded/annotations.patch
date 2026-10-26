@@ -1,0 +1,1040 @@
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/InfiniteListFooter.tsx /tmp/oss-trial/airport-mobile/src/components/business/InfiniteListFooter.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/InfiniteListFooter.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/business/InfiniteListFooter.tsx	2026-10-26 12:28:39.990314241 +0800
+@@ -2,6 +2,14 @@
+ import { UiButton } from '@/components/ui/button';
+ import { UiLoading } from '@/components/ui/feedback';
+ 
++/**
++ * Footer for infinite lists showing loading, retry, load-more or no-more state.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask infinite-list
++ * @catalogConstraint hasItems false renders null; hasMore false renders the no-more text; onRetry is required for retry and load-more actions.
++ * @catalogExample production src/features/asset/event-report-screen.tsx | Footer below an infinite event list
++ */
+ export default function InfiniteListFooter({
+   hasItems,
+   hasMore,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/mobile.tsx /tmp/oss-trial/airport-mobile/src/components/business/mobile.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/mobile.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/business/mobile.tsx	2026-10-26 12:28:39.990497862 +0800
+@@ -7,6 +7,14 @@
+ import { UiSearchBar } from '@/components/ui/search';
+ import { cn } from '@/lib/utils';
+ 
++/**
++ * Mobile search bar with an optional filter action.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask search-bar
++ * @catalogConstraint value, placeholder and onChange are required; onFilter adds the filter icon button.
++ * @catalogExample production src/features/traveler-bookings/booking-list-screen.tsx | Search row above the booking list
++ */
+ export function SearchBar({
+   value,
+   placeholder,
+@@ -40,6 +48,14 @@
+   );
+ }
+ 
++/**
++ * Bottom filter sheet with reset and confirm actions.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask filter-sheet
++ * @catalogConstraint visible, title and onClose are required; onConfirm runs before the sheet closes.
++ * @catalogExample production src/features/traveler-bookings/booking-list-screen.tsx | Booking filters
++ */
+ export function FilterSheet({
+   visible,
+   title,
+@@ -85,6 +101,14 @@
+   );
+ }
+ 
++/**
++ * Card wrapper for mobile business content.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask business-card
++ * @catalogConstraint children are required; passing onClick makes the whole card interactive.
++ * @catalogExample production src/features/asset/scan-entry-screen.tsx | Assignment cards
++ */
+ export function BusinessCard({
+   children,
+   className,
+@@ -112,6 +136,14 @@
+   fullWidth?: boolean;
+ }
+ 
++/**
++ * Two-column label/value information grid for detail screens.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask info-grid
++ * @catalogConstraint items is required; fullWidth spans both columns and a missing value renders --.
++ * @catalogExample production src/features/asset/repair-detail-screen.tsx | Repair detail summary
++ */
+ export function InfoGrid({ items }: { items: InfoGridItem[] }) {
+   return (
+     <UiGrid columns={2} gap={8}>
+@@ -143,6 +175,14 @@
+   );
+ }
+ 
++/**
++ * Vertical timeline card for process or history entries.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask timeline
++ * @catalogConstraint items is required; an empty list renders null and the current step is the last item.
++ * @catalogExample production src/features/asset/repair-detail-screen.tsx | Repair progress history
++ */
+ export function TimelinePanel({
+   items,
+ }: {
+@@ -168,6 +208,14 @@
+   );
+ }
+ 
++/**
++ * Section heading with an optional trailing action.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask section-title
++ * @catalogConstraint children are required; action is placed at the trailing edge.
++ * @catalogExample preview src/previews/catalog-section-title.tsx | Heading with a trailing action
++ */
+ export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
+   return (
+     <div className="mt-4 mb-2 flex items-center justify-between px-1">
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/responsive-layout.tsx /tmp/oss-trial/airport-mobile/src/components/business/responsive-layout.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/responsive-layout.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/business/responsive-layout.tsx	2026-10-26 12:28:39.990551785 +0800
+@@ -23,6 +23,14 @@
+   }
+ }
+ 
++/**
++ * Mobile page shell with header, scrollable content and footer.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask page-shell
++ * @catalogConstraint header and footer are optional; scrollRef receives the main scroll element and the shell provides a scroll-owner context.
++ * @catalogExample production src/pages/settings.tsx | Settings page shell
++ */
+ export function MobilePageShell({
+   children,
+   className,
+@@ -63,6 +71,14 @@
+   );
+ }
+ 
++/**
++ * Responsive grid for page action buttons.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask action-grid
++ * @catalogConstraint compact disables the three-column breakpoint; children should be action buttons.
++ * @catalogExample production src/features/asset/maintenance-task-screen.tsx | Maintenance actions
++ */
+ export function ResponsiveActionGrid({
+   children,
+   className,
+@@ -88,6 +104,14 @@
+   );
+ }
+ 
++/**
++ * Fixed bottom action bar for page-level actions.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask action-bar
++ * @catalogConstraint Place it at the page bottom or pass it as MobilePageShell footer; children are the actions.
++ * @catalogExample production src/features/asset/location-screens.tsx | Location screen actions
++ */
+ export function BottomActionBar({
+   children,
+   className,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/TaskCard.tsx /tmp/oss-trial/airport-mobile/src/components/business/TaskCard.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/business/TaskCard.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/business/TaskCard.tsx	2026-10-26 12:28:39.990337236 +0800
+@@ -16,6 +16,14 @@
+   expiresAt?: string | null;
+ }
+ 
++/**
++ * Task summary card with plan/task IDs, status badge, target and deadline.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask task-card
++ * @catalogConstraint task.status is rendered through DictionaryBadge; targetType only labels device and location targets.
++ * @catalogExample production src/features/asset/scan-entry-screen.tsx | Assignment card in the scan entry list
++ */
+ export function TaskCard({
+   task,
+   onClick,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/auth-recovery-dialog.tsx /tmp/oss-trial/airport-mobile/src/components/common/auth-recovery-dialog.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/auth-recovery-dialog.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/auth-recovery-dialog.tsx	2026-10-26 12:28:39.990220216 +0800
+@@ -7,6 +7,14 @@
+   return { default: module.AuthRecoveryDialogView };
+ });
+ 
++/**
++ * Global dialog that subscribes to the auth recovery store and lazily renders its view.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth-recovery
++ * @catalogConstraint Mount it once near the app root; it renders null while no recovery event is pending.
++ * @catalogExample production src/App.tsx | Mounted by the application shell
++ */
+ export function AuthRecoveryDialog() {
+   const detail: AuthRecoveryEventDetail | null = useSyncExternalStore(
+     subscribeAuthRecovery,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/auth-recovery-dialog-view.tsx /tmp/oss-trial/airport-mobile/src/components/common/auth-recovery-dialog-view.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/auth-recovery-dialog-view.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/auth-recovery-dialog-view.tsx	2026-10-26 12:28:39.990198682 +0800
+@@ -6,6 +6,14 @@
+ import { useUserStore } from '@/store/user';
+ import { getAppRelativeUrl, withAppBasePath } from '@/utils/base-url';
+ 
++/**
++ * Dialog view for auth recovery states with retry or sign-in actions.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth-recovery
++ * @catalogConstraint detail.state controls the title, content and actions; the login action clears the session and navigates to /sign-in.
++ * @catalogExample preview src/previews/catalog-auth-recovery.tsx | Rendered by the shared auth recovery preview
++ */
+ export function AuthRecoveryDialogView({ detail }: { detail: AuthRecoveryEventDetail }) {
+   const { t } = useTranslation();
+   const [loadingDetail, setLoadingDetail] = useState<AuthRecoveryEventDetail | null>(null);
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/forbidden.tsx /tmp/oss-trial/airport-mobile/src/components/common/forbidden.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/forbidden.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/forbidden.tsx	2026-10-26 12:28:39.990241291 +0800
+@@ -3,6 +3,14 @@
+ import forbidden from '@/assets/svg-icon/forbidden.svg';
+ import { UiButton } from '@/components/ui/button';
+ 
++/**
++ * 403 error page with a translated explanation and a home button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask error-page
++ * @catalogConstraint Requires React Router and i18n context; render it as a route error page.
++ * @catalogExample production src/pages/(errors)/403.tsx | 403 route
++ */
+ function Forbidden() {
+   const { t } = useTranslation();
+ 
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/not-found.tsx /tmp/oss-trial/airport-mobile/src/components/common/not-found.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/not-found.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/not-found.tsx	2026-10-26 12:28:39.990259364 +0800
+@@ -3,6 +3,14 @@
+ import notFound from '@/assets/svg-icon/not-found.svg';
+ import { UiButton } from '@/components/ui/button';
+ 
++/**
++ * 404 error page with a translated explanation and a home button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask error-page
++ * @catalogConstraint Requires React Router and i18n context; render it as a route error page.
++ * @catalogExample production src/pages/(errors)/404.tsx | 404 route
++ */
+ function NotFound() {
+   const { t } = useTranslation();
+ 
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/PasswordPolicyFeedback.tsx /tmp/oss-trial/airport-mobile/src/components/common/PasswordPolicyFeedback.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/PasswordPolicyFeedback.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/PasswordPolicyFeedback.tsx	2026-10-26 12:28:39.990165756 +0800
+@@ -16,6 +16,14 @@
+   showError?: boolean;
+ }
+ 
++/**
++ * Renders the password policy checklist and marks each rule as satisfied.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask password-policy
++ * @catalogConstraint password, confirmPassword, oldPassword, policies and showError are optional; pass policies only to override the default basic password policies.
++ * @catalogExample production src/features/identity/change-password-page.tsx | Password rules under a new password field
++ */
+ function PasswordPolicyFeedback({
+   className,
+   confirmPassword = '',
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/server-error.tsx /tmp/oss-trial/airport-mobile/src/components/common/server-error.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/common/server-error.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/common/server-error.tsx	2026-10-26 12:28:39.990291859 +0800
+@@ -3,6 +3,14 @@
+ import serverError from '@/assets/svg-icon/server-error.svg';
+ import { UiButton } from '@/components/ui/button';
+ 
++/**
++ * 500 error page with a translated explanation and a home button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask error-page
++ * @catalogConstraint Requires React Router and i18n context; render it as a route error page.
++ * @catalogExample production src/pages/(errors)/500.tsx | 500 route
++ */
+ function ServerError() {
+   const { t } = useTranslation();
+ 
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/button.tsx /tmp/oss-trial/airport-mobile/src/components/ui/button.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/button.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/button.tsx	2026-10-26 13:38:29.398052672 +0800
+@@ -58,6 +58,14 @@
+   ghost: 'ui-button--ghost',
+ };
+ 
++/**
++ * Accessible button with tone, variant, size and loading state.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-button
++ * @catalogConstraint children are required; type defaults to button and tone/variant/size default to neutral/solid/middle.
++ * @catalogExample production src/features/flight-delay-compensation/event-detail-screen.tsx | Primary action in the event detail footer
++ */
+ export const UiButton = forwardRef<HTMLButtonElement, UiButtonProps>(({
+   children,
+   className,
+@@ -135,6 +143,14 @@
+   'icon': ReactNode;
+ }
+ 
++/**
++ * Icon-only button that wraps UiButton with an accessible label.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-icon-button
++ * @catalogConstraint icon and aria-label are required; other UiButton props are forwarded.
++ * @catalogExample production src/components/business/mobile.tsx | Filter icon button in the mobile search bar
++ */
+ export const UiIconButton = forwardRef<HTMLButtonElement, UiIconButtonProps>(({
+   icon,
+   className,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/date-picker.tsx /tmp/oss-trial/airport-mobile/src/components/ui/date-picker.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/date-picker.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/date-picker.tsx	2026-10-26 13:46:50.907230388 +0800
+@@ -24,6 +24,14 @@
+   onSelect?: (value: Date) => void;
+ }
+ 
++/**
++ * Date picker with confirm/cancel actions and overlay behavior.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-date-picker
++ * @catalogConstraint open and onClose are required; onConfirm is required when a date can be confirmed; value/max/min are optional.
++ * @catalogExample production src/features/traveler-bookings/booking-list-screen.tsx | Flight/order date filter
++ */
+ export function UiDatePicker({
+   cancelText,
+   confirmText,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/feedback.tsx /tmp/oss-trial/airport-mobile/src/components/ui/feedback.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/feedback.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/feedback.tsx	2026-10-26 13:46:50.907336849 +0800
+@@ -13,6 +13,14 @@
+   warning: 'ui-notice-bar--warning',
+ } as const;
+ 
++/**
++ * Inline loading indicator with optional label and size.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-loading
++ * @catalogConstraint label and size are optional; size defaults to 32.
++ * @catalogExample production src/components/business/InfiniteListFooter.tsx | Loading state in an infinite list footer
++ */
+ export function UiLoading({
+   label,
+   size = 32,
+@@ -28,6 +36,14 @@
+   );
+ }
+ 
++/**
++ * Empty-state block with title, description and optional action.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-empty-state
++ * @catalogConstraint title/description/action are optional; no props are required.
++ * @catalogExample production src/features/flight-delay-compensation/list-screen.tsx | Empty event/batch list
++ */
+ export function UiEmptyState({
+   action,
+   description,
+@@ -44,6 +60,14 @@
+   );
+ }
+ 
++/**
++ * Error-state block with optional action button.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-error-state
++ * @catalogConstraint actionLabel and onAction must be supplied together to show the action; status/tone/variant have defaults.
++ * @catalogExample production src/features/flight-delay-compensation/list-screen.tsx | Failed list query
++ */
+ export function UiErrorState({
+   actionLabel,
+   description,
+@@ -72,6 +96,14 @@
+   );
+ }
+ 
++/**
++ * Rounded notice bar with tone variants.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-notice-bar
++ * @catalogConstraint children are required; tone defaults to info.
++ * @catalogExample production src/features/auth/sign-in-page.tsx | Login error notice
++ */
+ export function UiNoticeBar({
+   children,
+   className,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/form.tsx /tmp/oss-trial/airport-mobile/src/components/ui/form.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/form.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/form.tsx	2026-10-26 13:38:29.398160369 +0800
+@@ -86,6 +86,14 @@
+   value?: string;
+ }
+ 
++/**
++ * Text input with error styling, native value/onChange and ARIA passthrough.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-input
++ * @catalogConstraint value/onChange are optional; error is boolean; use onValueChange for the string value and pass max/min as needed.
++ * @catalogExample production src/features/auth/sign-in-page.tsx | Phone field in the SMS login form
++ */
+ export const UiInput = forwardRef<HTMLInputElement, UiInputProps>(({
+   className,
+   defaultValue,
+@@ -147,6 +155,14 @@
+   showLabel: string;
+ }
+ 
++/**
++ * Password input with show/hide labels and error styling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-password-input
++ * @catalogConstraint showLabel/hideLabel are required for the toggle labels; error is boolean; must be used inside UiFormField for the error message.
++ * @catalogExample production src/features/auth/password-input.tsx | Password field in the change-password form
++ */
+ export const UiPasswordInput = forwardRef<HTMLInputElement, UiPasswordInputProps>(({
+   className,
+   hideLabel,
+@@ -184,6 +200,14 @@
+   value?: string;
+ }
+ 
++/**
++ * Multiline textarea with error styling and native change handling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-textarea
++ * @catalogConstraint value/onChange are optional; error is boolean; use onValueChange for the string value.
++ * @catalogExample production src/features/flight-delay-compensation/event-create-screen.tsx | Delay reason note
++ */
+ export const UiTextArea = forwardRef<HTMLTextAreaElement, UiTextAreaProps>(({
+   autoSize,
+   className,
+@@ -240,6 +264,14 @@
+ 
+ UiTextArea.displayName = 'UiTextArea';
+ 
++/**
++ * Vertical antd-mobile form wrapper with submit handling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-form
++ * @catalogConstraint children are required; onSubmit is called by the form finish event; mode defaults to default and contentInset to default.
++ * @catalogExample production src/features/auth/sign-in-page.tsx | Password login form
++ */
+ export function UiForm({
+   children,
+   className,
+@@ -274,6 +306,14 @@
+   );
+ }
+ 
++/**
++ * Form field wrapper with label, error, help and required marker.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-form-field
++ * @catalogConstraint children are required; error takes precedence over help; label and required are optional.
++ * @catalogExample production src/features/auth/sign-in-page.tsx | Login input field
++ */
+ export function UiFormField({
+   children,
+   className,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/layout.tsx /tmp/oss-trial/airport-mobile/src/components/ui/layout.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/layout.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/layout.tsx	2026-10-26 13:46:50.907458068 +0800
+@@ -18,6 +18,14 @@
+   standard: 'ui-card--standard',
+ } as const;
+ 
++/**
++ * Card container with optional title/extra and interactive variant.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-card
++ * @catalogConstraint children are required; onClick makes the card interactive and implies the interactive variant.
++ * @catalogExample production src/components/business/TaskCard.tsx | Task summary card
++ */
+ export function UiCard({
+   children,
+   className,
+@@ -90,6 +98,14 @@
+   );
+ }
+ 
++/**
++ * Grid container for responsive cell layouts.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-grid
++ * @catalogConstraint children and columns are required; gap is optional.
++ * @catalogExample production src/components/business/mobile.tsx | Info grid layout
++ */
+ export function UiGrid({
+   children,
+   className,
+@@ -106,6 +122,14 @@
+   return <Grid className={cn('ui-grid', className)} columns={columns} data-testid={testId} gap={gap}>{children}</Grid>;
+ }
+ 
++/**
++ * Grid cell wrapper with optional span.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-grid-item
++ * @catalogConstraint children are required; span is optional.
++ * @catalogExample production src/components/business/mobile.tsx | Info grid cells
++ */
+ export function UiGridItem({
+   children,
+   className,
+@@ -120,6 +144,14 @@
+   return <Grid.Item className={cn('ui-grid-item', className)} data-testid={testId} span={span}>{children}</Grid.Item>;
+ }
+ 
++/**
++ * Flex spacing container for inline/stacked children.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-space
++ * @catalogConstraint children are required; direction/gap/align/justify are optional.
++ * @catalogExample preview src/previews/catalog-space.tsx | Two items with spacing
++ */
+ export function UiSpace({
+   align,
+   block,
+@@ -168,6 +200,14 @@
+   title: ReactNode;
+ }
+ 
++/**
++ * Tabbed content with controlled active key.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-tabs
++ * @catalogConstraint items are required; activeKey and onChange are optional; each item needs a key/title.
++ * @catalogExample production src/features/flight-delay-compensation/batch-detail-screen.tsx | Batch workspace steps
++ */
+ export function UiTabs({
+   activeKey,
+   className,
+@@ -208,6 +248,14 @@
+   title?: ReactNode;
+ }
+ 
++/**
++ * Step indicator for a process.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-steps
++ * @catalogConstraint items are required; current and direction are optional.
++ * @catalogExample production src/components/business/mobile.tsx | Timeline step panel
++ */
+ export function UiSteps({
+   className,
+   current,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/navigation.tsx /tmp/oss-trial/airport-mobile/src/components/ui/navigation.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/navigation.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/navigation.tsx	2026-10-26 13:46:50.907544752 +0800
+@@ -7,6 +7,14 @@
+ import { cn } from '@/lib/utils';
+ import { UiButton } from './button';
+ 
++/**
++ * Top navigation bar with back/left/right actions.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-nav-bar
++ * @catalogConstraint No props are required; back uses router history unless onBack/onClickLeft is supplied; fixed enables the fixed layout.
++ * @catalogExample production src/features/auth/sign-in-page.tsx | Login page top bar
++ */
+ export function UiNavBar({
+   backIcon,
+   className,
+@@ -99,6 +107,14 @@
+   visible?: boolean;
+ }
+ 
++/**
++ * Bottom tab bar with badge/icon/label items.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-tab-bar
++ * @catalogConstraint items are required; activeKey/onChange are optional; visible false hides an item.
++ * @catalogExample production src/pages/_tabbar/route.tsx | Main tab bar
++ */
+ export function UiTabBar({
+   activeKey,
+   className,
+@@ -163,6 +179,14 @@
+   );
+ }
+ 
++/**
++ * List container with optional header and card mode.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-list
++ * @catalogConstraint children are required; header and mode are optional.
++ * @catalogExample production src/pages/_tabbar/mine.tsx | Account list
++ */
+ export function UiList({
+   'aria-label': ariaLabel,
+   children,
+@@ -191,6 +215,14 @@
+   );
+ }
+ 
++/**
++ * List row with title, description, extra and optional click.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-cell
++ * @catalogConstraint No props are required; title/description/extra/onClick are optional; arrow controls the trailing indicator.
++ * @catalogExample production src/pages/_tabbar/mine.tsx | Account list row
++ */
+ export function UiCell({
+   'aria-label': ariaLabel,
+   arrow,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/overlay.tsx /tmp/oss-trial/airport-mobile/src/components/ui/overlay.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/components/ui/overlay.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/components/ui/overlay.tsx	2026-10-26 13:38:29.398218209 +0800
+@@ -47,6 +47,14 @@
+   return null;
+ }
+ 
++/**
++ * Centered dialog with actions and focus/scroll management.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-dialog
++ * @catalogConstraint open and onClose are required; actions/title/children are optional; closes on action only when closeOnAction is true.
++ * @catalogExample production src/components/common/auth-recovery-dialog-view.tsx | Auth recovery dialog
++ */
+ export function UiDialog({
+   actions = [],
+   children,
+@@ -127,6 +135,14 @@
+   'onClose': () => void;
+ }
+ 
++/**
++ * Bottom/side popup with mask, safe-area and scroll handling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-popup
++ * @catalogConstraint onClose is required; open defaults to false; position defaults to bottom and safeArea to false.
++ * @catalogExample production src/components/business/mobile.tsx | Filter bottom sheet
++ */
+ export function UiPopup({
+   children,
+   className,
+@@ -188,6 +204,14 @@
+   tone?: UiTone;
+ }
+ 
++/**
++ * Action sheet with a list of actions and cancel control.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask ui-action-sheet
++ * @catalogConstraint actions and onClose are required; open is required; closeOnAction defaults to true.
++ * @catalogExample preview src/previews/catalog-action-sheet.tsx | Closed action sheet preview
++ */
+ export function UiActionSheet({
+   actions,
+   cancelText,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/forgot-password-page.tsx /tmp/oss-trial/airport-mobile/src/features/auth/forgot-password-page.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/forgot-password-page.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/auth/forgot-password-page.tsx	2026-10-26 12:28:39.990575821 +0800
+@@ -24,6 +24,15 @@
+ } from '@/utils/password-policy';
+ import PasswordInput from './password-input';
+ 
++/**
++ * Phone/SMS forgot-password flow with captcha and password policy feedback.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth
++ * @catalogTask password-policy
++ * @catalogConstraint Requires router, auth store and i18n context; it sends an SMS code before resetting the password.
++ * @catalogExample production src/pages/(auth)/forgot-password.tsx | Forgot-password route
++ */
+ export function ForgotPasswordPage() {
+   const { t } = useTranslation();
+   const navigate = useNavigate();
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/password-input.tsx /tmp/oss-trial/airport-mobile/src/features/auth/password-input.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/password-input.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/auth/password-input.tsx	2026-10-26 12:28:39.990594463 +0800
+@@ -6,6 +6,15 @@
+   error?: string;
+ }
+ 
++/**
++ * Password field with show/hide labels and a form-field error.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask password-input
++ * @catalogTask auth
++ * @catalogConstraint Must be used inside UiFormField; error is a string shown by the field wrapper.
++ * @catalogExample production src/features/identity/change-password-page.tsx | New-password field
++ */
+ function PasswordInput({ error, ...props }: PasswordInputProps) {
+   const { t } = useTranslation();
+ 
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/sign-in-page.tsx /tmp/oss-trial/airport-mobile/src/features/auth/sign-in-page.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/auth/sign-in-page.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/auth/sign-in-page.tsx	2026-10-26 12:28:39.990629455 +0800
+@@ -27,6 +27,14 @@
+ 
+ type LoginMutate = UseMutateFunction<IdentityUserInfo, Error, IdentityLoginRequest, unknown>;
+ 
++/**
++ * Staff sign-in page with password and SMS tabs, captcha and redirect handling.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask auth
++ * @catalogConstraint redirect is optional; successful login routes to the password-change flow when required, otherwise to the redirect target or /.
++ * @catalogExample production src/pages/(auth)/sign-in.tsx | Sign-in route
++ */
+ export function SignInPage({ redirect }: { redirect?: string }) {
+   const { t } = useTranslation();
+   const navigate = useNavigate();
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/batch-detail-screen.tsx /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/batch-detail-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/batch-detail-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/batch-detail-screen.tsx	2026-10-26 12:28:39.990704737 +0800
+@@ -49,6 +49,14 @@
+   requireData,
+ } from './shared';
+ 
++/**
++ * Batch compensation workspace for standard, special and review steps.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask flight-delay-compensation
++ * @catalogConstraint batchId is required; it needs query, auth and router providers and handles offline/conflict states.
++ * @catalogExample production src/pages/flight-delay-compensation/batches/$batchId.tsx | Batch detail route
++ */
+ export function FlightDelayCompensationBatchScreen({
+   batchId,
+ }: {
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/batch-workspace/step-components.tsx /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/batch-workspace/step-components.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/batch-workspace/step-components.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/batch-workspace/step-components.tsx	2026-10-26 12:28:39.990839266 +0800
+@@ -25,6 +25,14 @@
+   return <section className={!editable || active ? 'mt-4' : 'hidden'}>{children}</section>;
+ }
+ 
++/**
++ * Editable table of standard compensation lines with quantities and zero-line expansion.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask compensation-step
++ * @catalogConstraint active and editable control visibility; quantities/setQuantities and the i18n translator are required.
++ * @catalogExample production src/features/flight-delay-compensation/batch-detail-screen.tsx | Standard step in the batch workspace
++ */
+ export function StandardCompensationStep({
+   active,
+   editable,
+@@ -102,6 +110,14 @@
+   );
+ }
+ 
++/**
++ * Editor for special compensation items with attachments.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask compensation-step
++ * @catalogConstraint specials/setSpecials and upload/download handlers are required; online and busyAction disable uploads.
++ * @catalogExample production src/features/flight-delay-compensation/batch-detail-screen.tsx | Special step in the batch workspace
++ */
+ export function SpecialCompensationStep({
+   active,
+   busyAction,
+@@ -189,6 +205,14 @@
+   );
+ }
+ 
++/**
++ * Review and remark step with a print-template selector.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask compensation-step
++ * @catalogConstraint activeTemplates and selectedTemplateId are required; the selector is hidden when not editable.
++ * @catalogExample production src/features/flight-delay-compensation/batch-detail-screen.tsx | Review step in the batch workspace
++ */
+ export function ReviewCompensationStep({
+   active,
+   activeTemplates,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/event-create-screen.tsx /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/event-create-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/event-create-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/event-create-screen.tsx	2026-10-26 12:28:39.990910071 +0800
+@@ -66,6 +66,14 @@
+   }
+ }
+ 
++/**
++ * Creates a flight delay event with flight, catalog and price-preview form fields.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask flight-delay-event
++ * @catalogConstraint Requires router, query and i18n context; the form persists a local draft before submitting.
++ * @catalogExample production src/pages/flight-delay-compensation/events/new.tsx | New event route
++ */
+ export function FlightDelayEventCreateScreen() {
+   const { t } = useTranslation();
+   const eventSchema = useMemo(() => createEventSchema(t), [t]);
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/event-detail-screen.tsx /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/event-detail-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/event-detail-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/event-detail-screen.tsx	2026-10-26 12:28:39.990957723 +0800
+@@ -26,6 +26,14 @@
+   requireData,
+ } from './shared';
+ 
++/**
++ * Delay event detail with linked settlement-batch creation and status.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask flight-delay-event
++ * @catalogConstraint eventId is required; it needs query and router providers and creates a batch only when a price plan is bound.
++ * @catalogExample production src/pages/flight-delay-compensation/events/$eventId.tsx | Event detail route
++ */
+ export function FlightDelayEventDetailScreen({ eventId }: { eventId: string }) {
+   const { t } = useTranslation();
+   const navigate = useNavigate();
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/list-screen.tsx /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/list-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/flight-delay-compensation/list-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/flight-delay-compensation/list-screen.tsx	2026-10-26 12:28:39.990994425 +0800
+@@ -40,6 +40,14 @@
+ const QUERY_PERMISSION = 'flightdelaycompensation:settlement:query';
+ const MANAGE_PERMISSION = 'flightdelaycompensation:settlement:manage';
+ 
++/**
++ * List screen for delay events and settlement batches with filters and tabs.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask flight-delay-list
++ * @catalogConstraint context and onContextChange are required; queries are enabled only when the user holds the query permission.
++ * @catalogExample production src/pages/flight-delay-compensation/index.tsx | Compensation list route
++ */
+ export function FlightDelayCompensationListScreen({
+   context,
+   onContextChange,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-detail-screen.tsx /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-detail-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-detail-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-detail-screen.tsx	2026-10-26 12:28:39.991160920 +0800
+@@ -53,6 +53,14 @@
+ 
+ type BookingAction = 'advance' | 'cancel';
+ 
++/**
++ * Traveler booking detail with status transitions, evaluations and media.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask traveler-booking
++ * @catalogConstraint bookId is required; actions are permission-gated and the screen needs query and router providers.
++ * @catalogExample production src/pages/traveler-bookings/$bookId.tsx | Booking detail route
++ */
+ export function TravelerBookingDetailScreen({
+   bookId,
+ }: {
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-list-screen.tsx /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-list-screen.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-list-screen.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-list-screen.tsx	2026-10-26 13:03:25.756138127 +0800
+@@ -26,6 +26,14 @@
+ 
+ const PAGE_SIZE = 20;
+ 
++/**
++ * Paginated traveler booking list with search and filters.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask traveler-booking-list
++ * @catalogConstraint navigate is required and initialStatus is optional; queries and actions are permission-gated.
++ * @catalogExample production src/pages/traveler-bookings/index.tsx | Booking list route
++ */
+ export function TravelerBookingListScreen({
+   initialStatus,
+   navigate,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/BookingStatusBadge.tsx /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/BookingStatusBadge.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/BookingStatusBadge.tsx	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/BookingStatusBadge.tsx	2026-10-26 12:28:39.991044910 +0800
+@@ -5,6 +5,14 @@
+   BOOKING_STATUS_TONE,
+ } from './constants';
+ 
++/**
++ * Status tag for traveler booking status codes.
++ * @componentCatalog
++ * @catalogStatus experimental
++ * @catalogTask booking-status
++ * @catalogConstraint value is optional; null renders -- and unknown codes render their string form.
++ * @catalogExample production src/features/traveler-bookings/booking-list-screen.tsx | Status badge in the booking list
++ */
+ export function BookingStatusBadge({
+   value,
+   className,
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/constants.ts /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/constants.ts
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/constants.ts	2026-10-11 22:28:16.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/constants.ts	2026-10-26 12:28:47.600344204 +0800
+@@ -1,4 +1,7 @@
+ /** 特殊旅客预约状态枚举。 */
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_STATUS = {
+   SUBMITTED: 1,
+   ACCEPTED: 2,
+@@ -14,6 +17,9 @@
+     | typeof BOOKING_STATUS.COMPLETED
+     | typeof BOOKING_STATUS.SERVICING;
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_STATUS_LABEL_KEY: Record<number, string> = {
+   [BOOKING_STATUS.SUBMITTED]: 'traveler.statusSubmitted',
+   [BOOKING_STATUS.ACCEPTED]: 'traveler.statusAccepted',
+@@ -23,6 +29,9 @@
+   [BOOKING_STATUS.CANCELLED]: 'traveler.statusCancelled',
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_STATUS_TONE: Record<number, 'info' | 'neutral' | 'primary' | 'success' | 'warning'> = {
+   [BOOKING_STATUS.SUBMITTED]: 'warning',
+   [BOOKING_STATUS.ACCEPTED]: 'info',
+@@ -32,6 +41,9 @@
+   [BOOKING_STATUS.CANCELLED]: 'neutral',
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_STATUS_TRANSITIONS: Partial<
+   Record<number, BookingAdvanceStatusValue>
+ > = {
+@@ -40,24 +52,36 @@
+   [BOOKING_STATUS.SERVICING]: BOOKING_STATUS.COMPLETED,
+ };
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_CANCELLABLE_STATUSES: Set<number> = new Set([
+   BOOKING_STATUS.SUBMITTED,
+   BOOKING_STATUS.ACCEPTED,
+   BOOKING_STATUS.SERVICING,
+ ]);
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_ADVANCEABLE_STATUSES: Set<number> = new Set([
+   BOOKING_STATUS.SUBMITTED,
+   BOOKING_STATUS.ACCEPTED,
+   BOOKING_STATUS.SERVICING,
+ ]);
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_READONLY_STATUSES: Set<number> = new Set([
+   BOOKING_STATUS.COMPLETED,
+   BOOKING_STATUS.EVALUATED,
+   BOOKING_STATUS.CANCELLED,
+ ]);
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const BOOKING_STATUS_SEGMENTS = [
+   { value: '', labelKey: 'traveler.allStatus' },
+   { value: BOOKING_STATUS.SUBMITTED, labelKey: 'traveler.statusSubmitted' },
+@@ -68,6 +92,9 @@
+   { value: BOOKING_STATUS.CANCELLED, labelKey: 'traveler.statusCancelled' },
+ ] as const;
+ 
++/**
++ * @componentCatalogIgnore non-component: Shared booking status/permission constant, not a component.
++ */
+ export const TRAVELER_PERMISSIONS = {
+   QUERY: 'traveler:booking:query',
+   VIEW: 'traveler:booking:view',
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-action-sheet.tsx /tmp/oss-trial/airport-mobile/src/previews/catalog-action-sheet.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-action-sheet.tsx	1970-01-01 08:00:00.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/previews/catalog-action-sheet.tsx	2026-10-26 13:38:22.634567282 +0800
+@@ -0,0 +1,5 @@
++import { UiActionSheet } from '@/components/ui/overlay';
++
++export function CatalogActionSheetPreview() {
++  return <UiActionSheet actions={[]} open={false} onClose={() => undefined} />;
++}
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-auth-recovery.tsx /tmp/oss-trial/airport-mobile/src/previews/catalog-auth-recovery.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-auth-recovery.tsx	1970-01-01 08:00:00.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/previews/catalog-auth-recovery.tsx	2026-10-26 12:28:25.969393343 +0800
+@@ -0,0 +1,10 @@
++import type { AuthRecoveryEventDetail } from '@/lib/auth-recovery';
++import { AuthRecoveryDialogView } from '@/components/common/auth-recovery-dialog-view';
++
++export function AuthRecoveryPreview() {
++  return (
++    <AuthRecoveryDialogView
++      detail={{ state: 'session-expired' } as unknown as AuthRecoveryEventDetail}
++    />
++  );
++}
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-section-title.tsx /tmp/oss-trial/airport-mobile/src/previews/catalog-section-title.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-section-title.tsx	1970-01-01 08:00:00.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/previews/catalog-section-title.tsx	2026-10-26 12:28:25.967546227 +0800
+@@ -0,0 +1,5 @@
++import { SectionTitle } from '@/components/business/mobile';
++
++export function CatalogSectionTitlePreview() {
++  return <SectionTitle action={<span>Action</span>}>Section title</SectionTitle>;
++}
+diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-space.tsx /tmp/oss-trial/airport-mobile/src/previews/catalog-space.tsx
+--- /home/ccb/airport-workspace/airport-internal-mobile/src/previews/catalog-space.tsx	1970-01-01 08:00:00.000000000 +0800
++++ /tmp/oss-trial/airport-mobile/src/previews/catalog-space.tsx	2026-10-26 13:46:50.900771327 +0800
+@@ -0,0 +1,5 @@
++import { UiSpace } from '@/components/ui/layout';
++
++export function CatalogSpacePreview() {
++  return <UiSpace><span>One</span><span>Two</span></UiSpace>;
++}

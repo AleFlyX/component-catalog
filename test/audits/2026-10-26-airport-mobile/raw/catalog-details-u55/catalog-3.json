@@ -1,0 +1,50 @@
+{
+  "condition": "catalog-details-u55",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "“航班延误补偿批次工作区”对应的页面级组件是 FlightDelayCompensationBatchScreen（feature 层 Screen 组件）。它从 @/features/flight-delay-compensation/batch-detail-screen 导入，必填 prop 为 batchId；此外依赖 query、auth、router providers，并处理离线/冲突状态。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "目录中没有“特殊旅客预订列表”的专用变体；唯一匹配的是通用旅客预订列表组件 TravelerBookingListScreen（从 @/features/traveler-bookings/booking-list-screen 导入，必填 navigate，initialStatus 可选）。若需要特殊旅客专用列表，当前 catalog 不提供，应复用该通用列表或新增专用变体。",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "密码输入框是 auth.PasswordInput，从 @/features/auth/password-input 导入，本身没有必填 props。它必须放在 UiFormField 内使用；错误通过 form-field 的 error 字符串由字段包装器（UiFormField）显示，PasswordInput 本身不直接渲染错误信息。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar, business.FilterSheet",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["business.SearchBar: value, placeholder, onChange", "business.FilterSheet: visible, title, children, onClose"],
+      "answer": "移动端预订列表使用的两个组件是：搜索栏 business.SearchBar（必填 value、placeholder、onChange，可选 onFilter 显示筛选按钮）和筛选面板 business.FilterSheet（必填 visible、title、children、onClose，可选 onConfirm 在关闭前执行）。两者都从 @/components/business/mobile 导入。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "全局“认证恢复弹窗”是 common.AuthRecoveryDialog，从 @/components/common/auth-recovery-dialog 导入，无必填 props。挂载方式：在应用根节点附近挂载一次（mount once near the app root）；它订阅 auth recovery store，无待处理的恢复事件时渲染 null，有事件时懒加载渲染其视图。注意 AuthRecoveryDialogView 是内部视图（需 detail），不是全局挂载入口。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "在 /tmp/oss-trial/airport-mobile 下对每个任务各执行一次 catalog search --limit 5 --details（task 1-5），未执行 get，未读取 config、component-catalog.json 或项目源码。Task 2 未发现专用“特殊旅客”变体，仅有通用 TravelerBookingListScreen；Task 4 的搜索栏与筛选面板均来自 @/components/business/mobile。"
+}

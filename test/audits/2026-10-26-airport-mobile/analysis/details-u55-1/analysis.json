@@ -1,0 +1,563 @@
+{
+  "session": {
+    "steps": 11,
+    "turns": 1,
+    "llmMs": 50229,
+    "toolMs": 2760,
+    "settledMs": 53212,
+    "wallMs": 53008,
+    "requests": 11,
+    "activityToolCalls": 10
+  },
+  "label": "details-u55-1",
+  "usage": {
+    "uncachedInputTokens": 6384,
+    "outputTokens": 8711,
+    "cacheReadTokens": 164608,
+    "cacheWriteTokens": 0,
+    "totalTokens": 179703,
+    "cacheReadShare": 96
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 13975
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792993735318,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 544,
+        "text": "Controlled benchmark run 1/3, condition \"catalog-details-u55\", on /tmp/oss-trial"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792993735318,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792993735318,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-26T13:48:55+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792993736776,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 148,
+        "text": "I'll run the five mandated catalog searches from the project directory, one per "
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792993737153,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 817,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792993738655,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 171,
+        "text": "Task 1 resolved. Now task 2."
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792993738990,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 748,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792993744121,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 864,
+        "text": "Task 2 recorded (traveler booking list, no dedicated special-passenger variant i"
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792993744487,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 691,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792993748442,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 543,
+        "text": "Task 3 recorded. Now task 4."
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792993748837,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 693,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792993750649,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 185,
+        "text": "Task 4 resolved. Now task 5."
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792993751016,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 694,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792993760746,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 1610,
+        "text": "All five searches succeeded. One `get` for task 3 to disambiguate the two passwo"
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792993761213,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 442,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792993771619,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 1927,
+        "text": "All five tasks are answered from search details; the single `get` confirmed `aut"
+      },
+      {
+        "index": 16,
+        "seq": 67,
+        "time": 1792993771713,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 9,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 71,
+        "time": 1792993777448,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "write"
+        ],
+        "tokens": 1322,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 73,
+        "time": 1792993777458,
+        "cat": "tool",
+        "tool": "write",
+        "calls": [],
+        "tokens": 36,
+        "text": null
+      },
+      {
+        "index": 19,
+        "seq": 77,
+        "time": 1792993778980,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 98,
+        "text": null
+      },
+      {
+        "index": 20,
+        "seq": 81,
+        "time": 1792993779332,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 19,
+        "text": null
+      },
+      {
+        "index": 21,
+        "seq": 85,
+        "time": 1792993782555,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 483,
+        "text": null
+      },
+      {
+        "index": 22,
+        "seq": 87,
+        "time": 1792993782563,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 23,
+        "seq": 91,
+        "time": 1792993788474,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 1476,
+        "text": "Benchmark run complete. All 5 tasks were resolved via 5 `search --limit 5 --deta"
+      }
+    ],
+    "assistantSteps": 11,
+    "assistantTokens": 8827,
+    "toolCalls": 3,
+    "toolCallsByName": {
+      "write": 1,
+      "bash": 1,
+      "send_message": 1
+    },
+    "toolResultTokens": 4175,
+    "toolTokens": {
+      "bash": 4113,
+      "write": 36,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 4,
+        "tool": "bash",
+        "tokens": 817
+      },
+      {
+        "index": 6,
+        "tool": "bash",
+        "tokens": 748
+      },
+      {
+        "index": 12,
+        "tool": "bash",
+        "tokens": 694
+      },
+      {
+        "index": 10,
+        "tool": "bash",
+        "tokens": 693
+      },
+      {
+        "index": 8,
+        "tool": "bash",
+        "tokens": 691
+      }
+    ]
+  },
+  "cli": {
+    "calls": 6,
+    "outputBytes": 16138,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 14403,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      },
+      "get": {
+        "calls": 1,
+        "outputBytes": 1735,
+        "truncated": 1,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "searchCalls": 5,
+    "searchDetails": 5,
+    "searchBrief": 0,
+    "searchTruncated": 0,
+    "searchOmittedByLimit": 53,
+    "searchOmittedByBytes": 0,
+    "searchResultIds": 25,
+    "getCalls": 1,
+    "getBatchCalls": 1,
+    "uniqueGetIds": 2,
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 3235
+      },
+      "2": {
+        "calls": 1,
+        "outputBytes": 2958
+      },
+      "3": {
+        "calls": 2,
+        "outputBytes": 4465
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 2738
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2742
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-26T05:48:57.141Z",
+        "task": "1",
+        "command": "search",
+        "argument": "航班延误补偿批次工作区 flight delay compensation batch workspace",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true
+        },
+        "outputBytes": 3235,
+        "truncated": false,
+        "omitted": {
+          "items": 2,
+          "byLimit": 2,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "flight-delay.FlightDelayCompensationBatchScreen",
+          "flight-delay.FlightDelayEventCreateScreen",
+          "flight-delay.FlightDelayEventDetailScreen",
+          "flight-delay.FlightDelayCompensationListScreen",
+          "flight-delay.batch-workspace.ReviewCompensationStep"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T05:48:58.976Z",
+        "task": "2",
+        "command": "search",
+        "argument": "特殊旅客预订列表 special passenger booking list",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true
+        },
+        "outputBytes": 2958,
+        "truncated": false,
+        "omitted": {
+          "items": 14,
+          "byLimit": 14,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen",
+          "bookings.BookingStatusBadge",
+          "bookings.TravelerBookingDetailScreen",
+          "business.InfiniteListFooter",
+          "flight-delay.FlightDelayCompensationListScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T05:49:04.476Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框 password input field",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true
+        },
+        "outputBytes": 2730,
+        "truncated": false,
+        "omitted": {
+          "items": 8,
+          "byLimit": 8,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "auth.PasswordInput",
+          "ui.UiPasswordInput",
+          "auth.ForgotPasswordPage",
+          "common.PasswordPolicyFeedback",
+          "ui.UiFormField"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T05:49:08.824Z",
+        "task": "4",
+        "command": "search",
+        "argument": "移动端预订列表 搜索栏 筛选面板 mobile booking list search bar filter panel",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true
+        },
+        "outputBytes": 2738,
+        "truncated": false,
+        "omitted": {
+          "items": 20,
+          "byLimit": 20,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen",
+          "business.SearchBar",
+          "business.FilterSheet",
+          "bookings.BookingStatusBadge",
+          "bookings.TravelerBookingDetailScreen"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T05:49:11.002Z",
+        "task": "5",
+        "command": "search",
+        "argument": "全局认证恢复弹窗 auth recovery dialog session expired modal",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true
+        },
+        "outputBytes": 2742,
+        "truncated": false,
+        "omitted": {
+          "items": 9,
+          "byLimit": 9,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "common.AuthRecoveryDialog",
+          "common.AuthRecoveryDialogView",
+          "ui.UiDialog",
+          "auth.ForgotPasswordPage",
+          "auth.SignInPage"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T05:49:21.193Z",
+        "task": "3",
+        "command": "get",
+        "argument": "auth.PasswordInput",
+        "options": {
+          "limit": null,
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": null
+        },
+        "outputBytes": 1735,
+        "truncated": true,
+        "omitted": {
+          "components": 0
+        },
+        "error": null,
+        "resultIds": null,
+        "componentIds": [
+          "auth.PasswordInput",
+          "ui.UiPasswordInput"
+        ]
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 2690,
+    "toolTokensPerAssistantStep": 380,
+    "cacheReadPerCall": 27435,
+    "observedToolCalls": 10,
+    "nonCliToolCalls": 4,
+    "outputTokensPerCliCall": 1452,
+    "cliSearchResultIdsPerSearch": 5
+  }
+}
