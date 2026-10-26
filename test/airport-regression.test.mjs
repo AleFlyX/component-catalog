@@ -12,6 +12,11 @@ const catalog = JSON.parse(
   zlib.gunzipSync(fs.readFileSync(path.join(dir, "catalog.json.gz"))).toString("utf8"),
 );
 const config = JSON.parse(fs.readFileSync(path.join(dir, "trial-config.json"), "utf8"));
+const expandedDir = path.join(root, "test/audits/2026-10-26-airport-ui-expanded");
+const expandedCatalog = JSON.parse(
+  zlib.gunzipSync(fs.readFileSync(path.join(expandedDir, "catalog.json.gz"))).toString("utf8"),
+);
+const expandedConfig = JSON.parse(fs.readFileSync(path.join(expandedDir, "trial-config.json"), "utf8"));
 
 const top = (query) =>
   search(catalog, query, 5, config.vocabulary).items.map((item) => item.id);
@@ -31,4 +36,15 @@ test("airport trial catalog keeps the business entrypoints discoverable", () => 
   assert.deepEqual(detailed.items[0].requiredProps, ["navigate"]);
   assert.match(detailed.items[0].constraint, /initialStatus is optional/);
   assert.ok(detailed.items[0].usage.production >= 1);
+});
+
+test("expanded UI catalog exposes the core primitives without regressing business entrypoints", () => {
+  assert.equal(expandedCatalog.components.length, 40);
+  const top = (query) =>
+    search(expandedCatalog, query, 5, expandedConfig.vocabulary).items.map((item) => item.id);
+  assert.equal(top("UiButton")[0], "ui.UiButton");
+  assert.equal(top("UiInput")[0], "ui.UiInput");
+  assert.equal(top("UiDialog")[0], "ui.UiDialog");
+  assert.equal(top("密码输入框")[0], "auth.PasswordInput");
+  assert.equal(top("航班延误补偿批次")[0], "flight-delay.FlightDelayCompensationBatchScreen");
 });

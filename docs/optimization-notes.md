@@ -113,7 +113,14 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 
 - 20 个查询：in-catalog 10/10（top-5），outside-catalog 0/10，整体 50%。
 - 30 条覆盖 103 个 supported 候选的 **29.1%**、519 个总候选的 **5.8%**；`src/components/ui` 40 个 supported 全部未登记。
-- 结论：目录内检索已够好，下一阶段瓶颈是覆盖；建议先扩 top 10 UI 原语（Button/Input/Dialog/SearchBar/DatePicker/EmptyState/Tabs/Popup/Card/NavBar），预计 supported 覆盖 29.1%→38.8%，再用同一查询集复测。
+- 结论：目录内检索已够好，下一阶段瓶颈是覆盖；先扩核心 UI 原语，再用同一查询集复测。
+
+### 扩容实验结果（30 → 40 条）
+
+- 新增 `src/components/ui` 根，保留 button/form/overlay 三个文件，登记 10 个核心原语（Button、IconButton、Input、PasswordInput、TextArea、Form、FormField、Dialog、Popup、ActionSheet）；其余 UI 文件 exclude。
+- 覆盖：outside-catalog 0/10 → **4/10**，整体 **50% → 70%**；supported 覆盖 29.1% → 38.8%。
+- B：40 条 114,586 / 104,914 tokens，相对 30 条 **+14.4% / +19.6%**，相对 source 仍 **−75.2% / −73.5%**；5 个业务任务仍 15/15，search 输出字节没有增加。
+- 结论：+10 条换 +20pp 覆盖率、+14% token，交换合理但仍远优于 source；剩余 SearchBar/DatePicker/EmptyState/Tabs/Card/NavBar 分散在多个文件，文件粒度会一次带入多个导出，暂不无差别扩到全部 40 个 UI 导出。
 
 ## 10. 相关产物
 
@@ -127,4 +134,5 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 大规模陌生仓库：`test/audits/2026-10-26-airport-mobile/`
 - 机场查询回归：`test/airport-regression.test.mjs`
 - 覆盖率抽样：`test/audits/2026-10-26-airport-coverage/`
+- 40 条扩容：`test/audits/2026-10-26-airport-ui-expanded/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

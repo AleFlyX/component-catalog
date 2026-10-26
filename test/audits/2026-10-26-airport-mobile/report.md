@@ -24,6 +24,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | catalog | 15/15 | **6** | **0 文件 / 0 B** | **204,896 / 200,600** | 161,961–252,127 | 11 | 13 | 66.8 s |
 | catalog-details | 15/15 | **5** | **0 文件 / 0 B** | **100,194 / 87,723** | 78,024–134,834 | 7 | 8 | 28.0 s |
+| catalog-details-ui（40 条） | 15/15 | 5.3（5/6/5） | **0 文件 / 0 B** | **114,586 / 104,914** | 86,966–151,877 | 8 | 8 | 33.6 s |
 | source | 15/15 | 0 | **14 文件 / 94,227 B** | **462,815 / 396,472** | 355,219–636,755 | 20 | 29 | 67.5 s |
 
 - 总 token：catalog 比 source 低 **55.7%**（均值）/**49.4%**（中位数）；`catalog-details` 进一步降到 **100,194 / 87,723**，比 catalog 再低 **51.1% / 56.3%**，比 source 低 **78.3% / 77.9%**；范围 78–135K 与 source 的 355–637K 完全不重叠。
@@ -60,9 +61,14 @@ airport 的 observed/non-CLI 对比：
 
 non-CLI 调用和 token 有相关性，但不是唯一因素（details-2 与 details-3 non-CLI 都是 4，token 差 47K），所以埋点只能定位“探索动作”，不能替代逐任务输出/上下文分析。
 
-### 覆盖率抽样
+### 覆盖率抽样与扩容
 
-[cverage report](../2026-10-26-airport-coverage/report.md)：20 个查询中 in-catalog 10/10、outside-catalog 0/10，整体 50%。30 条只覆盖 103 个 supported 候选的 29.1%、519 个总候选的 5.8%；`src/components/ui` 的 40 个 supported 组件完全未登记。下一步应先扩 top 10 UI 原语，而不是全量 40。
+[coverage report](../2026-10-26-airport-coverage/report.md)：
+
+- 30 条：in-catalog 10/10、outside-catalog 0/10，整体 50%。
+- 扩到 40 条（+10 个核心 UI 原语）：outside-catalog 4/10，整体 **70%**。
+- 代价：3 次 details B 从 100,194 升到 114,586 均值（+14.4%），仍比 source 低 75.2%；search 输出字节未增加，token 上升主要来自一次额外 get/方差。
+- 30 条只覆盖 103 个 supported 候选的 29.1%、519 个总候选的 5.8%；40 条为 38.8%。详细见 [expanded report](../2026-10-26-airport-ui-expanded/report.md)。
 
 ## 4. 限制
 
@@ -77,6 +83,6 @@ non-CLI 调用和 token 有相关性，但不是唯一因素（details-2 与 det
 - `trial-config.json`、`catalog.json.gz`、`annotations.patch`
 - `raw/catalog/*.json`、`raw/catalog-details/*.json`、`raw/source/*.json`
 - `usage/catalog-*.jsonl`、`usage/details-*.jsonl`
-- `analysis/catalog-*`、`analysis/details-*`（增强后的 AI 埋点）
+- `analysis/catalog-*`、`analysis/details-*`、`analysis/details-ui-*`（增强后的 AI 埋点）
 - `runs.json`、`runs.csv`、`summary.json`
 - 查询回归：`test/airport-regression.test.mjs`

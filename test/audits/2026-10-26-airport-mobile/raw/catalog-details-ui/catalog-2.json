@@ -1,0 +1,50 @@
+{
+  "condition": "catalog-details-ui",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "批次工作区页面组件是 flight-delay.FlightDelayCompensationBatchScreen（export FlightDelayCompensationBatchScreen，feature 层，experimental）。导入自 @/features/flight-delay-compensation/batch-detail-screen。必填 props 只有 batchId。目录约束：batchId 必填，且组件依赖 query/auth/router providers，并自行处理离线/冲突状态；它覆盖 standard、special、review 三个补偿步骤。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "目录中只有通用旅客预订列表 bookings.TravelerBookingListScreen（import @/features/traveler-bookings/booking-list-screen），必填 props 仅 navigate（(options: NavigateOptions) => void | Promise<void>）；可选 initialStatus?: number。没有任何“特殊旅客”专用变体/组件：唯一搜索命中即该通用列表，其 props 也只有 navigate 和 initialStatus，没有特殊旅客标识或变体开关；查询与操作由权限控制。若要“特殊旅客预订列表”，只能复用该通用组件（或在业务层按旅客类型过滤），目录未提供专用组件。",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "密码输入框是 auth.PasswordInput（export PasswordInput，feature 层，experimental），导入自 @/features/auth/password-input，无必填 props（组件本身不声明 required props）。错误显示方式：错误以字符串（error）传入，由外层 UiFormField 表单字段包装器负责渲染展示——组件必须放在 UiFormField 内使用，自身只提供显示/隐藏密码文案与字段错误状态，不自行绘制错误提示。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar + business.FilterSheet",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value (SearchBar)", "placeholder (SearchBar)", "onChange (SearchBar)", "visible (FilterSheet)", "title (FilterSheet)", "children (FilterSheet)", "onClose (FilterSheet)"],
+      "answer": "预订列表的搜索栏是 business.SearchBar（export SearchBar，shared-ui，project 复用），筛选面板是 business.FilterSheet（export FilterSheet，shared-ui，project 复用）。两者都从同一 barrel 导入：@/components/business/mobile。必填 props：SearchBar 为 value、placeholder、onChange（可选 onFilter 会额外渲染筛选图标按钮）；FilterSheet 为 visible、title、children、onClose（onConfirm 在面板关闭前执行，另有重置动作）。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "全局认证恢复弹窗是 common.AuthRecoveryDialog（export AuthRecoveryDialog，shared-ui，project 复用，生产 1 处使用、测试 1 处）。导入自 @/components/common/auth-recovery-dialog，无必填 props。挂载方式：在应用根附近挂载一次即可（mount it once near the app root）——它订阅 auth recovery store，无待处理恢复事件时渲染 null，有事件时惰性渲染其视图（AuthRecoveryDialogView，必填 detail）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "仅使用 catalog CLI：5 次 search --limit 5 --details（每任务一次）+ 1 次 get（仅 task 2，用于确认无特殊旅客专用变体及 props 明细，合并单 ID）。未读取 config、未运行 --help、未使用 ls/cat/grep、未读取任何项目源码或 component-catalog.json。catalogCalls=6 与 COMPONENT_CATALOG_LOG 中 6 行记录一致（仅用 wc -l 统计日志行数）。filesRead/totalBytesRead 统计项目文件读取，均为 0。Task 2 置信度 medium 的原因：目录中“无专用变体”是基于唯一一次定向搜索（返回 1 条通用列表）与 get 的 props 表推断，非穷举。"
+}

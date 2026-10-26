@@ -25,15 +25,29 @@
 3. **未登记 UI 原语是高复用、查询频率高的部分**：Button/Input/Dialog/SearchBar/DatePicker/EmptyState/Tabs/Popup/Card/NavBar 都是业务页面常用入口；这类查询目前只能退回 source 或 scan。
 4. **不是“越多越好”**：全量 40 个 UI 会显著增加 setup 和 search 输出；建议先扩 top 10，按 coverage sample + B 复测验证边际收益，再决定是否扩到 40。
 
+## 扩容实验（已完成）
+
+新增 `src/components/ui` 根，只保留 button/form/overlay 三个文件，登记 10 个核心原语，30→40 条：
+
+| 范围 | 30 条 | 40 条 |
+| --- | --- | --- |
+| in-catalog | 10/10 | 10/10 |
+| outside-catalog | 0/10 | **4/10** |
+| 合计 | 50% | **70%** |
+
+- 新增覆盖：UiButton、UiInput、UiDialog、UiPopup；仍未覆盖 SearchBar/DatePicker/EmptyState/Tabs/Card/NavBar。
+- 3 次 details B：15/15，114,586 / 104,914 tokens，相对 30 条 +14.4% 均值，相对 source 仍 −75.2%。
+- 详细结果：[expanded report](../2026-10-26-airport-ui-expanded/report.md)。
+
 ## 建议的下一步
 
-- 建一个 `src/components/ui` 根，先登记 top 10：Button、Input、Dialog、SearchBar、DatePicker、EmptyState、Tabs、Popup、Card、NavBar。
-- 预计条数 30→40，supported 覆盖 29.1%→38.8%；setup 约 10 条 annotation。
-- 用同一 20 查询重跑 coverage，目标 outside-catalog 从 0/10 提升到至少 6/10；再跑 3 次 B 观察 search 输出膨胀/截断和 token 是否仍优于 source。
-- 若 10 个有效，再评估扩到 40；不要一次性全量标注。
+- 保留“业务 30 + 核心 UI 10”的 40 条目录，不继续无差别扩到全部 40 个 UI 导出。
+- 若要覆盖剩余 6 个查询，优先评估真实 UI 查询比例；这些组件分散在 search/date-picker/feedback/layout/navigation，文件粒度会一次带入多个导出，setup 成本高于 10 条。
+- 若继续扩，目标 50–60 条，并同时监控 search 输出字节/截断与 B token。
 
 ## 产物
 
 - `queries.json`：20 个查询及期望
-- `coverage.json`：逐查询 top-5 结果
+- `coverage.json`：30 条目录的逐查询 top-5
+- `coverage-expanded.json`：40 条目录的逐查询 top-5
 - `coverage-sample.mjs`：可复用工具（`test/audits/tools/`）

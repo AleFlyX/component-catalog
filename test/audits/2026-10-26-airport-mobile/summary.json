@@ -45,6 +45,29 @@
     "toolCalls": 8,
     "wallMs": 27956
   },
+  "catalog-details-ui": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 5,
+    "cliOutputBytes": 10127,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 114586,
+      "median": 104914,
+      "values": [
+        86966,
+        151877,
+        104914
+      ]
+    },
+    "uncachedInputTokens": 5251,
+    "outputTokens": 5441,
+    "cacheReadTokens": 103893,
+    "steps": 8,
+    "toolCalls": 8,
+    "wallMs": 33631
+  },
   "source": {
     "runs": 3,
     "correct": "15/15",
