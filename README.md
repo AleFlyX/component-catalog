@@ -155,12 +155,13 @@ scan 默认最多 20 项，上限 50 项，每页最多 8 KiB UTF-8（含换行�
 | importPrefix | 真实模块别名/包子路径（不能以斜杠结尾），或 null 表示相对调用文件导入；init 默认 null，不创建运行时别名 |
 | importExtension | 可选：omit（默认，去掉扩展名）、js（按编译配置使用输出后缀，通常为 .js；jsx: preserve 的 JSX/TSX 为 .jsx）、preserve（保留源码后缀） |
 | importPathStyle | 可选：direct（默认，指向组件文件）或 barrel（优先使用组件根内真实 index.* 目录入口，例如 `@/components/ui/form`；仅当该入口确实导出该组件时） |
+| typeScope | 可选：project（默认，完整依赖类型）或 componentRoots（把组件根外的导入视为浅层 any 类型，避免大型仓库把整个 lib/服务端依赖图载入内存；外部 Prop 类型可能不完整） |
 | layer | 项目自己的架构层名称，工具不强制 shared |
 | exclude | sourceRoot 内排除的文件或目录路径（不支持 glob）；不能隐藏整个组件根，源码树外无需登记 |
 | previewRoots / testRoots | sourceRoot 内自定义预览/测试目录，二者不可重叠；`.test/.spec`、`.stories` 文件名仍识别为测试/故事 |
 | vocabulary | 任意语言术语到已有英文任务标签的映射，primary/related 参与排序，不绑定组件 ID |
 
-可选数组和 vocabulary 默认为空；字段按表中约定填写，未知键拒绝。ID 由 `idPrefix + 根内相对目录 + 导出名` 组成，例如 `ui.forms.BusinessForm`。目录分段支持字母开头的字母、数字、下划线和连字符；导出名目前要求 PascalCase。模块 importPath 默认由 importPrefix 加根内相对文件路径组成，后缀由 importExtension 控制；设置 importPathStyle: "barrel" 时优先使用根内真实 index.* 入口（barrel），入口解析仍由生成校验，不会凭空创建别名。相对模式保存 importPath: null，查询时通过 --from 指定调用文件。
+可选数组和 vocabulary 默认为空；字段按表中约定填写，未知键拒绝。`typeScope: "componentRoots"` 用于大型仓库：生成时只保留组件根内的类型图，根外导入使用内存内 stub，避免 4 GB+ TS program，但外部 Prop 类型会退化为 any/partial。ID 由 `idPrefix + 根内相对目录 + 导出名` 组成，例如 `ui.forms.BusinessForm`。目录分段支持字母开头的字母、数字、下划线和连字符；导出名目前要求 PascalCase。模块 importPath 默认由 importPrefix 加根内相对文件路径组成，后缀由 importExtension 控制；设置 importPathStyle: "barrel" 时优先使用根内真实 index.* 入口（barrel），入口解析仍由生成校验，不会凭空创建别名。相对模式保存 importPath: null，查询时通过 --from 指定调用文件。
 
 生成时会从已记录示例的位置，按编译配置和示例的静态/动态导入条件解析建议路径，确保该入口导出同一个组件；已有别名或包子路径可以指向转导出文件。不存在或指错目标的别名会失败，不覆盖旧目录。NodeNext ESM 项目常用 importExtension: js；显式 TS 导入需要 allowImportingTsExtensions，或相对导入配合 rewriteRelativeImportExtensions。查询记录的后缀来自生成时的配置，不会实时读取编译选项。验证不覆盖任意调用位置、发布后的包产物或自定义运行时加载器，仍需在真实调用处执行项目检查。
 

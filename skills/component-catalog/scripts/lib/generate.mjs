@@ -13,7 +13,7 @@ import { unresolvedImports } from "./dependencies.mjs";
 export function generateCatalog(config, options = {}) {
   const { projectRoot: workspace, sourceRoot, componentRoots } = config;
   const project = options.project ?? createProject(config);
-  const { relative, configInputs, parsed, program, checker, sources, diagnosticHost } = project;
+  const { relative, configInputs, parsed, program, checker, sources, diagnosticHost, host } = project;
   const schemaPath = new URL("../schema/catalog.schema.json", import.meta.url);
   const rootFor = (file) => componentRoots.find((root) => file.startsWith(root.path + path.sep));
   // Prefer a real directory entrypoint (index.*) when the project asks for
@@ -468,9 +468,14 @@ export function generateCatalog(config, options = {}) {
     ],
     options: parsed.options,
     oldProgram: program,
+    ...(host ? { host } : {}),
   });
   const diagnostics = ts.getPreEmitDiagnostics(extraction);
-  if (diagnostics.length) throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
+  // componentRoots scope intentionally treats imports outside the catalog roots as
+  // shallow any-types. Diagnostics caused by those stubs are not catalog failures;
+  // unresolved imports and metadata are still checked below.
+  if (config.typeScope !== "componentRoots" && diagnostics.length)
+    throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
   const missing = unresolvedImports(
     extraction.getSourceFiles().filter((source) => !source.isDeclarationFile),
     extraction.getTypeChecker(),

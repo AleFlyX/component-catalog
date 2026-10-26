@@ -194,3 +194,11 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - run3 的 D4 过期时间选择器被 `--per-layer 3` 截断；改 `--per-layer 5` 后单次 2/2，修正为 15/15。
 - 单层目录的混合查询应使用 per-layer5；SKILL 已更新。
 - 仍有 28 个 lib/trpc 类型 stub 与 4 个 `@ts-nocheck`，props 中 lib 类型可能 any/partial；不是 708 TSX 全量目录。
+
+## Documenso 30 条 clean（typeScope 内存修复）
+
+- 完整依赖安装 2048 packages；30 条 `packages/ui/components`，audit/check pass。
+- 新增 `typeScope: "componentRoots"`：根外导入自动浅层 stub；不再需要手写 lib stub、import 改写或 @ts-nocheck。
+- 生成在 `--max-old-space-size=2048` 下成功，解决此前 >4 GB / OOM。
+- 查询：per-layer5 + 英文 aliases，A 4.5/5、B 5/5、C 5/5；D4 补 aliases 后 2/2，修正 15/15。
+- 限制：30 条 scoped；外部 Prop 类型可能 any/partial；扩展 50 条需处理 primitives 的 247 个候选。

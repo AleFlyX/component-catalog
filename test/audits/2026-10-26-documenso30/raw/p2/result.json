@@ -1,6 +1,6 @@
 {
-  "strategy": "documenso30",
-  "run": 1,
+  "strategy": "documenso30-clean-per5",
+  "run": "B",
   "tasks": [
     {
       "task": "D1",
@@ -9,7 +9,7 @@
       "requiredProps": ["value", "onChange"],
       "missing": false,
       "components": [],
-      "answer": "Export: DocumentEmailCheckboxes. Import: @documenso/ui/components/document/document-email-checkboxes. Required props: value, onChange.",
+      "answer": "导出名 DocumentEmailCheckboxes，导入路径 @documenso/ui/components/document/document-email-checkboxes，必填 props：value、onChange（隐藏事件用可选 hiddenEvents）。",
       "confidence": "high"
     },
     {
@@ -19,7 +19,7 @@
       "requiredProps": [],
       "missing": false,
       "components": [],
-      "answer": "Export: DocumentVisibilitySelect. Import: @documenso/ui/components/document/document-visibility-select. No required props (optional currentTeamMemberRole, isTeamSettings, canUpdateVisibility).",
+      "answer": "导出名 DocumentVisibilitySelect，导入路径 @documenso/ui/components/document/document-visibility-select，无必填 props（可选 currentTeamMemberRole、isTeamSettings、canUpdateVisibility；同文件另有 DocumentVisibilityTooltip）。",
       "confidence": "high"
     },
     {
@@ -29,7 +29,7 @@
       "requiredProps": ["documentId"],
       "missing": false,
       "components": [],
-      "answer": "Export: DocumentShareButton. Import: @documenso/ui/components/document/document-share-button. Required props: documentId (token and custom trigger optional).",
+      "answer": "导出名 DocumentShareButton，导入路径 @documenso/ui/components/document/document-share-button，必填 props：documentId（可选 token 与自定义 trigger）。",
       "confidence": "high"
     },
     {
@@ -40,23 +40,19 @@
       "missing": false,
       "components": [
         {
-          "role": "reminder-settings-selector",
           "componentId": "ui.document.ReminderSettingsPicker",
           "exportName": "ReminderSettingsPicker",
           "importPath": "@documenso/ui/components/document/reminder-settings-picker",
-          "requiredProps": ["value", "onChange"],
-          "missing": false
+          "requiredProps": ["value", "onChange"]
         },
         {
-          "role": "expiration-time-selector",
           "componentId": "ui.document.ExpirationPeriodPicker",
           "exportName": "ExpirationPeriodPicker",
           "importPath": "@documenso/ui/components/document/expiration-period-picker",
-          "requiredProps": ["value", "onChange"],
-          "missing": false
+          "requiredProps": ["value", "onChange"]
         }
       ],
-      "answer": "Reminder settings selector: ReminderSettingsPicker from @documenso/ui/components/document/reminder-settings-picker, required props value, onChange. Expiration time selector: ExpirationPeriodPicker from @documenso/ui/components/document/expiration-period-picker, required props value, onChange.",
+      "answer": "提醒设置选择器：导出名 ReminderSettingsPicker，导入路径 @documenso/ui/components/document/reminder-settings-picker，必填 props：value、onChange。过期时间选择器：导出名 ExpirationPeriodPicker，导入路径 @documenso/ui/components/document/expiration-period-picker，必填 props：value、onChange。两者均可选 disabled、inheritLabel。",
       "confidence": "high"
     },
     {
@@ -67,28 +63,24 @@
       "missing": false,
       "components": [
         {
-          "role": "local-time-display",
           "componentId": "ui.common.LocalTime",
           "exportName": "LocalTime",
           "importPath": "@documenso/ui/components/common/local-time",
-          "requiredProps": ["date"],
-          "missing": false
+          "requiredProps": ["date"]
         },
         {
-          "role": "copy-text-button",
           "componentId": "ui.common.CopyTextButton",
           "exportName": "CopyTextButton",
           "importPath": "@documenso/ui/components/common/copy-text-button",
-          "requiredProps": ["value"],
-          "missing": false
+          "requiredProps": ["value"]
         }
       ],
-      "answer": "Local time display: LocalTime from @documenso/ui/components/common/local-time, required prop date. Copy text button: CopyTextButton from @documenso/ui/components/common/copy-text-button, required prop value.",
+      "answer": "本地时间显示：导出名 LocalTime，导入路径 @documenso/ui/components/common/local-time，必填 props：date（可选 className）。复制文本按钮：导出名 CopyTextButton，导入路径 @documenso/ui/components/common/copy-text-button，必填 props：value（可选 badge 内容、onCopySuccess）。",
       "confidence": "high"
     }
   ],
   "catalogCalls": 5,
   "filesRead": [],
   "totalBytesRead": 0,
-  "notes": "Catalog-only validation: exactly one search per task (5 total), no get, no second search. Never read component-catalog-documenso.json, config, help, ls, cat, grep, or source files. All 5 tasks found exact matches; D4 and D5 resolved both requested roles."
+  "notes": "Catalog-only clean run: exactly one `search --limit 5 --details --per-layer 5` per task (5 calls total), no get/second search, no config/source/help/ls/cat/grep reads. Mixed tasks D4 and D5 were each covered by a single search whose components array contains both requested entities. All five tasks resolved to existing components (missing=false)."
 }

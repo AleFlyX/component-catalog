@@ -172,6 +172,43 @@
     "签名卡片": {
       "primary": "signing-card",
       "related": []
+    },
+    "expiry": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "expiry time": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "expiration time": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "expiration": {
+      "primary": "expiration-picker",
+      "related": []
+    },
+    "reminder": {
+      "primary": "reminder-picker",
+      "related": []
+    },
+    "email notification": {
+      "primary": "document-email",
+      "related": []
+    },
+    "visibility": {
+      "primary": "document-visibility",
+      "related": []
+    },
+    "share link": {
+      "primary": "document-share",
+      "related": []
+    },
+    "copy button": {
+      "primary": "copy-text",
+      "related": []
     }
-  }
+  },
+  "typeScope": "componentRoots"
 }

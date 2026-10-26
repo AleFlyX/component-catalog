@@ -19,15 +19,10 @@ index 84f7c1a..d979340 100644
    return (
      <motion.section
 diff --git a/packages/ui/components/client-only.tsx b/packages/ui/components/client-only.tsx
-index 7c0f418..77f3afc 100644
+index 7c0f418..56771ee 100644
 --- a/packages/ui/components/client-only.tsx
 +++ b/packages/ui/components/client-only.tsx
-@@ -1,10 +1,19 @@
--import { useHydrated } from '../lib/use-hydrated';
-+import { useHydrated } from '@documenso/lib/use-hydrated';
- 
- type ClientOnlyProps = {
-   children: () => React.ReactNode;
+@@ -5,6 +5,15 @@ type ClientOnlyProps = {
    fallback?: React.ReactNode;
  };
  
@@ -44,18 +39,9 @@ index 7c0f418..77f3afc 100644
    return useHydrated() ? children() : fallback;
  };
 diff --git a/packages/ui/components/common/copy-text-button.tsx b/packages/ui/components/common/copy-text-button.tsx
-index 889c6b5..1a33180 100644
+index 889c6b5..bf7b0b3 100644
 --- a/packages/ui/components/common/copy-text-button.tsx
 +++ b/packages/ui/components/common/copy-text-button.tsx
-@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
- import { CheckSquareIcon, CopyIcon } from 'lucide-react';
- import { useState } from 'react';
- 
--import { cn } from '../../lib/utils';
-+import { cn } from '@documenso/lib/utils';
- 
- export type CopyTextButtonProps = {
-   value: string;
 @@ -13,6 +13,15 @@ export type CopyTextButtonProps = {
    onCopySuccess?: () => void;
  };
@@ -73,15 +59,10 @@ index 889c6b5..1a33180 100644
    value,
    onCopySuccess,
 diff --git a/packages/ui/components/common/language-switcher-dialog.tsx b/packages/ui/components/common/language-switcher-dialog.tsx
-index 22195ce..5ece202 100644
+index 22195ce..4e591c6 100644
 --- a/packages/ui/components/common/language-switcher-dialog.tsx
 +++ b/packages/ui/components/common/language-switcher-dialog.tsx
-@@ -1,3 +1,4 @@
-+// @ts-nocheck
- import { formatPath } from '@documenso/lib/constants/app';
- import { SUPPORTED_LANGUAGES } from '@documenso/lib/constants/i18n';
- import { dynamicActivate } from '@documenso/lib/utils/i18n';
-@@ -12,6 +13,15 @@ type LanguageSwitcherDialogProps = {
+@@ -12,6 +12,15 @@ type LanguageSwitcherDialogProps = {
    setOpen: (_open: boolean) => void;
  };
  
@@ -98,20 +79,9 @@ index 22195ce..5ece202 100644
    const { i18n, _ } = useLingui();
  
 diff --git a/packages/ui/components/common/local-time.tsx b/packages/ui/components/common/local-time.tsx
-index e395063..baf3714 100644
+index e395063..56089ab 100644
 --- a/packages/ui/components/common/local-time.tsx
 +++ b/packages/ui/components/common/local-time.tsx
-@@ -2,8 +2,8 @@ import { CheckIcon, CopyIcon } from 'lucide-react';
- import { DateTime } from 'luxon';
- import { useCallback, useMemo, useRef, useState } from 'react';
- 
--import { cn } from '../../lib/utils';
--import { Popover, PopoverContent, PopoverTrigger } from '../../primitives/popover';
-+import { cn } from '@documenso/lib/utils';
-+import { Popover, PopoverContent, PopoverTrigger } from '@documenso/ui/primitives/popover';
- 
- const HOVER_DELAY_MS = 500;
- 
 @@ -12,6 +12,15 @@ export type LocalTimeProps = {
    className?: string;
  };
@@ -129,20 +99,9 @@ index e395063..baf3714 100644
    const [open, setOpen] = useState(false);
    const [copiedField, setCopiedField] = useState<string | null>(null);
 diff --git a/packages/ui/components/document/document-email-checkboxes.tsx b/packages/ui/components/document/document-email-checkboxes.tsx
-index 0d2a44d..4fc308b 100644
+index 0d2a44d..1da1d61 100644
 --- a/packages/ui/components/document/document-email-checkboxes.tsx
 +++ b/packages/ui/components/document/document-email-checkboxes.tsx
-@@ -4,8 +4,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@documenso/ui/primitive
- import { Trans } from '@lingui/react/macro';
- import { InfoIcon } from 'lucide-react';
- 
--import { cn } from '../../lib/utils';
--import { Checkbox } from '../../primitives/checkbox';
-+import { cn } from '@documenso/lib/utils';
-+import { Checkbox } from '@documenso/ui/primitives/checkbox';
- 
- type Value = TDocumentEmailSettings;
- 
 @@ -16,6 +16,15 @@ type DocumentEmailCheckboxesProps = {
    hiddenEvents?: readonly DocumentEmailEvents[];
  };
@@ -160,15 +119,10 @@ index 0d2a44d..4fc308b 100644
    const isHidden = (event: DocumentEmailEvents) => hiddenEvents?.includes(event) ?? false;
  
 diff --git a/packages/ui/components/document/document-global-auth-access-select.tsx b/packages/ui/components/document/document-global-auth-access-select.tsx
-index 2c7c9f6..0b47f62 100644
+index 2c7c9f6..1544374 100644
 --- a/packages/ui/components/document/document-global-auth-access-select.tsx
 +++ b/packages/ui/components/document/document-global-auth-access-select.tsx
-@@ -1,3 +1,4 @@
-+// @ts-nocheck
- import { DOCUMENT_AUTH_TYPES } from '@documenso/lib/constants/document-auth';
- import { DocumentAccessAuth } from '@documenso/lib/types/document-auth';
- import { MultiSelect, type Option } from '@documenso/ui/primitives/multiselect';
-@@ -15,6 +16,15 @@ export interface DocumentGlobalAuthAccessSelectProps {
+@@ -15,6 +15,15 @@ export interface DocumentGlobalAuthAccessSelectProps {
    placeholder?: string;
  }
  
@@ -184,7 +138,7 @@ index 2c7c9f6..0b47f62 100644
  export const DocumentGlobalAuthAccessSelect = ({
    value,
    defaultValue,
-@@ -66,6 +76,15 @@ export const DocumentGlobalAuthAccessSelect = ({
+@@ -66,6 +75,15 @@ export const DocumentGlobalAuthAccessSelect = ({
  
  DocumentGlobalAuthAccessSelect.displayName = 'DocumentGlobalAuthAccessSelect';
  
@@ -201,15 +155,10 @@ index 2c7c9f6..0b47f62 100644
    <Tooltip>
      <TooltipTrigger>
 diff --git a/packages/ui/components/document/document-global-auth-action-select.tsx b/packages/ui/components/document/document-global-auth-action-select.tsx
-index ecd335f..6a3c853 100644
+index ecd335f..08aed43 100644
 --- a/packages/ui/components/document/document-global-auth-action-select.tsx
 +++ b/packages/ui/components/document/document-global-auth-action-select.tsx
-@@ -1,3 +1,4 @@
-+// @ts-nocheck
- import { DOCUMENT_AUTH_TYPES } from '@documenso/lib/constants/document-auth';
- import { DocumentActionAuth, DocumentAuth } from '@documenso/lib/types/document-auth';
- import { MultiSelect, type Option } from '@documenso/ui/primitives/multiselect';
-@@ -15,6 +16,15 @@ export interface DocumentGlobalAuthActionSelectProps {
+@@ -15,6 +15,15 @@ export interface DocumentGlobalAuthActionSelectProps {
    placeholder?: string;
  }
  
@@ -225,7 +174,7 @@ index ecd335f..6a3c853 100644
  export const DocumentGlobalAuthActionSelect = ({
    value,
    defaultValue,
-@@ -68,6 +78,15 @@ export const DocumentGlobalAuthActionSelect = ({
+@@ -68,6 +77,15 @@ export const DocumentGlobalAuthActionSelect = ({
  
  DocumentGlobalAuthActionSelect.displayName = 'DocumentGlobalAuthActionSelect';
  
@@ -242,20 +191,9 @@ index ecd335f..6a3c853 100644
    <Tooltip>
      <TooltipTrigger>
 diff --git a/packages/ui/components/document/document-read-only-fields.tsx b/packages/ui/components/document/document-read-only-fields.tsx
-index 4f3b4f9..b7b313b 100644
+index 4f3b4f9..c3a0118 100644
 --- a/packages/ui/components/document/document-read-only-fields.tsx
 +++ b/packages/ui/components/document/document-read-only-fields.tsx
-@@ -17,8 +17,8 @@ import { SigningStatus } from '@prisma/client';
- import { Clock, EyeOffIcon } from 'lucide-react';
- import { useState } from 'react';
- 
--import { getRecipientColorStyles } from '../../lib/recipient-colors';
--import { FieldContent } from '../../primitives/document-flow/field-content';
-+import { getRecipientColorStyles } from '@documenso/lib/recipient-colors';
-+import { FieldContent } from '@documenso/ui/primitives/document-flow/field-content';
- 
- const getRecipientDisplayText = (recipient: { name: string; email: string }) => {
-   if (recipient.name && !isTemplateRecipientEmailPlaceholder(recipient.email)) {
 @@ -78,6 +78,15 @@ export const mapFieldsWithRecipients = (fields: Field[], recipients: TRecipientL
    });
  };
@@ -292,31 +230,9 @@ index 1b598a3..d9b3fe5 100644
    return (
      <div>
 diff --git a/packages/ui/components/document/document-share-button.tsx b/packages/ui/components/document/document-share-button.tsx
-index 385a4e9..6cfcef1 100644
+index 385a4e9..9cc5066 100644
 --- a/packages/ui/components/document/document-share-button.tsx
 +++ b/packages/ui/components/document/document-share-button.tsx
-@@ -12,8 +12,8 @@ import type { HTMLAttributes } from 'react';
- import { useState } from 'react';
- import { FaXTwitter } from 'react-icons/fa6';
- 
--import { cn } from '../../lib/utils';
--import { Button } from '../../primitives/button';
-+import { cn } from '@documenso/lib/utils';
-+import { Button } from '@documenso/ui/primitives/button';
- import {
-   Dialog,
-   DialogContent,
-@@ -21,8 +21,8 @@ import {
-   DialogHeader,
-   DialogTitle,
-   DialogTrigger,
--} from '../../primitives/dialog';
--import { useToast } from '../../primitives/use-toast';
-+} from '@documenso/ui/primitives/dialog';
-+import { useToast } from '@documenso/ui/primitives/use-toast';
- 
- export type DocumentShareButtonProps = HTMLAttributes<HTMLButtonElement> & {
-   token?: string;
 @@ -30,6 +30,15 @@ export type DocumentShareButtonProps = HTMLAttributes<HTMLButtonElement> & {
    trigger?: (_props: { loading: boolean; disabled: boolean }) => React.ReactNode;
  };
@@ -390,30 +306,9 @@ index 9449ad7..845b7e8 100644
    return (
      <Tooltip>
 diff --git a/packages/ui/components/document/envelope-recipient-field-tooltip.tsx b/packages/ui/components/document/envelope-recipient-field-tooltip.tsx
-index 74c60ed..ea0aff6 100644
+index 74c60ed..8d61bb3 100644
 --- a/packages/ui/components/document/envelope-recipient-field-tooltip.tsx
 +++ b/packages/ui/components/document/envelope-recipient-field-tooltip.tsx
-@@ -18,13 +18,13 @@ import {
- } from 'lucide-react';
- import { type ElementType, useCallback, useEffect, useState } from 'react';
- 
--import { isTemplateRecipientEmailPlaceholder } from '../../../lib/constants/template';
--import { extractInitials } from '../../../lib/utils/recipient-formatter';
--import { SignatureIcon } from '../../icons/signature';
--import { cn } from '../../lib/utils';
--import { Avatar, AvatarFallback } from '../../primitives/avatar';
--import { FRIENDLY_FIELD_TYPE } from '../../primitives/document-flow/types';
--import { PopoverHover } from '../../primitives/popover';
-+import { isTemplateRecipientEmailPlaceholder } from '@documenso/lib/constants/template';
-+import { extractInitials } from '@documenso/lib/utils/recipient-formatter';
-+import { SignatureIcon } from '@documenso/ui/icons/signature';
-+import { cn } from '@documenso/lib/utils';
-+import { Avatar, AvatarFallback } from '@documenso/ui/primitives/avatar';
-+import { FRIENDLY_FIELD_TYPE } from '@documenso/ui/primitives/document-flow/types';
-+import { PopoverHover } from '@documenso/ui/primitives/popover';
- 
- interface EnvelopeRecipientFieldTooltipProps {
-   field: Pick<
 @@ -55,6 +55,15 @@ const FIELD_TYPE_ICONS: Record<FieldType, ElementType> = {
  /**
   * Renders a tooltip for a given field.
@@ -471,20 +366,9 @@ index 4600572..9ca0ceb 100644
    value,
    onChange,
 diff --git a/packages/ui/components/field/envelope-field-tooltip.tsx b/packages/ui/components/field/envelope-field-tooltip.tsx
-index c40d3a8..68c1669 100644
+index c40d3a8..25ccaaa 100644
 --- a/packages/ui/components/field/envelope-field-tooltip.tsx
 +++ b/packages/ui/components/field/envelope-field-tooltip.tsx
-@@ -6,8 +6,8 @@ import type { VariantProps } from 'class-variance-authority';
- import { cva } from 'class-variance-authority';
- import { useCallback, useEffect, useState } from 'react';
- 
--import { cn } from '../../lib/utils';
--import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../primitives/tooltip';
-+import { cn } from '@documenso/lib/utils';
-+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@documenso/ui/primitives/tooltip';
- 
- const tooltipVariants = cva('font-semibold', {
-   variants: {
 @@ -30,6 +30,15 @@ interface EnvelopeFieldToolTipProps extends VariantProps<typeof tooltipVariants>
  /**
   * Renders a tooltip for a given field.
@@ -521,22 +405,9 @@ index 2587a09..f85135e 100644
    const coords = useFieldPageCoords(field);
  
 diff --git a/packages/ui/components/field/field.tsx b/packages/ui/components/field/field.tsx
-index aa3337a..c9703ae 100644
+index aa3337a..33e87a5 100644
 --- a/packages/ui/components/field/field.tsx
 +++ b/packages/ui/components/field/field.tsx
-@@ -7,9 +7,9 @@ import { type Field, FieldType } from '@prisma/client';
- import React, { useEffect, useMemo, useState } from 'react';
- import { createPortal } from 'react-dom';
- 
--import { FIELD_ROOT_CONTAINER_CLASS_NAME } from '../../lib/field-root-container-classes';
--import type { RecipientColorStyles } from '../../lib/recipient-colors';
--import { cn } from '../../lib/utils';
-+import { FIELD_ROOT_CONTAINER_CLASS_NAME } from '@documenso/lib/field-root-container-classes';
-+import type { RecipientColorStyles } from '@documenso/lib/recipient-colors';
-+import { cn } from '@documenso/lib/utils';
- 
- export type FieldContainerPortalProps = {
-   field: Field;
 @@ -17,6 +17,15 @@ export type FieldContainerPortalProps = {
    children: React.ReactNode;
  };
@@ -570,24 +441,10 @@ index aa3337a..c9703ae 100644
    const [isValidating, setIsValidating] = useState(false);
    const isPageInDom = useIsPageInDom(field.page);
 diff --git a/packages/ui/components/recipient/recipient-action-auth-select.tsx b/packages/ui/components/recipient/recipient-action-auth-select.tsx
-index 2e11947..224bab3 100644
+index 2e11947..a40cfaa 100644
 --- a/packages/ui/components/recipient/recipient-action-auth-select.tsx
 +++ b/packages/ui/components/recipient/recipient-action-auth-select.tsx
-@@ -1,3 +1,4 @@
-+// @ts-nocheck
- import { DOCUMENT_AUTH_TYPES } from '@documenso/lib/constants/document-auth';
- import { RecipientActionAuth } from '@documenso/lib/types/document-auth';
- import { MultiSelect, type Option } from '@documenso/ui/primitives/multiselect';
-@@ -7,7 +8,7 @@ import { useLingui } from '@lingui/react';
- import { Trans } from '@lingui/react/macro';
- import { InfoIcon } from 'lucide-react';
- 
--import { cn } from '../../lib/utils';
-+import { cn } from '@documenso/lib/utils';
- 
- export interface RecipientActionAuthSelectProps {
-   value?: string[];
-@@ -17,6 +18,15 @@ export interface RecipientActionAuthSelectProps {
+@@ -17,6 +17,15 @@ export interface RecipientActionAuthSelectProps {
    placeholder?: string;
  }
  
@@ -604,20 +461,9 @@ index 2e11947..224bab3 100644
    value,
    defaultValue,
 diff --git a/packages/ui/components/recipient/recipient-autocomplete-input.tsx b/packages/ui/components/recipient/recipient-autocomplete-input.tsx
-index eec388f..e5f4c98 100644
+index eec388f..bac590c 100644
 --- a/packages/ui/components/recipient/recipient-autocomplete-input.tsx
 +++ b/packages/ui/components/recipient/recipient-autocomplete-input.tsx
-@@ -5,8 +5,8 @@ import { PopoverAnchor } from '@radix-ui/react-popover';
- import type React from 'react';
- import { useRef, useState } from 'react';
- 
--import { Command, CommandGroup, CommandItem } from '../../primitives/command';
--import { Input } from '../../primitives/input';
-+import { Command, CommandGroup, CommandItem } from '@documenso/ui/primitives/command';
-+import { Input } from '@documenso/ui/primitives/input';
- 
- export type RecipientAutoCompleteOption = {
-   email: string;
 @@ -27,6 +27,15 @@ type RecipientAutoCompleteInputProps = {
  type CombinedProps = RecipientAutoCompleteInputProps &
    Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof RecipientAutoCompleteInputProps>;
@@ -635,18 +481,9 @@ index eec388f..e5f4c98 100644
    value,
    placeholder,
 diff --git a/packages/ui/components/recipient/recipient-role-select.tsx b/packages/ui/components/recipient/recipient-role-select.tsx
-index e63a970..3821710 100644
+index e63a970..b3beead 100644
 --- a/packages/ui/components/recipient/recipient-role-select.tsx
 +++ b/packages/ui/components/recipient/recipient-role-select.tsx
-@@ -7,7 +7,7 @@ import type { SelectProps } from '@radix-ui/react-select';
- import { InfoIcon } from 'lucide-react';
- import { forwardRef } from 'react';
- 
--import { cn } from '../../lib/utils';
-+import { cn } from '@documenso/lib/utils';
- 
- export type RecipientRoleSelectProps = SelectProps & {
-   hideAssistantRole?: boolean;
 @@ -18,6 +18,15 @@ export type RecipientRoleSelectProps = SelectProps & {
    isAssistantEnabled?: boolean;
  };
@@ -664,20 +501,9 @@ index e63a970..3821710 100644
    ({ hideAssistantRole, hideCCerRole, hideViewerRole, hideApproverRole, isAssistantEnabled = true, ...props }, ref) => (
      <Select {...props}>
 diff --git a/packages/ui/components/signing-card.tsx b/packages/ui/components/signing-card.tsx
-index a7f7319..5146386 100644
+index a7f7319..70f67d2 100644
 --- a/packages/ui/components/signing-card.tsx
 +++ b/packages/ui/components/signing-card.tsx
-@@ -3,8 +3,8 @@ import { animate, motion, useMotionTemplate, useMotionValue, useTransform } from
- import { useCallback, useEffect, useRef, useState } from 'react';
- import { match, P } from 'ts-pattern';
- 
--import { cn } from '../lib/utils';
--import { Card, CardContent } from '../primitives/card';
-+import { cn } from '@documenso/lib/utils';
-+import { Card, CardContent } from '@documenso/ui/primitives/card';
- 
- export type SigningCardProps = {
-   className?: string;
 @@ -16,6 +16,15 @@ export type SigningCardProps = {
  /**
   * 2D signing card.

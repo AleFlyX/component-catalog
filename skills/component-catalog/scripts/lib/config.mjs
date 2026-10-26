@@ -8,6 +8,7 @@ export const template = {
   tsconfig: "tsconfig.json",
   catalog: "component-catalog.json",
   importPathStyle: "direct",
+  typeScope: "project",
   componentRoots: [
     {
       path: "src/components",
@@ -83,6 +84,9 @@ export function loadConfig(argument, cwd = process.cwd()) {
   const importPathStyle = raw.importPathStyle ?? "direct";
   if (!["direct", "barrel"].includes(importPathStyle))
     throw new Error("importPathStyle must be direct or barrel");
+  const typeScope = raw.typeScope ?? "project";
+  if (!["project", "componentRoots"].includes(typeScope))
+    throw new Error("typeScope must be project or componentRoots");
   if (!Array.isArray(raw.componentRoots) || !raw.componentRoots.length)
     throw new Error("componentRoots must be nonempty");
   const componentRoots = raw.componentRoots.map((root) => {
@@ -187,6 +191,7 @@ export function loadConfig(argument, cwd = process.cwd()) {
     tsconfig,
     catalog,
     importPathStyle,
+    typeScope,
     componentRoots,
     ...lists,
     vocabulary,

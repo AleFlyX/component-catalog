@@ -352,6 +352,9 @@ test("config validation rejects mistakes and ambiguous roots", (t) => {
       c.importPathStyle = "alias";
     },
     (c) => {
+      c.typeScope = "everything";
+    },
+    (c) => {
       c.exclude = ["src"];
     },
     (c) => {
