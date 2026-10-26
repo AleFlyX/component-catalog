@@ -1,0 +1,74 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "B",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 TravelerBookingDetailScreen，导入路径 @/features/traveler-bookings/booking-detail-screen，必填 props：bookId。catalog 中没有单独的“特殊旅客”专属组件，最接近的即该旅客预订详情页（需 query/router provider，操作按权限控制）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 UiPopup，导入路径 @/components/ui/overlay。底部/侧边弹出层（含遮罩、安全区、滚动处理）；onClose 必填，position 默认 bottom。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage",
+      "importPath": "@/features/auth/sign-in-page",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": []
+        },
+        {
+          "componentId": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": []
+        }
+      ],
+      "answer": "登录页：导出名 SignInPage，导入路径 @/features/auth/sign-in-page（无必填 props，redirect 可选）。顶部导航栏：导出名 UiNavBar，导入路径 @/components/ui/navigation（无必填 props）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "components": [],
+      "answer": "导出名 FlightDelayCompensationListScreen，导入路径 @/features/flight-delay-compensation/list-screen，必填 props：context、onContextChange（查询需 query 权限）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "components": [],
+      "answer": "catalog 中没有图片查看器组件（搜索“图片查看器”返回 0 条，无匹配 entry）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "per-layer 3；每个任务仅执行一次 search（--limit 5 --details --per-layer 3），未使用 get。所有 5 次搜索均写入 /tmp/audit-heldout-fixed-per3/b2/usage.jsonl。B5 无任何条目，明确判为 missing；B1 无“特殊旅客”专属组件，取最接近的 TravelerBookingDetailScreen（bookId 必填）。B3 两类组件均检索到并给出。未读取任何源码/catalog json/config，未修改 /tmp/oss-trial/airport-mobile 下文件。"
+}

@@ -145,7 +145,9 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 关键失败：B4“补偿列表页”在三种 55 条策略下都出现过 BatchScreen 替 ListScreen（ranking 问题，不是覆盖）；per-layer3 修正了 B2 的 Popup 选择，但 B4 仍 2/3。
 - 结论：**当前默认建议 `55 + --per-layer 3`**；40 条是策略不可用时的 fallback。B4 需要针对“列表 vs 批次详情”的 ranking 修正，不应继续扩目录。
 - 报告：`test/audits/2026-10-26-heldout/`
-- Post-hoc ranking 修正：嵌套概念只在 related 到长短语 primary 时保留；CJK 空格查询同时匹配 compact form。`航班延误补偿列表页面` 与 `航班延误 补偿 列表` 现在都先返回 ListScreen，B4 的 search 顺序问题已修；尚未重跑完整 3 次 held-out。
+- Post-hoc ranking 修正：嵌套概念只在 related 到长短语 primary 时保留；CJK 空格查询同时匹配 compact form。`航班延误补偿列表页面` 与 `航班延误 补偿 列表` 现在都先返回 ListScreen，B4 的 search 顺序问题已修。
+- 修复后完整 per-layer3 重跑：**29.5/30，180.9K tokens**（修复前 29/30、149.3K）；B2/B3/B4 全修，A5 一次给领域 badge 得部分分。token 上升来自 agent 额外 get/搜索，不是 search 输出。
+- no-get 约束定点：A 5/5、148.6K；B 5/5、264.7K（B3 因首次搜索未含 NavBar 追加一次）；agent 查询次数仍是主要方差。
 
 ## 11. 相关产物
 

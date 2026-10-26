@@ -96,3 +96,26 @@
 - `npm test` 86/86 通过。
 
 产物：`reps/per3-fixed/`（修正后 B 组 3 次定点结果）。
+
+## Post-fix 重跑（ranking + components 数组）
+
+ranking 修正后，用 per-layer3 重跑完整 A/B 各 3 次，并在 mixed 任务要求 `components` 数组包含所有组件：
+
+| 条件 | 得分 | 每 5 任务 token 均值 | 调用 | steps |
+| --- | --- | --- | --- | --- |
+| per-layer3 修复前 | 29/30 | 149,251 | 6 | 9 |
+| **per-layer3 修复后** | **29.5/30** | 180,889 | 6 | 11 |
+
+- B2/B3/B4 全部修复：B4 现在稳定返回 `ListScreen`；B3 两次都同时返回 `SignInPage + UiNavBar`；B2 三次 `UiPopup`。
+- 唯一缺口是 A5：一次把领域专用 `BookingStatusBadge` 当答案（0.5），另两次正确报告 missing。
+- token 上升主要来自 agent 额外的 get/搜索，而不是 search 输出；B 组一次 6 调用/264K 的离群值来自 B3 的第二次搜索。
+
+追加 no-get 约束（A/B 各 1 次）：
+
+| 组 | 得分 | 调用 | token |
+| --- | --- | --- | --- |
+| A | 5/5 | 5 | 148,620 |
+| B | 5/5 | 6 | 264,655 |
+
+- “不要用 get 确认已有字段”能降低 A 组，但不能阻止 B3 首次搜索未覆盖 NavBar 时再搜一次；agent 的 query/搜索次数仍是主要方差源。
+- 结论：ranking 修复有效；per-layer3 仍是默认，但需要把“mixed 任务必须返回 components 数组”和“搜索次数预算”一起作为策略约束，不能只靠工具。

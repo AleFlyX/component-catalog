@@ -1,0 +1,104 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": []
+        }
+      ],
+      "answer": "导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen；无必填 props（requiredProps 为空），运行时依赖 router/query/i18n 上下文。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiEmptyState",
+          "exportName": "UiEmptyState",
+          "importPath": "@/components/ui/feedback",
+          "requiredProps": []
+        }
+      ],
+      "answer": "导出名 UiEmptyState，导入路径 @/components/ui/feedback（title/description/action 均可选，无必填 props）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "role": "page"
+        },
+        {
+          "componentId": "business.BusinessCard",
+          "exportName": "BusinessCard",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["children"],
+          "role": "card"
+        }
+      ],
+      "answer": "页面：导出名 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：导出名 BusinessCard，导入路径 @/components/business/mobile（必填 props: children）。注：catalog 中没有 flight-delay 专属的事件卡片（get flight-delay.FlightDelayEventCard 返回 Unknown component ID），故采用通用业务卡片 BusinessCard。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiTabs",
+          "exportName": "UiTabs",
+          "importPath": "@/components/ui/layout",
+          "requiredProps": []
+        }
+      ],
+      "answer": "导出名 UiTabs，导入路径 @/components/ui/layout（受控 active key；items 为内部必填数据项，requiredProps 列表为空，activeKey/onChange 可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "bookings.BookingStatusBadge",
+          "exportName": "BookingStatusBadge",
+          "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+          "requiredProps": []
+        }
+      ],
+      "answer": "catalog 中唯一的状态标签是 BookingStatusBadge：导出名 BookingStatusBadge，导入路径 @/features/traveler-bookings/BookingStatusBadge，无必填 props（value 可选，null 渲染 --）。但它只针对 traveler booking 状态码，并非通用状态标签；通用 StatusTag/StatusBadge 组件不存在（get ui.UiStatusBadge 返回 Unknown component ID）。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 7,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "全流程仅用 catalog CLI（5 次 search + 2 次 get，未读源码/config/help），未修改任何文件。per-layer 3 策略下 A1/A2/A4 高置信；A3 的卡片只能落到通用 BusinessCard（无 flight-delay 专属卡片）；A5 存在歧义：只有 booking 领域的状态标签，通用状态标签组件缺失，如需通用 state tag 应视为 missing。"
+}

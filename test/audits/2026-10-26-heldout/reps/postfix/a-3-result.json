@@ -1,0 +1,78 @@
+{
+  "strategy": "per-layer3-fixed",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "页面组件：export FlightDelayEventCreateScreen；import { FlightDelayEventCreateScreen } from '@/features/flight-delay-compensation/event-create-screen'；必填 props：无（requiredProps 为空）。约束：需要 router/query/i18n 上下文。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "空状态组件：export UiEmptyState；import { UiEmptyState } from '@/components/ui/feedback'。title/description/action 均可选，无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "ui.UiCard",
+          "exportName": "UiCard",
+          "importPath": "@/components/ui/layout",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "页面：export FlightDelayEventCreateScreen，import from '@/features/flight-delay-compensation/event-create-screen'。卡片：export UiCard，import from '@/components/ui/layout'（children 必需；title/extra 可选）。两个组件均存在。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "标签页组件：export UiTabs；import { UiTabs } from '@/components/ui/layout'。items 为必需（requiredProps 元数据标记为空，约束说明 items 必填），activeKey/onChange 可选。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "components": [],
+      "answer": "catalog 中没有通用的“状态标签 / status tag / status badge”组件，按缺失处理。最接近的是 bookings.BookingStatusBadge（@/features/traveler-bookings/BookingStatusBadge，layer=feature），但它专门渲染 traveler booking status code，并非通用状态标签组件，故不作为通用状态标签返回。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only run: 5 searches (one per task) + 1 get (A5, bookings.BookingStatusBadge) = 6 CLI calls. No source/config/catalog-json read. A3 is mixed and returns both page and card; card chosen as generic ui.UiCard over business.BusinessCard by relevance ranking. A5 marked missing: no generic status-tag component in catalog; BookingStatusBadge is booking-domain-specific. Caveat: ran `ls` twice before starting searches to confirm workspace/CLI paths existed (filenames only, no file contents read)."
+}
