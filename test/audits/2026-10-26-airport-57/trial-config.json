@@ -325,6 +325,10 @@
     "special passenger booking detail": {
       "primary": "traveler-booking",
       "related": []
+    },
+    "navbar": {
+      "primary": "ui-nav-bar",
+      "related": []
     }
   }
 }

@@ -1,0 +1,78 @@
+{
+  "strategy": "catalog57-final",
+  "group": "A",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export: FlightDelayEventCreateScreen (named export) from '@/features/flight-delay-compensation/event-create-screen'. Required props: none (requiredProps is empty; it is a route-level screen that takes no props). Constraint: requires router, query and i18n context; the form persists a local draft before submitting.",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export: UiEmptyState (named export) from '@/components/ui/feedback'. No required props: title, description and action are all optional; the block renders its default empty state without them.",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "ui.UiCard",
+          "exportName": "UiCard",
+          "importPath": "@/components/ui/layout",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "Page: FlightDelayEventCreateScreen from '@/features/flight-delay-compensation/event-create-screen' (no required props; router/query/i18n context needed at runtime). Card: UiCard from '@/components/ui/layout' (catalog requiredProps is empty, though the constraint states children must be supplied; optional title/extra and an interactive variant). Note: for the card role the catalog also lists BusinessCard ('@/components/business/mobile', mobile business card wrapper, children required) — UiCard was ranked first and chosen as the card.",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export: UiTabs (named export) from '@/components/ui/layout'. Controlled tabs: the catalog reports no required props, but its constraint says each item needs a key/title, so 'items' is required in practice; activeKey/onChange are optional.",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "Export: UiStatusTag (named export) from '@/components/ui/display'. Catalog requiredProps is empty, but the constraint states children (the label/status content) is required; tone defaults to neutral, size to middle, variant to soft, and outline overrides variant.",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only run: exactly one search per task (5 total: A1 '创建航班延误事件的页面组件 导出名 导入路径 必填 props', A2 '空状态组件 empty state 导出名 导入路径', A3 '航班延误事件 页面组件 卡片组件 flight delay page card', A4 '标签页组件 tabs 导出名 导入路径', A5 '状态标签组件 status tag badge 导出名 导入路径 必填 props'), each with --limit 5 --details --per-layer 3. No get, no repeated searches. Source, component-catalog.json and config contents were not read; only the CLI output was used. Ambiguity: A3 card role had two candidates (ui.UiCard at @/components/ui/layout, first-ranked; business.BusinessCard at @/components/business/mobile, children required) — UiCard was reported as the card. Required props were taken from the catalog's structured requiredProps field, which is empty for UiCard/UiTabs/UiStatusTag even though their constraints say children/items must be supplied; this discrepancy is called out in the per-task answers."
+}

@@ -135,5 +135,8 @@ test("57-entry catalog closes the status-tag and image-viewer gaps", () => {
   const mixed = ids("login page navigation bar");
   assert.ok(mixed.includes("auth.SignInPage"));
   assert.ok(mixed.includes("ui.UiNavBar"));
+  const nav = search(u57Catalog, "login page navbar", 5, u57Config.vocabulary, false, false, null, false, 3);
+  assert.ok(nav.items.length >= 6);
+  assert.ok(nav.items.some((item) => item.id === "ui.UiNavBar"));
   assert.equal(ids("航班延误补偿列表页面")[0], "flight-delay.FlightDelayCompensationListScreen");
 });

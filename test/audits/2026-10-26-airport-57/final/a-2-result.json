@@ -1,0 +1,76 @@
+{
+  "strategy": "catalog57-final",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "创建航班延误事件的页面组件为 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen，无必填 props（需要 router/query/i18n 上下文）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "空状态组件为 UiEmptyState，导入路径 @/components/ui/feedback，无必填 props（title/description/action 均可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "missing": false
+        },
+        {
+          "role": "card",
+          "componentId": "ui.UiCard",
+          "importPath": "@/components/ui/layout",
+          "exportName": "UiCard",
+          "missing": false
+        }
+      ],
+      "answer": "页面：FlightDelayEventCreateScreen，@/features/flight-delay-compensation/event-create-screen；卡片：UiCard，@/components/ui/layout。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "标签页组件为 UiTabs，导入路径 @/components/ui/layout（catalog requiredProps 为空，但 items 需提供）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "ui.UiStatusTag",
+      "importPath": "@/components/ui/display",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "状态标签组件为 UiStatusTag，导入路径 @/components/ui/display，catalog 必填 props 为空（children 需提供）。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only mode: 5 search invocations (one per task) via component-catalog.mjs, no get; no source/config/catalog.json/help/ls/cat/grep used. A3 card role resolved to shared-ui UiCard as returned by the single A3 search; no flight-delay-specific card appeared."
+}

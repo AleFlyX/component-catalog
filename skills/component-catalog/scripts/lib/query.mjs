@@ -99,8 +99,10 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     scoped = ranked;
     usedLayerFallback = true;
   }
+  // Per-layer returns up to N from every layer. The global --limit must not
+  // truncate the tail layer (e.g. 2 layers × 3 = 6 items).
   const items = scoped
-    .slice(0, limit)
+    .slice(0, perLayer == null ? limit : scoped.length)
     .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage } }) => ({
       id,
       exportName,
