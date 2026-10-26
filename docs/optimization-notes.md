@@ -27,6 +27,7 @@
 | 查询回归集（`test/query-regression.test.mjs`） | 25 个查询 + 5 个必须排第一的入口，使用真实 trial catalog 防止 task 2/3 排序回退 |
 | search `--details` + 非 CLI 预算 | 第一条 constraint + usage 计数；禁止 config/help/shell 探索。airport：6→5 次调用，205K→100K tokens |
 | search `--layer` | 55 条目录 + layer 过滤：95% 覆盖，94.9K tokens；比无过滤 55 条低 43% |
+| search `--per-layer` | 55 条 + 每层 top2：95% 覆盖，103.5K；无需选层，混合意图稳定 |
 
 ## 3. 测量结果
 
@@ -148,4 +149,5 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 55 条覆盖饱和：`test/audits/2026-10-26-airport-ui55-expanded/`
 - layer 过滤验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-layer/`
 - layer 选择稳定性：`test/audits/2026-10-26-airport-layer-selection/`
+- per-layer 验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-per-layer/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`

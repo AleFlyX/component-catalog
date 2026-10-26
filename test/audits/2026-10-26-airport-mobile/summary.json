@@ -137,6 +137,29 @@
     "toolCalls": 8,
     "wallMs": 37991
   },
+  "catalog-details-u55-per-layer": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 5,
+    "cliOutputBytes": 9627,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 103539,
+      "median": 106558,
+      "values": [
+        127514,
+        76545,
+        106558
+      ]
+    },
+    "uncachedInputTokens": 5481,
+    "outputTokens": 6111,
+    "cacheReadTokens": 91947,
+    "steps": 7,
+    "toolCalls": 9,
+    "wallMs": 38615
+  },
   "source": {
     "runs": 3,
     "correct": "15/15",

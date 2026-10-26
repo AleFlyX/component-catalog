@@ -18,7 +18,7 @@ const usage = {
   generate:
     "component-catalog [--config path] generate [--check]\nGenerate explicitly marked components; --check compares without writing. Unmarked candidates need annotation first.\n",
   search:
-    "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer, which avoids guessing; --layer-fallback retries without the filter when that layer has no matches.\n",
+    "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback] [--per-layer 1..5]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer; --layer-fallback retries without the filter when that layer has no matches. --per-layer returns the top N from each layer for mixed-intent queries.\n",
   get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
@@ -59,6 +59,7 @@ const cliOptions = {
   from: { type: "string" },
   layer: { type: "string" },
   "layer-fallback": { type: "boolean" },
+  "per-layer": { type: "string" },
   check: { type: "boolean" },
   help: { type: "boolean" },
   version: { type: "boolean" },
@@ -119,7 +120,7 @@ try {
       init: [],
       scan: ["limit", "offset", "summary", "query", "brief"],
       generate: ["config", "check"],
-      search: ["config", "limit", "brief", "details", "layer", "layer-fallback"],
+      search: ["config", "limit", "brief", "details", "layer", "layer-fallback", "per-layer"],
       get: ["config", "include", "prop", "from"],
       audit: ["config", "limit", "offset"],
       check: ["config", "limit", "offset"],
@@ -132,6 +133,13 @@ try {
       throw new Error(
         `${command} does not accept --${unexpected}; use ${command} --help${command === "scan" && unexpected === "config" ? ". scan uses a directory argument; call the CLI without a script's fixed --config" : ""}`,
       );
+    if (command === "search" && values["per-layer"] !== undefined) {
+      const perLayer = Number(values["per-layer"]);
+      if (!Number.isInteger(perLayer) || perLayer < 1 || perLayer > 5)
+        throw new Error("--per-layer accepts an integer from 1 to 5; use search --help");
+      if (values.layer !== undefined || values["layer-fallback"])
+        throw new Error("--per-layer cannot be combined with --layer or --layer-fallback");
+    }
     if (command === "get") {
       if (inputs.length < 1 || inputs.length > 5)
         throw new Error("get accepts 1–5 component IDs; use get --help");
@@ -248,7 +256,7 @@ try {
       } else {
         const catalog = loadCatalog(config.catalog, regenerate);
         if (command === "search")
-          result = search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary, values.brief ?? false, values.details ?? false, values.layer ?? null, values["layer-fallback"] ?? false);
+          result = search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary, values.brief ?? false, values.details ?? false, values.layer ?? null, values["layer-fallback"] ?? false, values["per-layer"] == null ? null : Number(values["per-layer"]));
         else if (inputs.length === 1)
           result = get(catalog, input.trim(), include, values.prop, values.from);
         else result = getMany(catalog, inputs.map((value) => value.trim()), include);
@@ -278,6 +286,7 @@ try {
         details: values.details ?? null,
         layer: values.layer ?? null,
         layerFallback: values["layer-fallback"] ?? null,
+        perLayer: values["per-layer"] ?? null,
       },
       outputBytes: Buffer.byteLength(output, "utf8"),
       durationMs: Date.now() - startedAt,
@@ -303,6 +312,7 @@ try {
           details: activeValues.details ?? null,
           layer: activeValues.layer ?? null,
           layerFallback: activeValues["layer-fallback"] ?? null,
+          perLayer: activeValues["per-layer"] ?? null,
         }
       : null,
     error: error.message,

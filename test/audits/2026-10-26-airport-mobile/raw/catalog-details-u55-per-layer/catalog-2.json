@@ -1,0 +1,62 @@
+{
+  "condition": "u55-per-layer",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "Batch compensation workspace for standard, special and review steps. batchId is required; the screen also needs query, auth and router providers and handles offline/conflict states.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "No dedicated special-passenger booking-list variant surfaced in the catalog. The closest match is the general TravelerBookingListScreen (paginated traveler booking list with search and filters; navigate required, initialStatus optional, queries/actions permission-gated); special-passenger behavior would have to be built on top of it.",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "PasswordInput = password field with show/hide labels and a form-field error; no required props. Error display: it must be used inside UiFormField, and the error is a string rendered by that field wrapper (the input only takes the error styling/state). Shared base ui.UiPasswordInput (@/components/ui/form, requiredProps showLabel/hideLabel) behaves the same way but takes a boolean error and also relies on UiFormField for the message.",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value", "placeholder", "onChange"],
+      "components": [
+        {
+          "componentId": "business.SearchBar",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["value", "placeholder", "onChange"]
+        },
+        {
+          "componentId": "business.FilterSheet",
+          "importPath": "@/components/business/mobile",
+          "requiredProps": ["visible", "title", "children", "onClose"]
+        }
+      ],
+      "answer": "Search bar: business.SearchBar, import @/components/business/mobile, requiredProps value/placeholder/onChange (onFilter optional adds the filter icon button). Filter panel: business.FilterSheet, same import path, requiredProps visible/title/children/onClose (onConfirm runs before closing).",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "Global dialog that subscribes to the auth recovery store and lazily renders its view; mount it once near the app root (it renders null while no recovery event is pending). No required props. Its inner view is common.AuthRecoveryDialogView (@/components/common/auth-recovery-dialog-view, requires detail).",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Per query, layers observed: Q1 feature only (top 2: FlightDelayCompensationBatchScreen, FlightDelayEventCreateScreen). Q2 feature + shared-ui (feature: TravelerBookingListScreen, BookingStatusBadge; shared-ui: InfiniteListFooter, UiList). Q3 feature + shared-ui (feature: auth.PasswordInput, ForgotPasswordPage; shared-ui: ui.UiPasswordInput, common.Forbidden). Q4 shared-ui + feature (shared-ui: business.SearchBar, business.FilterSheet; feature: TravelerBookingListScreen, FlightDelayCompensationListScreen). Q5 shared-ui + feature (shared-ui: AuthRecoveryDialog, AuthRecoveryDialogView; feature: ForgotPasswordPage, SignInPage). Every search used --limit 5 --details --per-layer 2; no get calls and no project files read."
+}

@@ -140,6 +140,9 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   assert.equal(auto.layer, "shared");
   assert.equal(auto.layerSource, "auto");
   assert.ok(auto.items.every((item) => item.layer === "shared"));
+  const perLayer = search(baseCatalog, "button", 5, {}, false, false, null, false, 2);
+  assert.equal(perLayer.perLayer, 2);
+  assert.deepEqual(perLayer.layers, ["shared"]);
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({

@@ -1,0 +1,527 @@
+{
+  "session": {
+    "steps": 10,
+    "turns": 1,
+    "llmMs": 31456,
+    "toolMs": 2375,
+    "settledMs": 34037,
+    "wallMs": 33848,
+    "requests": 10,
+    "activityToolCalls": 9
+  },
+  "label": "details-u55-per-layer-1",
+  "usage": {
+    "uncachedInputTokens": 5135,
+    "outputTokens": 4363,
+    "cacheReadTokens": 118016,
+    "cacheWriteTokens": 0,
+    "totalTokens": 127514,
+    "cacheReadShare": 96
+  },
+  "breakdown": {
+    "systemTokens": 1406,
+    "toolsTokens": 6902,
+    "messageTokens": 7886
+  },
+  "timeline": {
+    "entries": [
+      {
+        "index": 0,
+        "seq": 8,
+        "time": 1792997710430,
+        "cat": "user",
+        "tool": null,
+        "calls": [],
+        "tokens": 467,
+        "text": "Controlled benchmark run 1/3, condition \"u55-per-layer\", on /tmp/oss-trial/airpo"
+      },
+      {
+        "index": 1,
+        "seq": 9,
+        "time": 1792997710430,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 355,
+        "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapsh"
+      },
+      {
+        "index": 2,
+        "seq": 10,
+        "time": 1792997710430,
+        "cat": "inject",
+        "tool": null,
+        "calls": [],
+        "tokens": 74,
+        "text": "Time sampled while preparing turn 1, step 1: 2026-10-26T14:55:10+08:00[Asia/Shan"
+      },
+      {
+        "index": 3,
+        "seq": 15,
+        "time": 1792997712769,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 93,
+        "text": "I'll start by checking the project and running the first search."
+      },
+      {
+        "index": 4,
+        "seq": 19,
+        "time": 1792997712853,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 13,
+        "text": null
+      },
+      {
+        "index": 5,
+        "seq": 23,
+        "time": 1792997715170,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 130,
+        "text": null
+      },
+      {
+        "index": 6,
+        "seq": 27,
+        "time": 1792997715651,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 382,
+        "text": null
+      },
+      {
+        "index": 7,
+        "seq": 31,
+        "time": 1792997717813,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 168,
+        "text": null
+      },
+      {
+        "index": 8,
+        "seq": 35,
+        "time": 1792997718300,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 563,
+        "text": null
+      },
+      {
+        "index": 9,
+        "seq": 39,
+        "time": 1792997720314,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 165,
+        "text": null
+      },
+      {
+        "index": 10,
+        "seq": 43,
+        "time": 1792997720789,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 587,
+        "text": null
+      },
+      {
+        "index": 11,
+        "seq": 47,
+        "time": 1792997723000,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 221,
+        "text": null
+      },
+      {
+        "index": 12,
+        "seq": 51,
+        "time": 1792997723457,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 564,
+        "text": null
+      },
+      {
+        "index": 13,
+        "seq": 55,
+        "time": 1792997725676,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 115,
+        "text": null
+      },
+      {
+        "index": 14,
+        "seq": 59,
+        "time": 1792997725963,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 589,
+        "text": null
+      },
+      {
+        "index": 15,
+        "seq": 63,
+        "time": 1792997734559,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 1776,
+        "text": "All five searches are done (one per task, no gets needed). Writing the result fi"
+      },
+      {
+        "index": 16,
+        "seq": 65,
+        "time": 1792997734570,
+        "cat": "tool",
+        "tool": "write",
+        "calls": [],
+        "tokens": 37,
+        "text": null
+      },
+      {
+        "index": 17,
+        "seq": 69,
+        "time": 1792997736206,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "bash"
+        ],
+        "tokens": 105,
+        "text": null
+      },
+      {
+        "index": 18,
+        "seq": 73,
+        "time": 1792997736301,
+        "cat": "tool",
+        "tool": "bash",
+        "calls": [],
+        "tokens": 63,
+        "text": null
+      },
+      {
+        "index": 19,
+        "seq": 77,
+        "time": 1792997741085,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [
+          "send_message"
+        ],
+        "tokens": 915,
+        "text": null
+      },
+      {
+        "index": 20,
+        "seq": 79,
+        "time": 1792997741092,
+        "cat": "tool",
+        "tool": "send_message",
+        "calls": [],
+        "tokens": 26,
+        "text": null
+      },
+      {
+        "index": 21,
+        "seq": 83,
+        "time": 1792997744396,
+        "cat": "assistant",
+        "tool": null,
+        "calls": [],
+        "tokens": 478,
+        "text": "Run complete — 5 searches (exactly one per task), all with `--limit 5 --details "
+      }
+    ],
+    "assistantSteps": 10,
+    "assistantTokens": 4166,
+    "toolCalls": 7,
+    "toolCallsByName": {
+      "bash": 6,
+      "send_message": 1
+    },
+    "toolResultTokens": 2824,
+    "toolTokens": {
+      "bash": 2761,
+      "write": 37,
+      "send_message": 26
+    },
+    "topResults": [
+      {
+        "index": 14,
+        "tool": "bash",
+        "tokens": 589
+      },
+      {
+        "index": 10,
+        "tool": "bash",
+        "tokens": 587
+      },
+      {
+        "index": 12,
+        "tool": "bash",
+        "tokens": 564
+      },
+      {
+        "index": 8,
+        "tool": "bash",
+        "tokens": 563
+      },
+      {
+        "index": 6,
+        "tool": "bash",
+        "tokens": 382
+      }
+    ]
+  },
+  "cli": {
+    "calls": 5,
+    "outputBytes": 10571,
+    "byCommand": {
+      "search": {
+        "calls": 5,
+        "outputBytes": 10571,
+        "truncated": 0,
+        "errors": 0,
+        "props": 0
+      }
+    },
+    "searchCalls": 5,
+    "searchDetails": 5,
+    "searchBrief": 0,
+    "searchLayers": 0,
+    "searchLayerFallbacks": 0,
+    "searchTruncated": 0,
+    "searchOmittedByLimit": 0,
+    "searchOmittedByBytes": 0,
+    "searchResultIds": 18,
+    "getCalls": 0,
+    "getBatchCalls": 0,
+    "uniqueGetIds": 0,
+    "repeatedArguments": [],
+    "repeatedComponents": [],
+    "tasks": {
+      "1": {
+        "calls": 1,
+        "outputBytes": 1493
+      },
+      "2": {
+        "calls": 1,
+        "outputBytes": 2218
+      },
+      "3": {
+        "calls": 1,
+        "outputBytes": 2316
+      },
+      "4": {
+        "calls": 1,
+        "outputBytes": 2221
+      },
+      "5": {
+        "calls": 1,
+        "outputBytes": 2323
+      }
+    },
+    "entries": [
+      {
+        "ts": "2026-10-26T06:55:15.632Z",
+        "task": "1",
+        "command": "search",
+        "argument": "航班延误补偿批次工作区 delay compensation batch workspace",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null,
+          "layerFallback": null,
+          "perLayer": "2"
+        },
+        "outputBytes": 1493,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "flight-delay.FlightDelayCompensationBatchScreen",
+          "flight-delay.batch-workspace.ReviewCompensationStep"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:55:18.278Z",
+        "task": "2",
+        "command": "search",
+        "argument": "特殊旅客预订列表 special passenger booking list",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null,
+          "layerFallback": null,
+          "perLayer": "2"
+        },
+        "outputBytes": 2218,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "bookings.TravelerBookingListScreen",
+          "bookings.BookingStatusBadge",
+          "business.InfiniteListFooter",
+          "ui.UiList"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:55:20.771Z",
+        "task": "3",
+        "command": "search",
+        "argument": "密码输入框 password input field",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null,
+          "layerFallback": null,
+          "perLayer": "2"
+        },
+        "outputBytes": 2316,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "auth.PasswordInput",
+          "auth.ForgotPasswordPage",
+          "ui.UiPasswordInput",
+          "common.PasswordPolicyFeedback"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:55:23.439Z",
+        "task": "4",
+        "command": "search",
+        "argument": "搜索栏 筛选面板 search bar filter panel booking list",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null,
+          "layerFallback": null,
+          "perLayer": "2"
+        },
+        "outputBytes": 2221,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "business.SearchBar",
+          "business.FilterSheet",
+          "bookings.TravelerBookingListScreen",
+          "bookings.BookingStatusBadge"
+        ],
+        "componentIds": null
+      },
+      {
+        "ts": "2026-10-26T06:55:25.949Z",
+        "task": "5",
+        "command": "search",
+        "argument": "认证恢复弹窗 auth recovery modal",
+        "options": {
+          "limit": "5",
+          "offset": null,
+          "include": null,
+          "prop": null,
+          "from": null,
+          "brief": null,
+          "details": true,
+          "layer": null,
+          "layerFallback": null,
+          "perLayer": "2"
+        },
+        "outputBytes": 2323,
+        "truncated": false,
+        "omitted": {
+          "items": 0,
+          "byLimit": 0,
+          "byBytes": 0
+        },
+        "error": null,
+        "resultIds": [
+          "common.AuthRecoveryDialog",
+          "common.AuthRecoveryDialogView",
+          "auth.ForgotPasswordPage",
+          "auth.SignInPage"
+        ],
+        "componentIds": null
+      }
+    ]
+  },
+  "derived": {
+    "cliBytesPerCall": 2114,
+    "toolTokensPerAssistantStep": 282,
+    "cacheReadPerCall": 23603,
+    "observedToolCalls": 9,
+    "nonCliToolCalls": 4,
+    "outputTokensPerCliCall": 873,
+    "cliSearchResultIdsPerSearch": 3.6
+  }
+}

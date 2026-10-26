@@ -14,7 +14,7 @@ function includesTerm(text, term) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null, layerFallback = false) {
+export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false, layer = null, layerFallback = false, perLayer = null) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
@@ -62,7 +62,21 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     );
   const autoLayer = layer === "auto" ? ranked[0]?.item.layer : null;
   const requestedLayer = layer === "auto" ? autoLayer : layer;
-  let scoped = requestedLayer == null ? ranked : ranked.filter(({ item }) => item.layer === requestedLayer);
+  let scoped;
+  let scopedLayers = null;
+  if (perLayer != null) {
+    const byLayer = new Map();
+    for (const entry of ranked) {
+      const name = entry.item.layer ?? "unspecified";
+      const bucket = byLayer.get(name) ?? [];
+      if (bucket.length < perLayer) bucket.push(entry);
+      byLayer.set(name, bucket);
+    }
+    scopedLayers = [...byLayer.keys()];
+    scoped = [...byLayer.values()].flat();
+  } else {
+    scoped = requestedLayer == null ? ranked : ranked.filter(({ item }) => item.layer === requestedLayer);
+  }
   let usedLayerFallback = false;
   if (layer != null && scoped.length === 0 && layerFallback) {
     scoped = ranked;
@@ -98,6 +112,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     ...(layer == null ? {} : { layer: requestedLayer ?? layer }),
     ...(autoLayer == null ? {} : { layerSource: "auto" }),
     ...(usedLayerFallback ? { layerFallback: true } : {}),
+    ...(perLayer == null ? {} : { perLayer, layers: scopedLayers }),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.
     truncated: false,
