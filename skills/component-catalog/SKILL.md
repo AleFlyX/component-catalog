@@ -1,7 +1,7 @@
 ---
 name: component-catalog
 metadata:
-  revision: "9"
+  revision: "10"
 description: Configure, query and maintain a local React component catalog from JavaScript or TypeScript. Use for requested catalog setup, reusable component selection, or component changes in configured roots. Unrelated business work does not require catalog setup or migration.
 ---
 
@@ -83,10 +83,10 @@ For setup, decide in this order: component roots and enrollment, `typeScope`, vo
 
 ## Installation and upgrade diagnosis
 
-Skill revision **9** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
+Skill revision **10** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
 
 ```bash
-node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 9
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
 ```
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.
@@ -97,6 +97,6 @@ For maintainer comparisons across agents or models, use [evaluation.md](referenc
 
 Reuse established scope and enrollment policies. Supported new public components in a `public` root are maintained without asking per component; `review` roots need a source-based ownership decision. Selecting business components does not make them globally reusable. Only unresolved scope/ownership choices need a user decision: prefer the client's eligible structured choice tool, asynchronous when available. See [scope decisions](references/setup.md#scope-decisions) when needed; no timeout or preselected option constitutes consent.
 
-For authorized maintenance, finish with `audit` → resolve findings → `generate` → `check`, affected queries and applicable project checks. Never invent metadata, remove markers or narrow roots to conceal failures. Setup additionally verifies useful search coverage and persistent workflow integration. Report `discovery` separately from audit status; unsupported exclusions are still unavailable even when checks pass.
+For authorized maintenance, finish with `audit` → resolve findings → `generate` → `check`, then `verify --queries <file>` for at least one single-component, one mixed-role and one missing/edge query. `verify` checks the saved snapshot; run `check` first so it is not stale. Report failed query IDs/roles instead of treating a successful generate as setup completion. Never invent metadata, remove markers or narrow roots to conceal failures. Setup additionally verifies useful search coverage and persistent workflow integration. Report `discovery` separately from audit status; unsupported exclusions are still unavailable even when checks pass.
 
 Report actual validation in conversation. Keep ad hoc trials and reports outside consumer repositories; maintainable tests and requested product documentation are allowed. No extra registry, automatic commit or publication is part of this workflow.

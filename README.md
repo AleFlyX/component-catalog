@@ -3,7 +3,7 @@
 本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
 
 - CLI：`0.3.0`
-- Skill revision：`9`
+- Skill revision：`10`
 - Catalog schema：`7`
 - Node：`>=22`
 - 唯一运行依赖：TypeScript `5.9.3`
@@ -14,7 +14,7 @@
 
 ```bash
 npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 9
+node bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
 node bin/component-catalog.mjs scan examples/basic/src --summary
 
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
@@ -47,6 +47,22 @@ component-catalog --config component-catalog.config.json check
 ```
 
 `audit` 检查候选、收录决定、元数据、示例和替代关系；`check` 额外检查生成目录是否漂移。两者都不修改目录。首次接入允许尚无目录，但存在未处理候选时 `generate` 会失败。
+
+目录生成/检查通过后，用 `verify` 验证代表性查询确实能找到预期组件：
+
+```json
+[
+  { "scope": "single", "query": "按钮", "expectedId": "ui.Button" },
+  { "scope": "mixed", "query": "登录页 顶部导航栏", "expectedIds": ["auth.SignInPage", "ui.UiNavBar"] },
+  { "scope": "outside", "query": "图片查看器", "absentIds": ["ui.UiImageViewer"] }
+]
+```
+
+```bash
+component-catalog --config component-catalog.config.json verify --queries component-catalog.verify.json
+```
+
+`expectedIds` 必须全部出现在结果中，`absentIds` 必须不出现，`expectNoResults` 要求空结果；返回非零表示有查询未通过。`verify` 只读已保存目录，先运行 `check` 确认它不是旧快照。
 
 ### 配置要点
 
@@ -140,7 +156,7 @@ export function BusinessForm(props: { disabled?: boolean }) { /* ... */ }
 ```bash
 npm ci --prefix "<skill-directory>/scripts" --ignore-scripts --no-audit --no-fund
 node "<skill-directory>/scripts/bin/component-catalog.mjs" \
-  doctor --installation --expect-version 0.3.0 --expect-skill-revision 9
+  doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
 ```
 
 skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。
