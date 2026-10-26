@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { analyzeSession, renderMarkdown } from "./audits/tools/analyze-ai-run.mjs";
+import { analyzeSession, renderMarkdown } from "./tools/analyze-ai-run.mjs";
 
 const cache = {
   record: {
