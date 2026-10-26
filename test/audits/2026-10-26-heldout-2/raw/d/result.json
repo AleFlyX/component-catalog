@@ -1,0 +1,72 @@
+{
+  "strategy": "heldout2",
+  "group": "D",
+  "tasks": [
+    {
+      "task": "D1",
+      "componentId": "ui.UiList",
+      "importPath": "@/components/ui/navigation",
+      "missing": false,
+      "components": [
+        {
+          "role": "list container",
+          "componentId": "ui.UiList",
+          "exportName": "UiList",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": [],
+          "missing": false
+        },
+        {
+          "role": "cell row",
+          "componentId": "ui.UiCell",
+          "exportName": "UiCell",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": [],
+          "missing": false
+        }
+      ],
+      "answer": "List container = UiList (export UiList, import from '@/components/ui/navigation'); cell row = UiCell (export UiCell, import from '@/components/ui/navigation'). Both are shared-ui exports from the same module: import { UiList, UiCell } from '@/components/ui/navigation'.",
+      "confidence": "high"
+    },
+    {
+      "task": "D2",
+      "componentId": "flight-delay.FlightDelayEventDetailScreen",
+      "importPath": "@/features/flight-delay-compensation/event-detail-screen",
+      "missing": false,
+      "components": [],
+      "answer": "Export FlightDelayEventDetailScreen; import { FlightDelayEventDetailScreen } from '@/features/flight-delay-compensation/event-detail-screen'; required prop: eventId.",
+      "confidence": "high"
+    },
+    {
+      "task": "D3",
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "missing": false,
+      "components": [],
+      "answer": "Export FlightDelayCompensationBatchScreen; import { FlightDelayCompensationBatchScreen } from '@/features/flight-delay-compensation/batch-detail-screen'; required prop: batchId.",
+      "confidence": "high"
+    },
+    {
+      "task": "D4",
+      "componentId": "common.AuthRecoveryDialogView",
+      "importPath": "@/components/common/auth-recovery-dialog-view",
+      "missing": false,
+      "components": [],
+      "answer": "Export AuthRecoveryDialogView; import { AuthRecoveryDialogView } from '@/components/common/auth-recovery-dialog-view'; required prop: detail.",
+      "confidence": "high"
+    },
+    {
+      "task": "D5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "missing": false,
+      "components": [],
+      "answer": "Export BookingStatusBadge; import { BookingStatusBadge } from '@/features/traveler-bookings/BookingStatusBadge'; no required props (value is optional; null renders --, unknown codes render their string form).",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict catalog-only: one search per task (5 total), no get, no second search, no source/config/help/ls/cat/grep/file reads. All tasks resolved from catalog metadata only. D1: UiList is the list container and UiCell the cell row; both are exported from the shared module '@/components/ui/navigation'. D5: the catalog component for traveler booking status codes is bookings.BookingStatusBadge (export name BookingStatusBadge, not TravelerBookingStatusBadge), chosen as the direct match from the single search. D2-D4 required props are eventId, batchId, and detail respectively."
+}

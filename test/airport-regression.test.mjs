@@ -139,4 +139,7 @@ test("57-entry catalog closes the status-tag and image-viewer gaps", () => {
   assert.ok(nav.items.length >= 6);
   assert.ok(nav.items.some((item) => item.id === "ui.UiNavBar"));
   assert.equal(ids("航班延误补偿列表页面")[0], "flight-delay.FlightDelayCompensationListScreen");
+  const grid = ids("grid layout grid item");
+  assert.ok(grid.includes("ui.UiGrid"));
+  assert.ok(grid.includes("ui.UiGridItem"));
 });

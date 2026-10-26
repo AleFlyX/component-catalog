@@ -1,0 +1,102 @@
+{
+  "strategy": "heldout2",
+  "group": "C",
+  "tasks": [
+    {
+      "task": "C1",
+      "componentId": "ui.UiLoading",
+      "importPath": "@/components/ui/feedback",
+      "missing": false,
+      "components": [
+        {
+          "role": "loading indicator",
+          "componentId": "ui.UiLoading",
+          "exportName": "UiLoading",
+          "importPath": "@/components/ui/feedback",
+          "missing": false
+        }
+      ],
+      "answer": "Export: UiLoading. Import: @/components/ui/feedback (shared-ui, inline loading indicator with optional label/size).",
+      "confidence": "high"
+    },
+    {
+      "task": "C2",
+      "componentId": "ui.UiNoticeBar",
+      "importPath": "@/components/ui/feedback",
+      "missing": false,
+      "components": [
+        {
+          "role": "notice bar",
+          "componentId": "ui.UiNoticeBar",
+          "exportName": "UiNoticeBar",
+          "importPath": "@/components/ui/feedback",
+          "missing": false
+        }
+      ],
+      "answer": "Export: UiNoticeBar. Import: @/components/ui/feedback (shared-ui, rounded notice bar with tone variants; children required).",
+      "confidence": "high"
+    },
+    {
+      "task": "C3",
+      "componentId": "ui.UiGridItem",
+      "importPath": "@/components/ui/layout",
+      "missing": true,
+      "components": [
+        {
+          "role": "grid layout",
+          "componentId": null,
+          "exportName": null,
+          "importPath": null,
+          "missing": true
+        },
+        {
+          "role": "grid item",
+          "componentId": "ui.UiGridItem",
+          "exportName": "UiGridItem",
+          "importPath": "@/components/ui/layout",
+          "missing": false
+        }
+      ],
+      "answer": "Partial: the single permitted search returned UiGridItem (export: UiGridItem, import: @/components/ui/layout, shared-ui) but no grid-layout container component (no UiGrid entry appeared in the results); grid layout treated as missing.",
+      "confidence": "low"
+    },
+    {
+      "task": "C4",
+      "componentId": "ui.UiSteps",
+      "importPath": "@/components/ui/layout",
+      "missing": false,
+      "components": [
+        {
+          "role": "steps",
+          "componentId": "ui.UiSteps",
+          "exportName": "UiSteps",
+          "importPath": "@/components/ui/layout",
+          "missing": false
+        }
+      ],
+      "answer": "Export: UiSteps. Import: @/components/ui/layout (shared-ui, step indicator for a process; items required).",
+      "confidence": "high"
+    },
+    {
+      "task": "C5",
+      "componentId": "ui.UiTabBar",
+      "importPath": "@/components/ui/navigation",
+      "missing": false,
+      "components": [
+        {
+          "role": "bottom tab bar",
+          "componentId": "ui.UiTabBar",
+          "exportName": "UiTabBar",
+          "importPath": "@/components/ui/navigation",
+          "missing": false
+        }
+      ],
+      "answer": "Export: UiTabBar. Import: @/components/ui/navigation (shared-ui, bottom tab bar with badge/icon/label items; items required).",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict catalog-only: exactly one `search` per task (5 total, COMPONENT_CATALOG_TASK=C1..C5, --limit 5 --details --per-layer 3); no `get`, no second search, no source/config/help/list/grep/read of repo files. All hits are layer shared-ui. C3 caveat: only UiGridItem (ui.UiGridItem, @/components/ui/layout) was returned; the query 'grid layout grid item' produced 3 shared-ui hits (UiGridItem, InfoGrid, ResponsiveActionGrid) and no UiGrid container, so grid layout is reported missing rather than guessed, though per-layer 3 truncation could have hidden a 4th shared-ui match; confidence low for C3 only. Other tasks high confidence. usage.jsonl in /tmp/audit-heldout-2/c/ records the 5 search calls."
+}

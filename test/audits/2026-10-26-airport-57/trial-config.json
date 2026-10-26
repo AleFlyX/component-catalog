@@ -329,6 +329,50 @@
     "navbar": {
       "primary": "ui-nav-bar",
       "related": []
+    },
+    "grid layout": {
+      "primary": "ui-grid",
+      "related": []
+    },
+    "grid item": {
+      "primary": "ui-grid-item",
+      "related": []
+    },
+    "loading indicator": {
+      "primary": "ui-loading",
+      "related": []
+    },
+    "notice bar": {
+      "primary": "ui-notice-bar",
+      "related": []
+    },
+    "bottom tab bar": {
+      "primary": "ui-tab-bar",
+      "related": []
+    },
+    "list container": {
+      "primary": "ui-list",
+      "related": []
+    },
+    "cell row": {
+      "primary": "ui-cell",
+      "related": []
+    },
+    "flight delay event detail": {
+      "primary": "flight-delay-event",
+      "related": []
+    },
+    "batch workspace": {
+      "primary": "flight-delay-compensation",
+      "related": []
+    },
+    "auth recovery dialog view": {
+      "primary": "auth-recovery",
+      "related": []
+    },
+    "booking status badge": {
+      "primary": "booking-status",
+      "related": []
     }
   }
 }

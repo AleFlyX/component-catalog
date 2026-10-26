@@ -151,6 +151,7 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - **57 条覆盖补齐**：加入 `UiStatusTag`、`UiImageViewer` + 英文 aliases 后，A/B 各 3 次：**29.5/30、149.2K**；A3 有一次漏卡片，抵消了覆盖收益。
 - **Final2（57 条完整 3 次）**：per-layer limit、A3 mixed 契约、B1 closest-general、aliases 全部到位后，**30/30、132.1K、5 次调用**；相对 55 条严格版得分 +0.5、token −3.8%。
 - 选择：**57 条 = 当前默认（30/30、132.1K）**；55 条严格版是少 2 条 setup 的 fallback（29.5/30、137.3K）。两者都远优于 40 条（218.9K、27.5）。
+- **第二组 held-out（10 个新任务）**：57 条 + aliases + per-layer3 + 严格一次 search/no-get 达到 **10/10**；其中 `grid layout` 缺 alias 时 UiGrid 被挤出 top3，补 `grid layout`/`grid item` 后 2/2。剩余主要风险是 vocabulary 覆盖，不是 ranking 或目录大小。
 - **per-layer limit 修正**：`--per-layer N` 现在返回每层 top-N，不受全局 `--limit` 截断；修复两层共 6 项时第 6 项（常为 UiNavBar）被丢掉的问题。
 - **Mixed-role 显式校验**：要求先枚举角色、components 每个 role 必须有 ID 或 missing；A3 单独 3 次 **3/3、58.5K、1 次 search、0 get**。mixed 任务缺口主要是输出契约，不是 search 覆盖。
 - **B1 closest-general 策略**：无专用组件但同域通用组件承担角色时，返回通用组件 + caveat；3 次 **3/3、70.6K、1 次 search**，不再在 missing/generic 间摇摆。
@@ -174,5 +175,6 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - layer 选择稳定性：`test/audits/2026-10-26-airport-layer-selection/`
 - held-out 第一轮：`test/audits/2026-10-26-heldout/`
 - 57 条覆盖补齐：`test/audits/2026-10-26-airport-57/`
+- 第二组 held-out：`test/audits/2026-10-26-heldout-2/`
 - per-layer 验证：`test/audits/2026-10-26-airport-mobile/raw/catalog-details-u55-per-layer/`
 - 覆盖率工具：`test/audits/tools/coverage-sample.mjs`
