@@ -14,7 +14,7 @@ function includesTerm(text, term) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-export function search(catalog, input, limit = 5, vocabulary = {}, brief = false) {
+export function search(catalog, input, limit = 5, vocabulary = {}, brief = false, details = false) {
   const query = normalize(input);
   const terms = [...new Set(query.split(/\s+/))];
   const matchedTerms = Object.entries(vocabulary)
@@ -62,7 +62,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     );
   const items = ranked
     .slice(0, limit)
-    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props } }) => ({
+    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage } }) => ({
       id,
       exportName,
       kind,
@@ -72,6 +72,10 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
         ? { requiredProps: props.items.filter(({ required }) => required).map(({ name }) => name) }
         : {}),
       ...(brief ? {} : { summary }),
+      ...(details && constraints?.[0]
+        ? { constraint: constraints[0].length > 180 ? `${constraints[0].slice(0, 177)}...` : constraints[0] }
+        : {}),
+      ...(details && usage ? { usage } : {}),
       tasks,
       status,
       reuse: reuse ?? { scope: "unspecified" },
@@ -82,11 +86,20 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     sourceDigest: catalog.sourceDigest,
     items,
     ...(brief ? { brief: true } : {}),
+    ...(details ? { details: true } : {}),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.
     truncated: false,
     omitted: { items: byLimit, byLimit, byBytes: 0 },
   };
+  if (details && size(response) > 4096) {
+    for (const item of items) delete item.usage;
+  }
+  if (details && size(response) > 4096) {
+    for (const item of items) {
+      if (item.constraint && item.constraint.length > 80) item.constraint = `${item.constraint.slice(0, 77)}...`;
+    }
+  }
   while (size(response) > 4096 && items.length) {
     items.pop();
     response.omitted.items += 1;

@@ -118,6 +118,13 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   assert.equal(brief.brief, true);
   assert.equal(brief.items[0].summary, undefined);
   assert.equal(brief.items[0].importPath, "@demo/ui/Button");
+  const detailed = search(baseCatalog, "button", 5, {}, false, true);
+  assert.equal(detailed.details, true);
+  assert.ok(detailed.items[0].constraint);
+  assert.ok(detailed.items[0].usage);
+  const detailedBrief = search(baseCatalog, "button", 5, {}, true, true);
+  assert.equal(detailedBrief.items[0].summary, undefined);
+  assert.ok(detailedBrief.items[0].constraint);
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({

@@ -1,0 +1,50 @@
+{
+  "condition": "catalog-details",
+  "run": 3,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "航班延误补偿批次工作区 is flight-delay.FlightDelayCompensationBatchScreen (export FlightDelayCompensationBatchScreen), imported from @/features/flight-delay-compensation/batch-detail-screen. Required prop: batchId. It covers standard, special and review steps; the constraint notes batchId is required, the component needs query/auth/router providers, and it handles offline and conflict states. Status experimental, production usage 1.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "No dedicated special-passenger (特殊旅客) booking-list variant exists in the catalog. The closest and only general booking list is bookings.TravelerBookingListScreen (export TravelerBookingListScreen), imported from @/features/traveler-bookings/booking-list-screen, required prop navigate (initialStatus optional; queries and actions are permission-gated). Search terms for '特殊旅客预订列表' returned this generic paginated traveler booking list plus BookingStatusBadge and TravelerBookingDetailScreen; no special-passenger-specific component or task tag appeared, so special-passenger filtering would have to come from props/permissions on this generic screen rather than a catalog variant.",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "密码输入框 is auth.PasswordInput (export PasswordInput), imported from @/features/auth/password-input; it has no required props. Error display: PasswordInput must be used inside UiFormField, and the error is a string supplied to / rendered by that form-field wrapper (the field itself only renders the input plus the show/hide labels). It is a feature-layer component used in production once. Password policy rules are shown separately by common.PasswordPolicyFeedback (@/components/common/PasswordPolicyFeedback), not by PasswordInput.",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value", "placeholder", "onChange"],
+      "answer": "The two components are: (1) search bar = business.SearchBar (export SearchBar) from @/components/business/mobile, required props value, placeholder, onChange; onFilter is optional and adds the filter icon button. (2) filter panel = business.FilterSheet (export FilterSheet), also from @/components/business/mobile, required props visible, title, children, onClose; onConfirm runs before the sheet closes. Both are shared-ui with zero recorded production usage; they are the intended pair for the mobile booking list's search + filter UI.",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "The global auth recovery dialog is common.AuthRecoveryDialog (export AuthRecoveryDialog) from @/components/common/auth-recovery-dialog, no required props. Mounting: mount it once near the app root; it subscribes to the auth recovery store, renders null while no recovery event is pending, and lazily renders its view. The inner view is common.AuthRecoveryDialogView (@/components/common/auth-recovery-dialog-view, required prop detail; detail.state drives title/content/actions, and the sign-in action clears the session and navigates to /sign-in).",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "One search per task with --limit 5 --details; no get calls were needed because each search returned the needed ID, import path, requiredProps and constraint. Task 2: catalog has no special-passenger booking-list variant, reported explicitly. Task 3 error display comes from the UiFormField wrapper per the constraint. Task 4: SearchBar and FilterSheet share the same barrel import path @/components/business/mobile. No project files were read or modified."
+}

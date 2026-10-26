@@ -18,7 +18,7 @@ const usage = {
   generate:
     "component-catalog [--config path] generate [--check]\nGenerate explicitly marked components; --check compares without writing. Unmarked candidates need annotation first.\n",
   search:
-    "component-catalog [--config path] search <query> [--limit 1..10] [--brief]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page; use get for details.\n",
+    "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get.\n",
   get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
@@ -50,6 +50,7 @@ const cliOptions = {
   offset: { type: "string" },
   summary: { type: "boolean" },
   brief: { type: "boolean" },
+  details: { type: "boolean" },
   query: { type: "string" },
   include: { type: "string" },
   prop: { type: "string" },
@@ -112,7 +113,7 @@ try {
       init: [],
       scan: ["limit", "offset", "summary", "query", "brief"],
       generate: ["config", "check"],
-      search: ["config", "limit", "brief"],
+      search: ["config", "limit", "brief", "details"],
       get: ["config", "include", "prop", "from"],
       audit: ["config", "limit", "offset"],
       check: ["config", "limit", "offset"],
@@ -241,7 +242,7 @@ try {
       } else {
         const catalog = loadCatalog(config.catalog, regenerate);
         if (command === "search")
-          result = search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary, values.brief ?? false);
+          result = search(catalog, input.trim(), Number(values.limit ?? 5), config.vocabulary, values.brief ?? false, values.details ?? false);
         else if (inputs.length === 1)
           result = get(catalog, input.trim(), include, values.prop, values.from);
         else result = getMany(catalog, inputs.map((value) => value.trim()), include);
@@ -268,6 +269,7 @@ try {
         prop: values.prop ?? null,
         from: values.from ?? null,
         brief: values.brief ?? null,
+        details: values.details ?? null,
       },
       outputBytes: Buffer.byteLength(output, "utf8"),
       durationMs: Date.now() - startedAt,

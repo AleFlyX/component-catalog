@@ -479,7 +479,7 @@ diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-
  }: {
 diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-list-screen.tsx /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-list-screen.tsx
 --- /home/ccb/airport-workspace/airport-internal-mobile/src/features/traveler-bookings/booking-list-screen.tsx	2026-10-11 22:28:16.000000000 +0800
-+++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-list-screen.tsx	2026-10-26 12:28:39.991224419 +0800
++++ /tmp/oss-trial/airport-mobile/src/features/traveler-bookings/booking-list-screen.tsx	2026-10-26 13:03:25.756138127 +0800
 @@ -26,6 +26,14 @@
  
  const PAGE_SIZE = 20;
@@ -489,7 +489,7 @@ diff -ruN '--exclude=node_modules' /home/ccb/airport-workspace/airport-internal-
 + * @componentCatalog
 + * @catalogStatus experimental
 + * @catalogTask traveler-booking-list
-+ * @catalogConstraint initialStatus and navigate are required; queries and actions are permission-gated.
++ * @catalogConstraint navigate is required and initialStatus is optional; queries and actions are permission-gated.
 + * @catalogExample production src/pages/traveler-bookings/index.tsx | Booking list route
 + */
  export function TravelerBookingListScreen({

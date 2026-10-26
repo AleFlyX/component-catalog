@@ -25,4 +25,10 @@ test("airport trial catalog keeps the business entrypoints discoverable", () => 
   assert.equal(top("筛选面板")[0], "business.FilterSheet");
   assert.equal(top("认证恢复弹窗")[0], "common.AuthRecoveryDialog");
   assert.ok(top("预订列表").includes("bookings.TravelerBookingListScreen"));
+
+  const detailed = search(catalog, "特殊旅客预订列表", 1, config.vocabulary, false, true);
+  assert.equal(detailed.details, true);
+  assert.deepEqual(detailed.items[0].requiredProps, ["navigate"]);
+  assert.match(detailed.items[0].constraint, /initialStatus is optional/);
+  assert.ok(detailed.items[0].usage.production >= 1);
 });

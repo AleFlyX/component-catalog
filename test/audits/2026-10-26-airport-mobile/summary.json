@@ -22,6 +22,29 @@
     "toolCalls": 13,
     "wallMs": 66813
   },
+  "catalog-details": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 5,
+    "cliOutputBytes": 10663,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 100194,
+      "median": 87723,
+      "values": [
+        78024,
+        134834,
+        87723
+      ]
+    },
+    "uncachedInputTokens": 4715,
+    "outputTokens": 4470,
+    "cacheReadTokens": 91008,
+    "steps": 7,
+    "toolCalls": 8,
+    "wallMs": 27956
+  },
   "source": {
     "runs": 3,
     "correct": "15/15",

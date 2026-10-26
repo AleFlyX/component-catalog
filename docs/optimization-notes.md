@@ -25,6 +25,7 @@
 | trial 词表（英文任务词、input、分页） | task 2 从 3 次调用降到 2 次；task 3 固定 1 次 |
 | search `--brief` + `truncated` 语义拆分 | 省略 summary 的紧凑视图；`truncated` 只表示字节裁剪，更多匹配用 `omitted.byLimit` |
 | 查询回归集（`test/query-regression.test.mjs`） | 25 个查询 + 5 个必须排第一的入口，使用真实 trial catalog 防止 task 2/3 排序回退 |
+| search `--details` + 非 CLI 预算 | 第一条 constraint + usage 计数；禁止 config/help/shell 探索。airport：6→5 次调用，205K→100K tokens |
 
 ## 3. 测量结果
 
@@ -86,10 +87,15 @@
 
 - 项目：`/home/ccb/airport-workspace/airport-internal-mobile`，约 1431 源文件 / 136 TSX；只登记 30 个业务相关组件（约 2% 候选）。
 - Catalog：30 条，315 KB / gzip 22 KB；标注 patch 30,947 B / 新增 284 行；doctor/audit/check 全 pass。
-- 5 个任务 × 3 次：catalog 6 次调用 / 11 steps / 205K tokens；source 读 14 文件 / 94 KB / 20 steps / 29 tool calls / 463K tokens。
-- 正确率均 15/15；catalog 比 source **总 token −55.7% 均值 / −49.4% 中位数**，范围不重叠（162–252K vs 355–637K）；output token 几乎相同，差异来自 cache read 和 uncached input。
-- 结论：**收益随仓库规模和检索空间显著增长**；在小而熟悉的 bulletproof-react 上打平，在这个陌生中大型仓库上明确为正。只覆盖 2% 源文件的精选范围已足够回答跨模块任务；setup 按本轮节省额可在一批任务左右回本（依赖安装成本未计入）。
-- 限制：未覆盖全部 519 个候选；任务 2 的“特殊旅客列表”没有专用变体，catalog/source 都收敛到同一组件；catalog 对错误展示/挂载位置的细节置信度为 medium。
+- 5 个任务 × 3 次：
+  - catalog：6 次调用 / 11 steps / 204,896 tokens（中位数 200,600）
+  - catalog-details：**5 次调用 / 7 steps / 100,194 tokens（中位数 87,723）**
+  - source：14 文件 / 94 KB / 20 steps / 29 tool calls / 462,815 tokens（中位数 396,472）
+- 正确率均 15/15；details 相对 source **总 token −78.3% 均值 / −77.9% 中位数**，相对普通 catalog 再降 **51.1% / 56.3%**；范围 78–135K 与 source 355–637K 不重叠。
+- 收益来源：search 直接返回第一条 constraint + usage，agent 不再补 get；严格的“不读 config/不跑 help/不做 shell 探索”预算把 steps/tool calls 从 11/13 降到 7/8。
+- 结论：**收益随仓库规模和检索空间显著增长**；只覆盖 2% 源文件的精选范围已足够回答跨模块任务；setup 按本轮节省额可在一批任务左右回本（依赖安装成本未计入）。
+- 质量教训：第一次 details 测试中 `TravelerBookingListScreen` 的 constraint 误写“initialStatus 必填”，实际可选；修正后重跑。AI 生成的 constraint 必须做类型/源码复核。
+- 限制：未覆盖全部 519 个候选；任务 2 的“特殊旅客列表”没有专用变体，catalog/source 都收敛到同一组件；精确 DOM 结构仍需 source。
 
 ## 9. 相关产物
 
