@@ -1,0 +1,61 @@
+{
+  "condition": "u55-layer-auto",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": [
+        "batchId"
+      ],
+      "layerUsed": "feature",
+      "answer": "Top hit and exact match. Export FlightDelayCompensationBatchScreen; summary: \"Batch compensation workspace for standard, special and review steps.\" Constraint: batchId is required and the screen needs query/auth/router providers and handles offline/conflict states.",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": [
+        "navigate"
+      ],
+      "layerUsed": "feature",
+      "answer": "Only one catalog entry matched: the generic traveler booking list (paginated, with search and filters). No dedicated \"special traveler\" (特殊旅客) booking-list variant was returned; get confirmed the entry has no variants and props are initialStatus (optional) and navigate (required). If a special-traveler-specific screen exists, it is not exposed under this ID in the catalog.",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "layerUsed": "feature",
+      "answer": "Password field with show/hide labels and a form-field error. It has no required props. Error display: the component must be used inside UiFormField, and error is a string prop that the field wrapper (UiFormField) renders below the input; PasswordInput itself does not render the error message.",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": [
+        "navigate"
+      ],
+      "layerUsed": "feature",
+      "answer": "The single --layer auto search surfaced only the composite travelers booking list screen (summary: \"Paginated traveler booking list with search and filters\", required prop navigate). It did not return standalone search-bar or filter-panel entries, so two component IDs could not be produced within the one-search budget. The search/filter UI appears to be internal to that screen, or its standalone components live in another layer that layer auto (inferred feature) excluded.",
+      "confidence": "low"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "layerUsed": "shared-ui",
+      "answer": "Global dialog that subscribes to the auth recovery store and lazily renders its view. Mount it once near the app root; it renders null while no recovery event is pending. No required props. (Its view component is common.AuthRecoveryDialogView, which requires detail.)",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "All 5 searches ran from /tmp/oss-trial/airport-mobile with --layer auto and --limit 5 --details (no manual --layer), logging to /tmp/audit-airport-layer-auto/usage/catalog-2.jsonl. Layer inference per search: task1 feature/layerSource=auto; task2 feature/auto; task3 feature/auto; task4 feature/auto; task5 shared-ui/auto. In every case the returned layer equaled the top-ranked hit layer, and the result set contained only that layer, so auto behaves as a layer filter keyed off the first hit. Task 5 flipped to shared-ui cleanly. Task 4 was the only miss: with the layer pinned to feature it returned just the composite TravelerBookingListScreen (1 item, 0 omitted), so the standalone search-bar and filter-panel components were not observable; a manual/shared-ui layer pass would likely be needed to identify them. One get was used on bookings.TravelerBookingListScreen (task 2) to confirm required props and the absence of a special-traveler variant. No project files were read or modified; nothing under /tmp/oss-trial/airport-mobile changed."
+}

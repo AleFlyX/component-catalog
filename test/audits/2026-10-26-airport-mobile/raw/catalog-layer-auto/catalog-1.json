@@ -1,0 +1,55 @@
+{
+  "condition": "u55-layer-auto",
+  "run": 1,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "layerUsed": "feature",
+      "answer": "“航班延误补偿批次工作区”是 flight-delay.FlightDelayCompensationBatchScreen（导出名 FlightDelayCompensationBatchScreen），从 @/features/flight-delay-compensation/batch-detail-screen 导入。必填 props 只有 batchId；该屏幕覆盖标准、特殊、复核三个补偿步骤，依赖 query/auth/router provider，并处理离线与冲突状态。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "layerUsed": "feature",
+      "answer": "未发现“特殊旅客预订列表”的专用变体。最接近的是通用旅客预订列表 bookings.TravelerBookingListScreen（TravelerBookingListScreen），导入自 @/features/traveler-bookings/booking-list-screen，必填 props 为 navigate（可选 initialStatus）。其 summary 只说明为分页旅客预订列表，带搜索与筛选，并未声明特殊旅客/特殊服务变体。",
+      "confidence": "medium"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "layerUsed": "feature",
+      "answer": "密码输入框是 auth.PasswordInput（PasswordInput），导入自 @/features/auth/password-input，无必填 props。它必须放在 UiFormField 内使用；错误不是由输入框自行渲染，而是以字符串形式交给外层 form-field 包装组件显示（并带显示/隐藏密码标签）。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "layerUsed": "feature",
+      "answer": "本次搜索未找到独立的“搜索栏”和“筛选面板”组件，因此无法给出两个 ID。唯一相关的命中是 bookings.TravelerBookingListScreen（@/features/traveler-bookings/booking-list-screen，必填 navigate），其详情只暴露 initialStatus 与 navigate 两个 props，未列出可单独导入的搜索栏/筛选面板子组件。--layer auto 将本次搜索的层推断为 feature，可能因此排除了位于 shared-ui 的通用搜索/筛选组件；需在允许手动指定 layer 的情况下用 shared-ui 复查。",
+      "confidence": "low"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "layerUsed": "shared-ui",
+      "answer": "全局“认证恢复弹窗”是 common.AuthRecoveryDialog（AuthRecoveryDialog），导入自 @/components/common/auth-recovery-dialog，无必填 props。它订阅 auth recovery store 并懒加载视图，应在应用根部挂载一次；没有待处理恢复事件时渲染 null。其内部视图组件为 common.AuthRecoveryDialogView（@/components/common/auth-recovery-dialog-view，必填 detail），通常不需要直接使用。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "五次 search 均使用 --layer auto，另对 task 4 执行了一次 get（bookings.TravelerBookingListScreen，get 不接受 --details/--layer）。各次 search 返回的层：task1 feature/layerSource=auto；task2 feature/auto；task3 feature/auto；task4 feature/auto；task5 shared-ui/auto。未读取源码或 component-catalog.json，未修改项目文件。task4 的 auto 层由 top hit（TravelerBookingListScreen）推断为 feature，搜索结果未包含搜索栏/筛选面板；这是本次唯一的低置信度项。"
+}

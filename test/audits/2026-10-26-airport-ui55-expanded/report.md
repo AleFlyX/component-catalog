@@ -48,6 +48,7 @@
 - `../2026-10-26-airport-mobile/usage/details-u55-*.jsonl`
 - `../2026-10-26-airport-mobile/analysis/details-u55-*`
 - `../2026-10-26-airport-coverage/coverage-55.json`
+- layer 选择稳定性：[../2026-10-26-airport-layer-selection/report.md](../2026-10-26-airport-layer-selection/report.md)
 - `../2026-10-26-airport-mobile/raw/catalog-details-u55-layer/`
 - `../2026-10-26-airport-mobile/raw/catalog-details-u55-limit3/`
 - `../2026-10-26-airport-mobile/usage/details-u55-layer-*.jsonl`

@@ -58,6 +58,13 @@ test("expanded UI catalog exposes the core primitives without regressing busines
   assert.ok(featurePassword.items.every((item) => item.layer === "feature"));
   const sharedButton = search(u55Catalog, "UiButton", 5, u55Config.vocabulary, false, false, "feature");
   assert.equal(sharedButton.items.length, 0);
+  const autoPassword = search(u55Catalog, "密码输入框", 5, u55Config.vocabulary, false, false, "auto");
+  assert.equal(autoPassword.layerSource, "auto");
+  assert.equal(autoPassword.layer, "feature");
+  assert.equal(autoPassword.items[0].id, "auth.PasswordInput");
+  const autoSearchBar = search(u55Catalog, "搜索栏", 5, u55Config.vocabulary, false, false, "auto");
+  assert.equal(autoSearchBar.layer, "shared-ui");
+  assert.equal(autoSearchBar.items[0].id, "business.SearchBar");
 });
 
 test("55-entry catalog covers the remaining UI queries without losing business entrypoints", () => {
@@ -77,4 +84,11 @@ test("55-entry catalog covers the remaining UI queries without losing business e
   assert.ok(featurePassword.items.every((item) => item.layer === "feature"));
   const sharedButton = search(u55Catalog, "UiButton", 5, u55Config.vocabulary, false, false, "feature");
   assert.equal(sharedButton.items.length, 0);
+  const autoPassword = search(u55Catalog, "密码输入框", 5, u55Config.vocabulary, false, false, "auto");
+  assert.equal(autoPassword.layerSource, "auto");
+  assert.equal(autoPassword.layer, "feature");
+  assert.equal(autoPassword.items[0].id, "auth.PasswordInput");
+  const autoSearchBar = search(u55Catalog, "搜索栏", 5, u55Config.vocabulary, false, false, "auto");
+  assert.equal(autoSearchBar.layer, "shared-ui");
+  assert.equal(autoSearchBar.items[0].id, "business.SearchBar");
 });

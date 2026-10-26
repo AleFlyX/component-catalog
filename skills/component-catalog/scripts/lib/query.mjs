@@ -60,7 +60,9 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
         Number(b.item.status === "stable") - Number(a.item.status === "stable") ||
         compare(a.item.id, b.item.id),
     );
-  let scoped = layer == null ? ranked : ranked.filter(({ item }) => item.layer === layer);
+  const autoLayer = layer === "auto" ? ranked[0]?.item.layer : null;
+  const requestedLayer = layer === "auto" ? autoLayer : layer;
+  let scoped = requestedLayer == null ? ranked : ranked.filter(({ item }) => item.layer === requestedLayer);
   let usedLayerFallback = false;
   if (layer != null && scoped.length === 0 && layerFallback) {
     scoped = ranked;
@@ -93,7 +95,8 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     items,
     ...(brief ? { brief: true } : {}),
     ...(details ? { details: true } : {}),
-    ...(layer == null ? {} : { layer }),
+    ...(layer == null ? {} : { layer: requestedLayer ?? layer }),
+    ...(autoLayer == null ? {} : { layerSource: "auto" }),
     ...(usedLayerFallback ? { layerFallback: true } : {}),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.

@@ -136,6 +136,10 @@ test("ranking precedence, deterministic ties, empty results and limit", () => {
   const fallback = search(baseCatalog, "button", 5, {}, false, false, "missing", true);
   assert.ok(fallback.items.length > 0);
   assert.equal(fallback.layerFallback, true);
+  const auto = search(baseCatalog, "button", 5, {}, false, false, "auto");
+  assert.equal(auto.layer, "shared");
+  assert.equal(auto.layerSource, "auto");
+  assert.ok(auto.items.every((item) => item.layer === "shared"));
   const ties = {
     ...baseCatalog,
     components: ["Z", "B", "A"].map((name) => ({
