@@ -1,0 +1,42 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": "src",
+  "tsconfig": "tsconfig.json",
+  "catalog": "component-catalog.json",
+  "importPathStyle": "direct",
+  "componentRoots": [
+    { "path": "src/components/common", "idPrefix": "common", "importPrefix": "@/components/common", "layer": "shared-ui", "enrollment": "public", "reuse": { "scope": "project" } },
+    { "path": "src/components/business", "idPrefix": "business", "importPrefix": "@/components/business", "layer": "shared-ui", "enrollment": "public", "reuse": { "scope": "project" } },
+    { "path": "src/features/auth", "idPrefix": "auth", "importPrefix": "@/features/auth", "layer": "feature", "enrollment": "review", "reuse": { "scope": "module", "owner": "auth" } },
+    { "path": "src/features/flight-delay-compensation", "idPrefix": "flight-delay", "importPrefix": "@/features/flight-delay-compensation", "layer": "feature", "enrollment": "review", "reuse": { "scope": "module", "owner": "flight-delay" } },
+    { "path": "src/features/traveler-bookings", "idPrefix": "bookings", "importPrefix": "@/features/traveler-bookings", "layer": "feature", "enrollment": "review", "reuse": { "scope": "module", "owner": "bookings" } }
+  ],
+  "exclude": [],
+  "previewRoots": ["src/previews"],
+  "testRoots": [],
+  "vocabulary": {
+    "密码": { "primary": "password-policy", "related": ["auth"] },
+    "密码输入框": { "primary": "password-input", "related": ["auth"] },
+    "登录": { "primary": "auth", "related": [] },
+    "忘记密码": { "primary": "auth", "related": ["password-policy"] },
+    "错误页": { "primary": "error-page", "related": [] },
+    "404": { "primary": "error-page", "related": [] },
+    "列表": { "primary": "infinite-list", "related": ["traveler-booking-list", "flight-delay-list"] },
+    "任务卡片": { "primary": "task-card", "related": [] },
+    "搜索栏": { "primary": "search-bar", "related": [] },
+    "筛选": { "primary": "filter-sheet", "related": [] },
+    "筛选面板": { "primary": "filter-sheet", "related": [] },
+    "时间线": { "primary": "timeline", "related": [] },
+    "信息网格": { "primary": "info-grid", "related": [] },
+    "页面外壳": { "primary": "page-shell", "related": [] },
+    "认证恢复": { "primary": "auth-recovery", "related": [] },
+    "恢复登录": { "primary": "auth-recovery", "related": [] },
+    "航班延误": { "primary": "flight-delay-compensation", "related": ["flight-delay-event"] },
+    "赔付": { "primary": "flight-delay-compensation", "related": ["compensation-step"] },
+    "补偿": { "primary": "compensation-step", "related": ["flight-delay-compensation"] },
+    "订单": { "primary": "traveler-booking-list", "related": ["traveler-booking"] },
+    "预订": { "primary": "traveler-booking-list", "related": ["traveler-booking"] },
+    "预订列表": { "primary": "traveler-booking-list", "related": [] }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "condition": "source",
+  "run": 2,
+  "tasks": [
+    {
+      "task": 1,
+      "exportName": "FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "批次工作区页面是 FlightDelayCompensationBatchScreen（batch-detail-screen.tsx 唯一导出），签名 { batchId: string }。路由页 src/pages/flight-delay-compensation/batches/$batchId.tsx 取 useParams().batchId 后渲染它；工作区数据由同目录 batch-workspace/use-batch-workspace.ts 的 useFlightDelayCompensationBatchWorkspace(batchId) 提供。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "exportName": "TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "特殊旅客预订列表是 TravelerBookingListScreen，签名 { initialStatus?: number; navigate: (options: NavigateOptions) => void | Promise<void> }；仅 navigate 必填，initialStatus 可选（来自 Route.useSearch().status）。路由页 src/pages/traveler-bookings/index.tsx 直接渲染它。",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "exportName": "PasswordInput (default export)",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "默认导出 PasswordInput（src/features/auth/password-input.tsx），无必填 props：error?: string 可选，hideLabel/showLabel 由组件内部用 i18n 注入。错误经 UiFormField 的 error 显示：渲染为 antd-mobile Form.Item 的 description，即 <span className=\"ui-form-field__error\" role=\"alert\">{error}</span>（form.tsx:299-301）；同时给 UiPasswordInput 传 error={error !== undefined}，使 input 带 aria-invalid 和 ui-input--error 样式类。错误文案由调用方传入（如 sign-in 的 errors.password?.message）。",
+      "confidence": "high"
+    },
+    {
+      "task": 4,
+      "exportName": "SearchBar / FilterSheet",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["SearchBar: value, placeholder, onChange", "FilterSheet: visible, title, children, onClose"],
+      "answer": "移动端预订列表（booking-list-screen.tsx）用 SearchBar（value、placeholder、onChange 必填；onFilter 可选回调显示筛选按钮）与 FilterSheet（visible、title、children、onClose 必填；onReset、onConfirm 可选）。二者同从 '@/components/business/mobile' 导出，底层分别是 UiSearchBar 和 UiPopup(bottom)。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "exportName": "AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "全局认证恢复弹窗是 AuthRecoveryDialog（无 props）。挂载方式：src/App.tsx 在 QueryClientProvider 内、RouterProvider 之前无条件渲染 <AuthRecoveryDialog />，因此全局常驻；它用 useSyncExternalStore 订阅 src/lib/auth-recovery.ts 的模块级 store（getAuthRecoverySnapshot/subscribeAuthRecovery），snapshot 为 null 时返回 null，否则 lazy 加载 AuthRecoveryDialogView（UiDialog）展示三类状态：authorization-update-required（刷新页面）、session-expired（重新登录）、transient-recovery-error（重试/登录）。",
+      "confidence": "high"
+    }
+  ],
+  "commands": 0,
+  "filesRead": [
+    {"path": "airport-internal-mobile/src/features/flight-delay-compensation/batch-detail-screen.tsx", "bytes": 23871, "mode": "partial"},
+    {"path": "airport-internal-mobile/src/pages/flight-delay-compensation/batches/$batchId.tsx", "bytes": 471, "mode": "full"},
+    {"path": "airport-internal-mobile/src/pages/flight-delay-compensation/index.tsx", "bytes": 1042, "mode": "full"},
+    {"path": "airport-internal-mobile/src/features/traveler-bookings/booking-list-screen.tsx", "bytes": 13756, "mode": "partial"},
+    {"path": "airport-internal-mobile/src/pages/traveler-bookings/index.tsx", "bytes": 648, "mode": "full"},
+    {"path": "airport-internal-mobile/src/pages/traveler-bookings/$bookId.tsx", "bytes": 433, "mode": "full"},
+    {"path": "airport-internal-mobile/src/features/auth/password-input.tsx", "bytes": 714, "mode": "full"},
+    {"path": "airport-internal-mobile/src/components/ui/form.tsx", "bytes": 8352, "mode": "partial"},
+    {"path": "airport-internal-mobile/src/components/business/mobile.tsx", "bytes": 4481, "mode": "full"},
+    {"path": "airport-internal-mobile/src/components/common/auth-recovery-dialog.tsx", "bytes": 748, "mode": "full"},
+    {"path": "airport-internal-mobile/src/components/common/auth-recovery-dialog-view.tsx", "bytes": 2976, "mode": "full"},
+    {"path": "airport-internal-mobile/src/lib/auth-recovery.ts", "bytes": 1367, "mode": "full"},
+    {"path": "airport-internal-mobile/src/App.tsx", "bytes": 4337, "mode": "partial"},
+    {"path": "airport-internal-mobile/AGENTS.md", "bytes": 1008, "mode": "partial"}
+  ],
+  "totalBytesRead": 64204,
+  "notes": "只读源码，未运行任何组件目录 CLI，未读取 component-catalog.json / component-catalog.config.json。搜索策略：先列 airport-internal-mobile/src 目录树，定位 features 与 pages；按中文字面（特殊旅客）在 locales 确认领域词，再顺 TanStack 路由页（pages/**）追到屏幕组件；用 grep 找 FlightDelayCompensationBatchWorkspace 命中 batch-workspace/use-batch-workspace，据此确认页面组件为 batch-detail-screen.tsx 的 FlightDelayCompensationBatchScreen；密码框通过 grep PasswordInput 命中 features/auth/password-input.tsx 并回读 ui/form.tsx 的错误渲染；全局弹窗通过 grep AuthRecoveryDialog 命中 App.tsx 挂载点。"
+}

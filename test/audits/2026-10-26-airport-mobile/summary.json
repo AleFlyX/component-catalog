@@ -1,0 +1,48 @@
+{
+  "catalog": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 6,
+    "cliOutputBytes": 9700,
+    "sourceFiles": 0,
+    "sourceBytes": 0,
+    "totalTokens": {
+      "mean": 204896,
+      "median": 200600,
+      "values": [
+        161961,
+        200600,
+        252127
+      ]
+    },
+    "uncachedInputTokens": 8224,
+    "outputTokens": 10944,
+    "cacheReadTokens": 185728,
+    "steps": 11,
+    "toolCalls": 13,
+    "wallMs": 66813
+  },
+  "source": {
+    "runs": 3,
+    "correct": "15/15",
+    "cliCalls": 0,
+    "cliOutputBytes": 0,
+    "sourceFiles": 14,
+    "sourceBytes": 94227,
+    "totalTokens": {
+      "mean": 462815,
+      "median": 396472,
+      "values": [
+        636755,
+        355219,
+        396472
+      ]
+    },
+    "uncachedInputTokens": 20513,
+    "outputTokens": 10943,
+    "cacheReadTokens": 431360,
+    "steps": 20,
+    "toolCalls": 29,
+    "wallMs": 67515
+  }
+}

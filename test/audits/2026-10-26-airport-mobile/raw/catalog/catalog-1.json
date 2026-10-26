@@ -1,0 +1,50 @@
+{
+  "condition": "catalog",
+  "run": 1,
+  "tasks": [
+    {
+      "task": 1,
+      "componentId": "flight-delay.FlightDelayCompensationBatchScreen",
+      "importPath": "@/features/flight-delay-compensation/batch-detail-screen",
+      "requiredProps": ["batchId"],
+      "answer": "延误补偿批次工作区页面组件为 FlightDelayCompensationBatchScreen，导入自 @/features/flight-delay-compensation/batch-detail-screen，必填 batchId（用于载入指定补偿批次）。",
+      "confidence": "high"
+    },
+    {
+      "task": 2,
+      "componentId": "bookings.TravelerBookingListScreen",
+      "importPath": "@/features/traveler-bookings/booking-list-screen",
+      "requiredProps": ["navigate"],
+      "answer": "预订列表页面组件为 TravelerBookingListScreen，导入自 @/features/traveler-bookings/booking-list-screen，必填 navigate（用于列表跳转）；列表分页并带搜索与筛选。",
+      "confidence": "high"
+    },
+    {
+      "task": 3,
+      "componentId": "auth.PasswordInput",
+      "importPath": "@/features/auth/password-input",
+      "requiredProps": [],
+      "answer": "密码输入框为 PasswordInput，导入自 @/features/auth/password-input，无必填 props。错误以表单字段错误（form-field error）的形式在密码字段下方内联展示，而非弹窗或 toast。",
+      "confidence": "medium"
+    },
+    {
+      "task": 4,
+      "componentId": "business.SearchBar + business.FilterSheet",
+      "importPath": "@/components/business/mobile",
+      "requiredProps": ["value", "placeholder", "onChange", "visible", "title", "children", "onClose"],
+      "answer": "搜索栏为 business.SearchBar（@/components/business/mobile，必填 value、placeholder、onChange，可带筛选动作）；筛选面板为 business.FilterSheet（同一导入路径，必填 visible、title、children、onClose，底部筛选面板，含重置/确认）。",
+      "confidence": "high"
+    },
+    {
+      "task": 5,
+      "componentId": "common.AuthRecoveryDialog",
+      "importPath": "@/components/common/auth-recovery-dialog",
+      "requiredProps": [],
+      "answer": "认证恢复弹窗为 common.AuthRecoveryDialog，导入自 @/components/common/auth-recovery-dialog，无必填 props。以全局单例方式在应用根/全局层挂载一次（非按页面挂载），组件订阅 auth recovery store，在需要时惰性渲染 AuthRecoveryDialogView。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 6,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "5 次 search（每任务 1 次）+ 1 次多 ID get（TravelerBookingListScreen、PasswordInput、AuthRecoveryDialog，仅取 usage 计数），共 6 次 catalog 调用；搜索结果含 importPath/requiredProps/summary，足以直接作答。未读取任何源码或 component-catalog.json；错误展示方式与全局挂载方式由 summary 推断，故置信度标为 medium。"
+}
