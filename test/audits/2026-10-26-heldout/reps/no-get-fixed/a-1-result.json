@@ -1,0 +1,64 @@
+{
+  "strategy": "per-layer3-no-get-fixed",
+  "group": "A",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "创建航班延误事件的页面组件是 FlightDelayEventCreateScreen（exportName=FlightDelayEventCreateScreen），从 @/features/flight-delay-compensation/event-create-screen 导入。catalog 中 requiredProps 为空（无必填 props）；约束是需要 router/query/i18n 上下文，表单提交前会保存本地草稿。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "空状态组件是 UiEmptyState（exportName=UiEmptyState），从 @/components/ui/feedback 导入。title/description/action 均为可选，无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        "flight-delay.FlightDelayEventCreateScreen",
+        "business.BusinessCard"
+      ],
+      "answer": "页面：FlightDelayEventCreateScreen，@/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：BusinessCard，@/components/business/mobile（必填 props: children；传 onClick 可整卡交互）。catalog 没有航班延误事件专用的卡片组件，BusinessCard 是可复用的移动端业务卡片容器。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "标签页组件是 UiTabs（exportName=UiTabs），从 @/components/ui/layout 导入。catalog 的 requiredProps 为空（约束中 items 必填，activeKey/onChange 可选，每个 item 需 key/title）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "bookings.BookingStatusBadge",
+      "importPath": "@/features/traveler-bookings/BookingStatusBadge",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "catalog 中有状态标签组件：BookingStatusBadge（exportName=BookingStatusBadge），从 @/features/traveler-bookings/BookingStatusBadge 导入。它是面向 traveler booking 状态码的状态标签（status tag），无必填 props（value 可选，null 显示 --，未知码显示原字符串）。注意：这是预订域专用组件，catalog 未提供与业务域无关的通用 StatusBadge。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "目录检索仅用 CLI：每个 task 恰好一次 search（A1 'flight delay event page'，A2 'empty state'，A3 'flight delay event card'，A4 'tabs'，A5 'status badge'），全部 --limit 5 --details --per-layer 3；未调用 get，未读取 source/component-catalog.json/config/help/ls/cat/grep。A3 无专用 FlightDelayEvent 卡片命中，故卡片取 shared-ui 的通用 BusinessCard；若基准期望专用卡片，则该项可能不符。A5 的 BookingStatusBadge 为预订域状态标签，catalog 无通用状态标签组件。"
+}

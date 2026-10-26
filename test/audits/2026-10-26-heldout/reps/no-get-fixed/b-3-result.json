@@ -1,0 +1,100 @@
+{
+  "strategy": "per-layer3-no-get-fixed",
+  "group": "B",
+  "run": 3,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": ["bookId"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "bookings.TravelerBookingDetailScreen",
+          "exportName": "TravelerBookingDetailScreen",
+          "importPath": "@/features/traveler-bookings/booking-detail-screen",
+          "requiredProps": ["bookId"],
+          "note": "Catalog entry closest to a special-passenger booking detail: traveler booking detail with status transitions, evaluations and media; needs query and router providers, actions are permission-gated."
+        }
+      ],
+      "answer": "导出名 TravelerBookingDetailScreen，导入路径 @/features/traveler-bookings/booking-detail-screen，必填 props 仅 bookId（另需 query 与 router provider；状态流转/评价/媒体相关操作受权限控制）。注意：catalog 中无专门命名为“特殊旅客”的条目，此为该主题下唯一匹配的预订详情屏。",
+      "confidence": "medium"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": ["onClose"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiPopup",
+          "exportName": "UiPopup",
+          "importPath": "@/components/ui/overlay",
+          "requiredProps": ["onClose"],
+          "note": "Bottom/side popup with mask, safe-area and scroll handling; open defaults false, position defaults to bottom, safeArea defaults false."
+        }
+      ],
+      "answer": "导出名 UiPopup，导入路径 @/components/ui/overlay（必填 prop：onClose；position 默认 bottom，open 默认 false，safeArea 默认 false）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage + ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page ; @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": [],
+          "note": "登录页：Staff sign-in page with password and SMS tabs, captcha and redirect handling; redirect optional; needs router, auth store and i18n context."
+        },
+        {
+          "componentId": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": [],
+          "note": "顶部导航栏：top navigation bar with back/left/right actions; no required props; back uses router history unless onBack/onClickLeft supplied; fixed enables fixed layout."
+        }
+      ],
+      "answer": "两个组件均命中：登录页 SignInPage 从 @/features/auth/sign-in-page 导入；顶部导航栏 UiNavBar 从 @/components/ui/navigation 导入。两者都无必填 props（SignInPage 的 redirect 可选；UiNavBar 的 back 默认走 router history）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": ["context", "onContextChange"],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayCompensationListScreen",
+          "exportName": "FlightDelayCompensationListScreen",
+          "importPath": "@/features/flight-delay-compensation/list-screen",
+          "requiredProps": ["context", "onContextChange"],
+          "note": "List screen for delay events and settlement batches with filters and tabs; queries enabled only when the user holds the query permission."
+        }
+      ],
+      "answer": "导出名 FlightDelayCompensationListScreen，导入路径 @/features/flight-delay-compensation/list-screen，必填 props：context、onContextChange（查询仅在拥有 query 权限时启用）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "components": [],
+      "answer": "Catalog 没有图片查看器（image viewer）组件：以“图片查看器 image viewer”检索（--limit 5 --details --per-layer 3）返回 items 为空数组，未命中任何 layer 的条目。",
+      "confidence": "high"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Strict per-task protocol: exactly one `search` invocation per task (5 total), each with --limit 5 --details --per-layer 3; no `get`, no source/config/help/ls/cat/grep, no file reads. B1: catalog has no dedicated \"特殊旅客\" (special passenger) entry; the single search returned bookings.TravelerBookingDetailScreen (traveler booking detail) as the closest/only match, so reported with medium confidence. B3: one query covered both targets; auth.SignInPage and ui.UiNavBar both appeared in the same result set. B5: single search returned zero items, reported as missing rather than retrying. All 5 tasks used the same sourceDigest sha256:e40cf5f6... and logged to /tmp/audit-heldout-noget-fixed/3/usage.jsonl."
+}

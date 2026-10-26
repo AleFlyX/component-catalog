@@ -119,3 +119,24 @@ ranking 修正后，用 per-layer3 重跑完整 A/B 各 3 次，并在 mixed 任
 
 - “不要用 get 确认已有字段”能降低 A 组，但不能阻止 B3 首次搜索未覆盖 NavBar 时再搜一次；agent 的 query/搜索次数仍是主要方差源。
 - 结论：ranking 修复有效；per-layer3 仍是默认，但需要把“mixed 任务必须返回 components 数组”和“搜索次数预算”一起作为策略约束，不能只靠工具。
+
+## Final：per-layer3 + 严格一次搜索 + 不 get
+
+在 ranking 修正（嵌套概念、compact CJK、concept-primary 优先）后，按“每任务一次 search、无 get、mixed 必须返回 components 数组”重跑 A/B 各 3 次：
+
+| 指标 | 结果 |
+| --- | --- |
+| 得分 | **29.5/30** |
+| 每 5 任务 token 均值 | **137,327** |
+| CLI 调用 | **5** |
+| steps | 9 |
+| tool calls | 9 |
+
+- 相对 40 条：token −37.3%，得分 +2.0。
+- 相对 per-layer3 修复前：token −8.0%，得分 +0.5。
+- 相对 per-layer3 修复后（允许 get）：token −24.1%，得分持平。
+- B1–B5 全部 15/15；B2/B3/B4 稳定，B4 不再返回 BatchScreen。
+- 唯一缺口 A5：一次把领域专用 `BookingStatusBadge` 当通用状态标签（0.5），另两次 missing。
+- 失败/协议：A 组少数 agent 做过 `ls`（仅目录名）；已记录，不影响答案。
+
+**最终建议：`55 + --per-layer 3`，每任务一次 search，只有字段缺失才 get；mixed 任务要求 components 数组覆盖所有角色。**

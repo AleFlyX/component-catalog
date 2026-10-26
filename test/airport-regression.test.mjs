@@ -74,6 +74,10 @@ test("expanded UI catalog exposes the core primitives without regressing busines
   assert.ok(perLayerIds.includes("business.FilterSheet"));
   const spacedList = search(u55Catalog, "航班延误 补偿 列表", 5, u55Config.vocabulary, false, false, null, false, 3);
   assert.equal(spacedList.items[0].id, "flight-delay.FlightDelayCompensationListScreen");
+  const mixedNav = search(u55Catalog, "登录页 顶部导航栏 login page navbar header", 5, u55Config.vocabulary, false, false, null, false, 3);
+  const mixedIds = mixedNav.items.map((item) => item.id);
+  assert.ok(mixedIds.includes("auth.SignInPage"));
+  assert.ok(mixedIds.includes("ui.UiNavBar"));
 });
 
 test("55-entry catalog covers the remaining UI queries without losing business entrypoints", () => {
@@ -109,4 +113,8 @@ test("55-entry catalog covers the remaining UI queries without losing business e
   assert.ok(perLayerIds.includes("business.FilterSheet"));
   const spacedList = search(u55Catalog, "航班延误 补偿 列表", 5, u55Config.vocabulary, false, false, null, false, 3);
   assert.equal(spacedList.items[0].id, "flight-delay.FlightDelayCompensationListScreen");
+  const mixedNav = search(u55Catalog, "登录页 顶部导航栏 login page navbar header", 5, u55Config.vocabulary, false, false, null, false, 3);
+  const mixedIds = mixedNav.items.map((item) => item.id);
+  assert.ok(mixedIds.includes("auth.SignInPage"));
+  assert.ok(mixedIds.includes("ui.UiNavBar"));
 });

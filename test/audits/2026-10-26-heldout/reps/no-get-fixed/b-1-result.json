@@ -1,0 +1,109 @@
+{
+  "strategy": "per-layer3-no-get-fixed",
+  "group": "B",
+  "run": 1,
+  "tasks": [
+    {
+      "task": "B1",
+      "componentId": "bookings.TravelerBookingDetailScreen",
+      "importPath": "@/features/traveler-bookings/booking-detail-screen",
+      "requiredProps": [
+        "bookId"
+      ],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "bookings.TravelerBookingDetailScreen",
+          "exportName": "TravelerBookingDetailScreen",
+          "importPath": "@/features/traveler-bookings/booking-detail-screen",
+          "requiredProps": [
+            "bookId"
+          ]
+        }
+      ],
+      "answer": "特殊旅客预订详情页对应 TravelerBookingDetailScreen，从 @/features/traveler-bookings/booking-detail-screen 导入，必填 prop 为 bookId。",
+      "confidence": "high"
+    },
+    {
+      "task": "B2",
+      "componentId": "ui.UiPopup",
+      "importPath": "@/components/ui/overlay",
+      "requiredProps": [
+        "onClose"
+      ],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "ui.UiPopup",
+          "exportName": "UiPopup",
+          "importPath": "@/components/ui/overlay",
+          "requiredProps": [
+            "onClose"
+          ]
+        }
+      ],
+      "answer": "底部弹出层对应 UiPopup，从 @/components/ui/overlay 导入（onClose 为必填 prop）。",
+      "confidence": "high"
+    },
+    {
+      "task": "B3",
+      "componentId": "auth.SignInPage + ui.UiNavBar",
+      "importPath": "@/features/auth/sign-in-page + @/components/ui/navigation",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "auth.SignInPage",
+          "exportName": "SignInPage",
+          "importPath": "@/features/auth/sign-in-page",
+          "requiredProps": []
+        },
+        {
+          "componentId": "ui.UiNavBar",
+          "exportName": "UiNavBar",
+          "importPath": "@/components/ui/navigation",
+          "requiredProps": []
+        }
+      ],
+      "answer": "登录页为 SignInPage，从 @/features/auth/sign-in-page 导入；顶部导航栏为 UiNavBar，从 @/components/ui/navigation 导入。两者均出现在唯一一次搜索结果中。",
+      "confidence": "high"
+    },
+    {
+      "task": "B4",
+      "componentId": "flight-delay.FlightDelayCompensationListScreen",
+      "importPath": "@/features/flight-delay-compensation/list-screen",
+      "requiredProps": [
+        "context",
+        "onContextChange"
+      ],
+      "missing": false,
+      "components": [
+        {
+          "componentId": "flight-delay.FlightDelayCompensationListScreen",
+          "exportName": "FlightDelayCompensationListScreen",
+          "importPath": "@/features/flight-delay-compensation/list-screen",
+          "requiredProps": [
+            "context",
+            "onContextChange"
+          ]
+        }
+      ],
+      "answer": "航班延误补偿列表页面为 FlightDelayCompensationListScreen，从 @/features/flight-delay-compensation/list-screen 导入，必填 props 为 context、onContextChange。",
+      "confidence": "high"
+    },
+    {
+      "task": "B5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "components": [],
+      "answer": "catalog 中没有图片查看器组件：以“图片查看器”执行唯一一次搜索，返回 0 条结果。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "每个任务仅执行 1 次 search（共 5 次），均带 --limit 5 --details --per-layer 3；未执行 get，未读取任何源码/component-catalog.json/config/help 文件。B5 唯一一次搜索返回空结果，按缺失处理（未做二次搜索）。"
+}

@@ -59,17 +59,19 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
       else if (terms.some((term) => summary.includes(term))) rank = 3;
       else if (apiNames.includes(query)) rank = 2;
       else if (apiNames.some((name) => terms.some((term) => name.includes(term)))) rank = 1;
+      const conceptPrimaryMatches = concepts.filter(({ primary }) => tasks[0] === primary).length;
       const primaryMatches =
-        concepts.filter(({ primary }) => tasks[0] === primary).length +
+        conceptPrimaryMatches +
         terms.filter((term) => tasks[0].includes(term)).length;
       const relatedMatches = concepts.filter(({ related }) => related.includes(tasks[0])).length;
-      return { item, rank, taskMatches, primaryMatches, relatedMatches };
+      return { item, rank, taskMatches, conceptPrimaryMatches, primaryMatches, relatedMatches };
     })
     .filter(({ rank }) => rank > 0)
     .sort(
       (a, b) =>
         b.rank - a.rank ||
         b.taskMatches - a.taskMatches ||
+        b.conceptPrimaryMatches - a.conceptPrimaryMatches ||
         b.primaryMatches - a.primaryMatches ||
         b.relatedMatches - a.relatedMatches ||
         Number(b.item.status === "stable") - Number(a.item.status === "stable") ||

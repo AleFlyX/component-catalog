@@ -1,0 +1,74 @@
+{
+  "strategy": "per-layer3-no-get-fixed",
+  "group": "A",
+  "run": 2,
+  "tasks": [
+    {
+      "task": "A1",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "创建航班延误事件的页面组件是 FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen；没有必填 props（requiredProps 为空）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A2",
+      "componentId": "ui.UiEmptyState",
+      "importPath": "@/components/ui/feedback",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "空状态组件是 UiEmptyState，导入路径 @/components/ui/feedback；无必填 props。",
+      "confidence": "high"
+    },
+    {
+      "task": "A3",
+      "componentId": "flight-delay.FlightDelayEventCreateScreen",
+      "importPath": "@/features/flight-delay-compensation/event-create-screen",
+      "requiredProps": [],
+      "missing": false,
+      "components": [
+        {
+          "role": "page",
+          "componentId": "flight-delay.FlightDelayEventCreateScreen",
+          "exportName": "FlightDelayEventCreateScreen",
+          "importPath": "@/features/flight-delay-compensation/event-create-screen"
+        },
+        {
+          "role": "card",
+          "componentId": "business.BusinessCard",
+          "exportName": "BusinessCard",
+          "importPath": "@/components/business/mobile"
+        }
+      ],
+      "answer": "页面：FlightDelayEventCreateScreen，导入路径 @/features/flight-delay-compensation/event-create-screen（无必填 props）。卡片：catalog 未返回航班延误专用卡片，唯一通用卡片组件为 BusinessCard，导入路径 @/components/business/mobile（必填 props: children）。",
+      "confidence": "medium"
+    },
+    {
+      "task": "A4",
+      "componentId": "ui.UiTabs",
+      "importPath": "@/components/ui/layout",
+      "requiredProps": [],
+      "missing": false,
+      "components": [],
+      "answer": "标签页组件是 UiTabs，导入路径 @/components/ui/layout（items 必填，activeKey/onChange 可选）。",
+      "confidence": "high"
+    },
+    {
+      "task": "A5",
+      "componentId": "",
+      "importPath": "",
+      "requiredProps": [],
+      "missing": true,
+      "components": [],
+      "answer": "catalog 中没有通用「状态标签」组件，缺失。搜索仅返回领域专用的 BookingStatusBadge（@/features/traveler-bookings/BookingStatusBadge，旅客预订状态标签），它只处理 traveler booking 状态码，不是通用状态标签组件。",
+      "confidence": "medium"
+    }
+  ],
+  "catalogCalls": 5,
+  "filesRead": [],
+  "totalBytesRead": 0,
+  "notes": "Catalog-only run: exactly one search per task (5 searches total, one per task), 0 get calls; no source/component-catalog.json/config/help/ls/cat/grep used. A3: no flight-delay-specific card surfaced in the single search; BusinessCard is the catalog generic reusable card wrapper (card role), CreateScreen is the page. A5: no generic status badge in catalog (missing=true); only domain-specific BookingStatusBadge appeared."
+}
