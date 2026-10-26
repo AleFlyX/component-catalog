@@ -311,6 +311,13 @@ test("reuse boundary is validated in stored snapshots and preserved under output
   }
 });
 
+test("per-layer 3 expands to 5 for a single-layer catalog", () => {
+  const result = search(baseCatalog, "button", 5, {}, false, false, null, false, 3);
+  assert.equal(result.perLayer, 5);
+  assert.deepEqual(result.layers, ["shared"]);
+  assert.ok(result.items.length >= 1);
+});
+
 test("config validation rejects mistakes and ambiguous roots", (t) => {
   const f = fixture(t);
   const mutations = [

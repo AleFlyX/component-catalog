@@ -31,5 +31,6 @@
   ],
   "scoreAfterFix": "15/15",
   "meanTokensABC": 156178,
-  "limitations": "external types shallow; 30 scoped entries, not full 708-TSX catalog; 50 entries blocked by primitives ownership"
+  "limitations": "external types shallow; 30 scoped entries, not full 708-TSX catalog; 50 entries blocked by primitives ownership",
+  "autoPerLayerSingleLayer": true
 }

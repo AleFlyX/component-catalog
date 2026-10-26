@@ -31,7 +31,8 @@
 - run B 5/5，152,168 tokens
 - run C 5/5，134,768 tokens
 - D4 补 `expiry`/`expiration` 英文 aliases 后单次 2/2，64,979 tokens
-- **修正后 15/15**
+- D4 补 aliases 后单次 2/2（64,979 tokens）；**修正后 15/15**。
+- 单层 `--per-layer 3` 现在自动返回 5 项；该行为已加入 query 回归测试。
 
 ## 限制
 

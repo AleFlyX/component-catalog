@@ -81,12 +81,18 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
   const requestedLayer = layer === "auto" ? autoLayer : layer;
   let scoped;
   let scopedLayers = null;
+  // A single-layer catalog gets no benefit from a per-layer cap. Keep the
+  // documented mixed-query default (3) from starving a same-layer second role:
+  // expand only that default to 5 in the single-layer case.
+  const rankedLayers = new Set(ranked.map(({ item }) => item.layer ?? "unspecified"));
+  const effectivePerLayer =
+    perLayer === 3 && rankedLayers.size === 1 ? Math.max(perLayer, 5) : perLayer;
   if (perLayer != null) {
     const byLayer = new Map();
     for (const entry of ranked) {
       const name = entry.item.layer ?? "unspecified";
       const bucket = byLayer.get(name) ?? [];
-      if (bucket.length < perLayer) bucket.push(entry);
+      if (bucket.length < effectivePerLayer) bucket.push(entry);
       byLayer.set(name, bucket);
     }
     scopedLayers = [...byLayer.keys()];
@@ -131,7 +137,7 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
     ...(layer == null ? {} : { layer: requestedLayer ?? layer }),
     ...(autoLayer == null ? {} : { layerSource: "auto" }),
     ...(usedLayerFallback ? { layerFallback: true } : {}),
-    ...(perLayer == null ? {} : { perLayer, layers: scopedLayers }),
+    ...(perLayer == null ? {} : { perLayer: effectivePerLayer, layers: scopedLayers }),
     // truncated means the response itself lost fields/items to the byte cap.
     // More matching components than --limit is reported separately as byLimit.
     truncated: false,

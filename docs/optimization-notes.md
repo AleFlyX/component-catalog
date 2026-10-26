@@ -202,3 +202,9 @@ airport 对比：普通 catalog 的 non-CLI 为 3/9/10，details 为 2/4/4；non
 - 生成在 `--max-old-space-size=2048` 下成功，解决此前 >4 GB / OOM。
 - 查询：per-layer5 + 英文 aliases，A 4.5/5、B 5/5、C 5/5；D4 补 aliases 后 2/2，修正 15/15。
 - 限制：30 条 scoped；外部 Prop 类型可能 any/partial；扩展 50 条需处理 primitives 的 247 个候选。
+
+## 决策一致性
+
+- 工具强制：per-layer 覆盖 limit；单层 catalog 的 per-layer3 自动扩到 5；CJK compact、嵌套排序、字节上限。
+- Agent 语义决策：typeScope、aliases、get 预算、closest-general、mixed components；不能静默猜测，SKILL 已给决策顺序与报告要求。
+- 新单层 auto 行为使 Documenso D4 这类同层混合查询不再依赖“记得改 per5”。
