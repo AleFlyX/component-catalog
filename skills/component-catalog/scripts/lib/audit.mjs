@@ -72,6 +72,7 @@ export function auditProject(config, { stored = true, freshness = false } = {}) 
     issues: unique,
     catalog,
     expected,
+    generation: catalog?.generation ?? null,
   };
 }
 
@@ -84,6 +85,13 @@ export function auditResponse(result, { command = "audit", offset = 0, limit = 2
     command,
     config: result.config,
     status: total ? "fail" : "pass",
+    ...(result.generation
+      ? {
+          typeScope: result.generation.typeScope,
+          typeCheck: result.generation.typeCheck,
+          suppressedTypeDiagnostics: result.generation.suppressedTypeDiagnostics,
+        }
+      : {}),
     discovery: {
       status: total
         ? "needs-attention"

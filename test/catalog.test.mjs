@@ -720,3 +720,70 @@ test("opt-in usage log records command metadata without changing output", (t) =>
   assert.equal(failure.options.limit, "2");
   assert.match(failure.error, /search/i);
 });
+
+test("componentRoots typeScope reports suppressed diagnostics instead of silently passing", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-scope-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const write = (file, content) => {
+    const target = path.join(dir, file);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content);
+  };
+  write("tsconfig.json", JSON.stringify({
+    compilerOptions: {
+      target: "ES2020",
+      module: "ESNext",
+      moduleResolution: "Bundler",
+      strict: true,
+      skipLibCheck: true,
+      noEmit: true,
+    },
+    include: ["src/**/*.ts", "src/**/*.tsx"],
+  }));
+  write("src/components/Foo.ts", `/**
+ * Test component.
+ * @componentCatalog
+ * @catalogStatus experimental
+ * @catalogTask foo
+ * @catalogConstraint none
+ * @catalogExample production src/example.ts | example
+ */
+export function Foo(props: { label: string }) {
+  const broken: number = "not a number";
+  return null;
+}
+`);
+  write("src/example.ts", `import { Foo } from "./components/Foo";\nexport const example = Foo({ label: "x" });\n`);
+  const config = {
+    configVersion: 2,
+    projectRoot: ".",
+    sourceRoot: "src",
+    tsconfig: "tsconfig.json",
+    catalog: "generated/component-catalog.json",
+    importPathStyle: "direct",
+    typeScope: "project",
+    componentRoots: [{
+      path: "src/components",
+      idPrefix: "ui",
+      importPrefix: null,
+      layer: "shared",
+      enrollment: "public",
+      reuse: { scope: "project" },
+    }],
+    vocabulary: {},
+  };
+  const configFile = path.join(dir, "component-catalog.config.json");
+  fs.writeFileSync(configFile, JSON.stringify(config));
+  const args = ["--config", configFile, "generate"];
+  const project = run(args, dir);
+  assert.notEqual(project.status, 0);
+  assert.match(project.stderr, /not a number|TS2322/);
+  config.typeScope = "componentRoots";
+  fs.writeFileSync(configFile, JSON.stringify(config));
+  const scoped = run(args, dir);
+  assert.equal(scoped.status, 0, scoped.stderr);
+  const output = JSON.parse(scoped.stdout);
+  assert.equal(output.typeScope, "componentRoots");
+  assert.equal(output.typeCheck, "partial");
+  assert.ok(output.suppressedTypeDiagnostics > 0);
+});

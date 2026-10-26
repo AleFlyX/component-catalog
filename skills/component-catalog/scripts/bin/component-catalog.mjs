@@ -252,6 +252,13 @@ try {
           components: catalog.components.length,
           catalog: config.catalog,
           sourceDigest: catalog.sourceDigest,
+          ...(catalog.generation
+            ? {
+                typeScope: catalog.generation.typeScope,
+                typeCheck: catalog.generation.typeCheck,
+                suppressedTypeDiagnostics: catalog.generation.suppressedTypeDiagnostics,
+              }
+            : {}),
         };
       } else {
         const catalog = loadCatalog(config.catalog, regenerate);

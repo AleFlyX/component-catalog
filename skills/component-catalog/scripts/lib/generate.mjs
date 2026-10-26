@@ -551,5 +551,13 @@ export function generateCatalog(config, options = {}) {
     components,
   };
   validateSchemaValue(catalog, catalogSchema, catalogSchema);
+  Object.defineProperty(catalog, "generation", {
+    value: {
+      typeScope: config.typeScope ?? "project",
+      typeCheck: config.typeScope === "componentRoots" ? "partial" : "full",
+      suppressedTypeDiagnostics: config.typeScope === "componentRoots" ? diagnostics.length : 0,
+    },
+    enumerable: false,
+  });
   return catalog;
 }
