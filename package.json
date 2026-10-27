@@ -15,7 +15,7 @@
   "scripts": {
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "check": "node --check bin/component-catalog.mjs && npm test",
-    "build": "npm pack --dry-run",
+    "build": "npm --cache .trial/npm-cache pack --dry-run",
     "component": "node bin/component-catalog.mjs"
   },
   "dependencies": {
