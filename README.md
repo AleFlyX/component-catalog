@@ -177,7 +177,7 @@ npm run check
 npm run build
 ```
 
-- `test/fixtures/` 只保留最小查询回归 fixture。
+- `test/fixtures/` 保留最小查询回归 fixture，以及多 componentRoot、primitives、stub 和 ignore/exclude 的生成 fixture。
 - `test/baselines/` 保留开源基线目录。
 - `test/audits/`、`docs/optimization-notes.md` 和 `.trial/` 是本地评测/试验材料，不提交到公开仓库。
 - 修改查询行为、`typeScope` 或配置字段时，补充对应回归测试并同步 skill/references。

@@ -1,0 +1,43 @@
+{
+  "configVersion": 2,
+  "projectRoot": ".",
+  "sourceRoot": "src",
+  "tsconfig": "tsconfig.json",
+  "catalog": "catalog.json",
+  "typeScope": "componentRoots",
+  "typeCheck": "partial",
+  "componentRoots": [
+    {
+      "path": "src/ui",
+      "idPrefix": "ui",
+      "importPrefix": null,
+      "layer": "shared-ui",
+      "enrollment": "public",
+      "reuse": { "scope": "project" }
+    },
+    {
+      "path": "src/forms",
+      "idPrefix": "forms",
+      "importPrefix": null,
+      "layer": "forms",
+      "enrollment": "public",
+      "reuse": { "scope": "project" }
+    },
+    {
+      "path": "src/primitives",
+      "idPrefix": "primitives",
+      "importPrefix": null,
+      "layer": "primitives",
+      "enrollment": "public",
+      "reuse": { "scope": "project" }
+    }
+  ],
+  "exclude": ["src/ui/Excluded.ts"],
+  "previewRoots": [],
+  "testRoots": [],
+  "vocabulary": {
+    "按钮": { "primary": "button", "related": [] },
+    "表单字段": { "primary": "form-field", "related": [] },
+    "输入框": { "primary": "input", "related": [] }
+  }
+}
