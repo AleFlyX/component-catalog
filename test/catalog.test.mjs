@@ -851,3 +851,70 @@ export function Foo(props: { label: string }) {
   assert.notEqual(untainted.status, 0);
   assert.match(untainted.stderr, /not a number|TS2322/);
 });
+
+test("suppressed diagnostic file list caps at ten but keeps the full file count", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-suppressed-files-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const write = (file, content) => {
+    const target = path.join(dir, file);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content);
+  };
+  write("tsconfig.json", JSON.stringify({
+    compilerOptions: {
+      target: "ES2020",
+      module: "ESNext",
+      moduleResolution: "Bundler",
+      strict: true,
+      skipLibCheck: true,
+      noEmit: true,
+    },
+    include: ["src/**/*.ts"],
+  }));
+  write("node_modules/external-lib/package.json", JSON.stringify({ name: "external-lib", types: "index.d.ts" }));
+  write("node_modules/external-lib/index.d.ts", "export const external: any;\n");
+  const imports = [];
+  for (let i = 0; i < 11; i++) {
+    imports.push(`import { C${i} } from "./components/C${i}";`);
+    write(`src/components/C${i}.ts`, `import { external } from "external-lib";
+/**
+ * Test component ${i}.
+ * @componentCatalog
+ * @catalogStatus experimental
+ * @catalogTask task-${i}
+ * @catalogConstraint none
+ * @catalogExample production src/example.ts | example ${i}
+ */
+export function C${i}() {
+  void external;
+  const broken: number = "not a number";
+  return null;
+}
+`);
+  }
+  write("src/example.ts", `${imports.join("\n")}\nexport const examples = [${Array.from({ length: 11 }, (_, i) => `C${i}`).join(", ")}];\n`);
+  fs.writeFileSync(path.join(dir, "component-catalog.config.json"), JSON.stringify({
+    configVersion: 2,
+    projectRoot: ".",
+    sourceRoot: "src",
+    tsconfig: "tsconfig.json",
+    catalog: "generated/component-catalog.json",
+    typeScope: "componentRoots",
+    componentRoots: [{
+      path: "src/components",
+      idPrefix: "ui",
+      importPrefix: null,
+      layer: "shared",
+      enrollment: "public",
+      reuse: { scope: "project" },
+    }],
+    vocabulary: {},
+  }));
+  const result = run(["--config", path.join(dir, "component-catalog.config.json"), "generate"], dir);
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.components, 11);
+  assert.equal(output.suppressedTypeFileCount, 11);
+  assert.equal(output.suppressedTypeFiles.length, 10);
+  assert.ok(output.suppressedTypeFiles.every((file) => file.count >= 1));
+});
