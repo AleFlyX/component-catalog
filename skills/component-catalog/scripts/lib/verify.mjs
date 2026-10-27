@@ -127,8 +127,9 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
       break;
     }
   }
-  // One exact-name mixed query proves that two roles can coexist in a bounded
-  // response. Natural-language mixed/missing cases still need human curation.
+  // Exact-name mixed proves that two roles can coexist; task/vocabulary mixed
+  // additionally exercises ranking and configured aliases. Missing cases still
+  // need human curation because absence cannot be inferred from the catalog.
   const byLayer = new Map();
   for (const component of components) {
     const layer = component.layer ?? "unspecified";
@@ -162,6 +163,29 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
       scope: "mixed-task-auto",
       query: taskPair.map((component) => component.tasks[0]).join(" "),
       expectedIds: taskPair.map((component) => component.id),
+    });
+  }
+  const vocabularyTerm = (component) => {
+    const task = component.tasks?.[0];
+    if (!task) return null;
+    for (const [term, concept] of Object.entries(vocabulary)) {
+      if (concept.primary === task || (concept.related ?? []).includes(task)) return term;
+    }
+    return null;
+  };
+  const withTerm = (component) => hasUniqueTask(component) && vocabularyTerm(component);
+  const vocabularyRepresentatives = [...byLayer.values()]
+    .map((items) => items.find(withTerm))
+    .filter(Boolean);
+  const vocabularyPair =
+    vocabularyRepresentatives.length >= 2
+      ? vocabularyRepresentatives.slice(0, 2)
+      : components.filter(withTerm).slice(0, 2);
+  if (vocabularyPair.length === 2) {
+    add({
+      scope: "mixed-vocabulary-auto",
+      query: vocabularyPair.map((component) => vocabularyTerm(component)).join(" "),
+      expectedIds: vocabularyPair.map((component) => component.id),
     });
   }
   return queries;

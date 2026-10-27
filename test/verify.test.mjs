@@ -110,13 +110,19 @@ test("suggest adds one same-layer mixed query", () => {
     exportName: "Other",
     tasks: ["other"],
   });
-  const suggestions = suggestVerifyQueries(multi, config.vocabulary);
+  const suggestions = suggestVerifyQueries(multi, {
+    ...config.vocabulary,
+    other: { primary: "other", related: [] },
+  });
   const mixed = suggestions.find((item) => item.scope === "mixed-auto");
   assert.deepEqual(mixed.expectedIds.sort(), ["demo.ui.Button", "demo.ui.Other"]);
   assert.equal(mixed.query, "Button Other");
   const taskMixed = suggestions.find((item) => item.scope === "mixed-task-auto");
   assert.deepEqual(taskMixed.expectedIds.sort(), ["demo.ui.Button", "demo.ui.Other"]);
   assert.equal(taskMixed.query, "button other");
+  const vocabularyMixed = suggestions.find((item) => item.scope === "mixed-vocabulary-auto");
+  assert.deepEqual(vocabularyMixed.expectedIds.sort(), ["demo.ui.Button", "demo.ui.Other"]);
+  assert.equal(vocabularyMixed.query, "按钮 other");
 });
 
 test("suggested queries pass against all committed airport fixtures", () => {
@@ -131,6 +137,7 @@ test("suggested queries pass against all committed airport fixtures", () => {
     assert.equal(result.ok, true, `airport-${size}: ${JSON.stringify(result.results.filter((item) => !item.ok))}`);
     assert.ok(queries.some((item) => item.scope === "mixed-auto"));
     assert.ok(queries.some((item) => item.scope === "mixed-task-auto"));
+    assert.ok(queries.some((item) => item.scope === "mixed-vocabulary-auto"));
   }
 });
 
