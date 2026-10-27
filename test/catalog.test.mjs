@@ -830,6 +830,12 @@ export function Foo(props: { label: string }) {
   assert.deepEqual(output.suppressedTypeFiles, [
     { sourcePath: "src/components/Foo.ts", count: output.suppressedTypeDiagnostics },
   ]);
+  const check = run(["--config", configFile, "check"], dir);
+  assert.equal(check.status, 0, check.stderr);
+  const checkOutput = JSON.parse(check.stdout);
+  assert.equal(checkOutput.typeCheck, "partial");
+  assert.equal(checkOutput.suppressedTypeFileCount, 1);
+  assert.deepEqual(checkOutput.suppressedTypeFiles, output.suppressedTypeFiles);
 
   config.typeCheck = "strict";
   fs.writeFileSync(configFile, JSON.stringify(config));
