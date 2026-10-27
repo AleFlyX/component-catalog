@@ -61,5 +61,38 @@ test("multi-root componentRoots fixture generates, checks and verifies in a temp
   const report = JSON.parse(fs.readFileSync(path.join(dir, "verify.json"), "utf8"));
   assert.equal(report.results.length, 12);
 
+  fs.writeFileSync(
+    path.join(dir, "filtered.json"),
+    JSON.stringify([
+      { query: "button", expectedId: "ui.Button", layer: "shared-ui" },
+      { query: "input", expectedId: "primitives.Input", layer: "primitives" },
+      {
+        query: "button form-field input",
+        expectedIds: ["ui.Button", "forms.FormField", "primitives.Input"],
+        perLayer: 1,
+      },
+    ]),
+  );
+  const filtered = run(["verify", "--queries", "filtered.json", "--out", "filtered-report.json"], dir);
+  assert.equal(filtered.status, 0, filtered.stderr);
+  assert.equal(JSON.parse(filtered.stdout).counts.passed, 3);
+  const filteredReport = JSON.parse(fs.readFileSync(path.join(dir, "filtered-report.json"), "utf8"));
+  assert.equal(filteredReport.results.length, 3);
+  assert.equal(filteredReport.results[1].expectedIds[0], "primitives.Input");
+
+  fs.writeFileSync(
+    path.join(dir, "failing.json"),
+    JSON.stringify([{ query: "button", expectedId: "ui.Missing" }]),
+  );
+  const failing = run(["verify", "--queries", "failing.json", "--out", "failing-report.json"], dir);
+  assert.equal(failing.status, 1);
+  const failedSummary = JSON.parse(failing.stdout);
+  assert.equal(failedSummary.ok, false);
+  assert.equal(failedSummary.results.length, 1);
+  assert.deepEqual(failedSummary.results[0].missingIds, ["ui.Missing"]);
+  const failedReport = JSON.parse(fs.readFileSync(path.join(dir, "failing-report.json"), "utf8"));
+  assert.equal(failedReport.ok, false);
+  assert.deepEqual(failedReport.results[0].missingIds, ["ui.Missing"]);
+
   assert.equal(fs.existsSync(configPath), true);
 });
