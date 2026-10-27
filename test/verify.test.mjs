@@ -85,3 +85,17 @@ test("verify CLI --suggest prints a query array", (t) => {
   const both = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--queries", path.join(dir, "q.json")], { encoding: "utf8" });
   assert.equal(both.status, 2);
 });
+
+test("suggest adds one same-layer mixed query", () => {
+  const multi = structuredClone(catalog);
+  multi.components.push({
+    ...structuredClone(catalog.components[0]),
+    id: "demo.ui.Other",
+    exportName: "Other",
+    tasks: ["other"],
+  });
+  const suggestions = suggestVerifyQueries(multi, config.vocabulary);
+  const mixed = suggestions.find((item) => item.scope === "mixed-auto");
+  assert.deepEqual(mixed.expectedIds.sort(), ["demo.ui.Button", "demo.ui.Other"]);
+  assert.equal(mixed.query, "Button Other");
+});

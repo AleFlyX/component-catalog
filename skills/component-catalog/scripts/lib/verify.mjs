@@ -127,5 +127,27 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
       break;
     }
   }
+  // One exact-name mixed query proves that two roles can coexist in a bounded
+  // response. Natural-language mixed/missing cases still need human curation.
+  const byLayer = new Map();
+  for (const component of components) {
+    const layer = component.layer ?? "unspecified";
+    if (!byLayer.has(layer)) byLayer.set(layer, []);
+    byLayer.get(layer).push(component);
+  }
+  const representatives = [...byLayer.values()].map((items) => items[0]);
+  const pair =
+    representatives.length >= 2
+      ? representatives.slice(0, 2)
+      : components.length >= 2
+        ? components.slice(0, 2)
+        : [];
+  if (pair.length === 2) {
+    add({
+      scope: "mixed-auto",
+      query: pair.map((component) => component.exportName).join(" "),
+      expectedIds: pair.map((component) => component.id),
+    });
+  }
   return queries;
 }
