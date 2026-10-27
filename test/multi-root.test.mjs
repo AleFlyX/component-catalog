@@ -51,6 +51,18 @@ test("multi-root componentRoots fixture generates, checks and verifies in a temp
   for (const scope of ["self", "task", "vocabulary", "mixed-auto", "mixed-task-auto", "mixed-vocabulary-auto"])
     assert.ok(queries.some((query) => query.scope === scope), `missing ${scope}`);
 
+  const configBefore = fs.readFileSync(configPath, "utf8");
+  const configOverwrite = run(["verify", "--suggest", "--out", "component-catalog.config.json"], dir);
+  assert.equal(configOverwrite.status, 2);
+  assert.match(configOverwrite.stderr, /must not overwrite the config/);
+  assert.equal(fs.readFileSync(configPath, "utf8"), configBefore);
+
+  const queriesBefore = fs.readFileSync(path.join(dir, "queries.json"), "utf8");
+  const queriesOverwrite = run(["verify", "--queries", "queries.json", "--out", "queries.json"], dir);
+  assert.equal(queriesOverwrite.status, 2);
+  assert.match(queriesOverwrite.stderr, /must not overwrite the queries/);
+  assert.equal(fs.readFileSync(path.join(dir, "queries.json"), "utf8"), queriesBefore);
+
   const verified = run(["verify", "--queries", "queries.json", "--out", "verify.json"], dir);
   assert.equal(verified.status, 0, verified.stderr);
   const summary = JSON.parse(verified.stdout);

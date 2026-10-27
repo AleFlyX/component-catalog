@@ -232,6 +232,14 @@ try {
         const { verifyCatalog, suggestVerifyQueries, summarizeVerifyResult } = await import("../lib/verify.mjs");
         const catalog = loadCatalog(config.catalog, regenerate);
         const outputPath = values.out ? path.resolve(values.out) : null;
+        if (outputPath) {
+          const protectedPaths = new Map([
+            [path.resolve(config.configPath), "config"],
+            [path.resolve(config.catalog), "catalog"],
+          ]);
+          if (protectedPaths.has(outputPath))
+            throw new Error(`--out must not overwrite the ${protectedPaths.get(outputPath)} file`);
+        }
         const writeOutput = (value) => {
           if (!outputPath) return;
           fs.mkdirSync(path.dirname(outputPath), { recursive: true });
@@ -247,6 +255,8 @@ try {
             : suggestions;
         } else {
           const queriesPath = path.resolve(values.queries);
+          if (outputPath === queriesPath)
+            throw new Error("--out must not overwrite the queries file");
           let queries;
           try {
             queries = JSON.parse(fs.readFileSync(queriesPath, "utf8"));
