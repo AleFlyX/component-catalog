@@ -70,7 +70,7 @@ component-catalog --config component-catalog.config.json verify --suggest --out 
 component-catalog --config component-catalog.config.json verify --queries component-catalog.verify.json --out component-catalog.verify-report.json
 ```
 
-`expectedIds` 必须全部出现在结果中，`absentIds` 必须不出现，`expectNoResults` 要求空结果；返回非零表示有查询未通过。stdout 默认只列出失败项（`resultsOmitted` 记录省略的通过数），`--details` 打印全部结果；`--out` 始终保存完整报告。`verify` 不重新生成目录；只有显式 `--out` 会写查询或报告文件，且拒绝覆盖 config、catalog 或输入 queries 文件。先运行 `check` 确认快照不是旧的。
+`expectedIds` 必须全部出现在结果中，`absentIds` 必须不出现，`expectNoResults` 要求空结果；返回非零表示有查询未通过。stdout 默认只列出失败项（`resultsOmitted` 记录省略的通过数），`--details` 打印全部结果；`--out` 始终保存完整报告。`verify` 不重新生成目录；只有显式 `--out` 会写查询或报告文件，且拒绝覆盖 config、catalog 或输入 queries 文件。先运行 `check` 确认快照不是旧的。`generate` 写 catalog 和 `verify --out` 写报告都使用同目录临时文件后原子替换，进程中断不会留下半截 JSON。
 
 ### 配置要点
 

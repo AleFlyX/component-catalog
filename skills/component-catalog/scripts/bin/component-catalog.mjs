@@ -4,6 +4,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { loadConfig, template, validateGenerationPaths } from "../lib/config.mjs";
 import { loadCatalog } from "../lib/catalog.mjs";
+import { writeFileAtomic } from "../lib/files.mjs";
 import { search, get, getMany } from "../lib/query.mjs";
 
 const usage = {
@@ -242,8 +243,7 @@ try {
         }
         const writeOutput = (value) => {
           if (!outputPath) return;
-          fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-          fs.writeFileSync(outputPath, JSON.stringify(value, null, 2) + "\n");
+          writeFileAtomic(outputPath, JSON.stringify(value, null, 2) + "\n");
         };
         if (values.suggest) {
           const suggestions = suggestVerifyQueries(catalog, config.vocabulary);
@@ -295,8 +295,7 @@ try {
           if (!fs.existsSync(config.catalog) || fs.readFileSync(config.catalog, "utf8") !== content)
             throw new Error(`Catalog missing or stale at ${config.catalog}; run ${regenerate}`);
         } else {
-          fs.mkdirSync(path.dirname(config.catalog), { recursive: true });
-          fs.writeFileSync(config.catalog, content);
+          writeFileAtomic(config.catalog, content);
         }
         result = {
           command: values.check ? "check" : "generate",

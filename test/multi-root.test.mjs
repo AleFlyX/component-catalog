@@ -32,6 +32,7 @@ test("multi-root componentRoots fixture generates, checks and verifies in a temp
   assert.equal(output.suppressedTypeDiagnostics, 1);
   assert.deepEqual(output.suppressedTypeFiles, [{ sourcePath: "src/ui/Button.tsx", count: 1 }]);
   assert.match(output.sourceDigest, /^sha256:[0-9a-f]{64}$/);
+  assert.deepEqual(fs.readdirSync(dir).filter((name) => name.endsWith(".tmp")), []);
 
   const checked = run(["check"], dir);
   assert.equal(checked.status, 0, checked.stderr);
@@ -72,6 +73,7 @@ test("multi-root componentRoots fixture generates, checks and verifies in a temp
   assert.equal(summary.resultsOmitted, 12);
   const report = JSON.parse(fs.readFileSync(path.join(dir, "verify.json"), "utf8"));
   assert.equal(report.results.length, 12);
+  assert.deepEqual(fs.readdirSync(dir).filter((name) => name.endsWith(".tmp")), []);
 
   fs.writeFileSync(
     path.join(dir, "filtered.json"),
