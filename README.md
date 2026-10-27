@@ -54,7 +54,7 @@ component-catalog --config component-catalog.config.json check
 component-catalog --config component-catalog.config.json verify --suggest --out component-catalog.verify.json
 ```
 
-它会为每个组件生成导出名查询，为 primary task 唯一的组件生成 task/vocabulary 查询（vocabulary 选择按最短词、再按字典序，保证与配置 key 顺序无关），并生成一条**精确导出名 mixed 查询**；如果存在两个唯一 primary task，还会生成 **task-based** 和（有对应词汇时）**vocabulary-based mixed 查询**。missing 查询仍需人工补。然后运行：
+它会为每个组件生成导出名查询，为 primary task 唯一的组件生成 task/vocabulary 查询（vocabulary 选择按最短词、再按字典序，保证与配置 key 顺序无关），并生成一条**精确导出名 mixed 查询**；如果存在两个唯一 primary task，还会生成 **task-based** 和（有对应词汇时）**vocabulary-based mixed 查询**。missing 查询仍需人工补。`--suggest` 只接受 `--config/--out`；`--limit`/`--details` 属于执行阶段。然后运行：
 
 ```json
 [

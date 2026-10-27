@@ -118,7 +118,7 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
     return terms[0] ?? null;
   };
   const add = (entry) => {
-    const key = `${entry.query}\0${entry.expectedId}`;
+    const key = JSON.stringify([entry.query, entry.expectedId ?? null, entry.expectedIds ?? []]);
     if (seen.has(key)) return;
     seen.add(key);
     queries.push(entry);

@@ -116,6 +116,10 @@ test("verify CLI --suggest prints a query array", (t) => {
   assert.ok(queries.some((item) => item.query === "Button" && item.expectedId === "demo.ui.Button"));
   const both = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--queries", path.join(dir, "q.json")], { encoding: "utf8" });
   assert.equal(both.status, 2);
+  const withLimit = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--limit", "10"], { encoding: "utf8" });
+  assert.equal(withLimit.status, 2);
+  const withDetails = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--details"], { encoding: "utf8" });
+  assert.equal(withDetails.status, 2);
 });
 
 test("suggest adds one same-layer mixed query", () => {
