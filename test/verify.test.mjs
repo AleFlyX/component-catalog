@@ -191,3 +191,36 @@ test("verify --out writes query suggestions and a report", (t) => {
   assert.equal(reportData.ok, true);
   assert.equal(reportData.results.length, 3);
 });
+
+test("verify --suggest rejects an empty catalog", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-empty-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  fs.writeFileSync(
+    path.join(dir, "component-catalog.config.json"),
+    JSON.stringify({
+      configVersion: 2,
+      projectRoot: ".",
+      sourceRoot: "src",
+      tsconfig: "tsconfig.json",
+      catalog: "empty-catalog.json",
+      componentRoots: [{ path: "src/components", idPrefix: "demo.ui", importPrefix: null, layer: "shared", enrollment: "public", reuse: { scope: "project" } }],
+      vocabulary: {},
+    }),
+  );
+  fs.writeFileSync(
+    path.join(dir, "empty-catalog.json"),
+    JSON.stringify({
+      schemaVersion: 7,
+      sourceDigest: `sha256:${"0".repeat(64)}`,
+      typescriptVersion: "5.9.3",
+      components: [],
+    }),
+  );
+  const result = spawnSync(
+    process.execPath,
+    [path.join(root, "bin/component-catalog.mjs"), "--config", path.join(dir, "component-catalog.config.json"), "verify", "--suggest"],
+    { encoding: "utf8" },
+  );
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /no catalog components/);
+});

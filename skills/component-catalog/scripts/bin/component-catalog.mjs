@@ -20,7 +20,7 @@ const usage = {
   search:
     "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback] [--per-layer 1..5]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer; --layer-fallback retries without the filter when that layer has no matches. --per-layer returns the top N from each layer for mixed-intent queries; it overrides --limit so a tail layer is not cut off.\n",
   verify:
-    "component-catalog [--config path] verify (--queries <queries.json> | --suggest) [--out <file.json>] [--details] [--limit 1..10]\nRead-only retrieval gate against the saved catalog. Each query must declare expected IDs/exports (and optionally absent IDs or expectNoResults). --suggest prints a starter query array from export names and unique primary tasks; it accepts only --config/--out, so add mixed/missing cases before running with --queries. Default stdout is failure-focused; --out writes the complete report and --details also prints every passing result. Exit 1 when any query misses; run check first for freshness.\n",
+    "component-catalog [--config path] verify (--queries <queries.json> | --suggest) [--out <file.json>] [--details] [--limit 1..10]\nRead-only retrieval gate against the saved catalog. Each query must declare expected IDs/exports (and optionally absent IDs or expectNoResults). --suggest prints a starter query array from export names and unique primary tasks on a nonempty generated catalog; it accepts only --config/--out, so add mixed/missing cases before running with --queries. Default stdout is failure-focused; --out writes the complete report and --details also prints every passing result. Exit 1 when any query misses; run check first for freshness.\n",
   get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
@@ -239,6 +239,8 @@ try {
         };
         if (values.suggest) {
           const suggestions = suggestVerifyQueries(catalog, config.vocabulary);
+          if (!suggestions.length)
+            throw new Error("verify --suggest found no catalog components; enroll components and run generate first");
           writeOutput(suggestions);
           result = outputPath
             ? { command: "verify-suggest", out: outputPath, queries: suggestions.length }
