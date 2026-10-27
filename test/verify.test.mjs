@@ -88,6 +88,22 @@ test("suggest produces exact export-name and unique task queries", () => {
   );
 });
 
+test("suggest vocabulary choice is deterministic regardless of config order", () => {
+  const vocabulary = {
+    "long button": { primary: "button", related: [] },
+    "按钮": { primary: "button", related: [] },
+  };
+  const reversed = {
+    "按钮": { primary: "button", related: [] },
+    "long button": { primary: "button", related: [] },
+  };
+  assert.deepEqual(suggestVerifyQueries(catalog, vocabulary), suggestVerifyQueries(catalog, reversed));
+  assert.equal(
+    suggestVerifyQueries(catalog, vocabulary).find((item) => item.scope === "vocabulary").query,
+    "按钮",
+  );
+});
+
 test("verify CLI --suggest prints a query array", (t) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-suggest-"));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));

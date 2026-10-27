@@ -110,6 +110,13 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
   }
   const queries = [];
   const seen = new Set();
+  const vocabularyTermForTask = (task) => {
+    const terms = Object.entries(vocabulary)
+      .filter(([, concept]) => concept.primary === task || (concept.related ?? []).includes(task))
+      .map(([term]) => term)
+      .sort((a, b) => a.length - b.length || (a < b ? -1 : a > b ? 1 : 0));
+    return terms[0] ?? null;
+  };
   const add = (entry) => {
     const key = `${entry.query}\0${entry.expectedId}`;
     if (seen.has(key)) return;
@@ -121,11 +128,8 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
     const task = component.tasks?.[0];
     if (!task || taskCounts.get(task) !== 1) continue;
     add({ scope: "task", query: task, expectedId: component.id });
-    for (const [term, concept] of Object.entries(vocabulary)) {
-      if (concept.primary !== task && !(concept.related ?? []).includes(task)) continue;
-      add({ scope: "vocabulary", query: term, expectedId: component.id });
-      break;
-    }
+    const term = vocabularyTermForTask(task);
+    if (term) add({ scope: "vocabulary", query: term, expectedId: component.id });
   }
   // Exact-name mixed proves that two roles can coexist; task/vocabulary mixed
   // additionally exercises ranking and configured aliases. Missing cases still
@@ -167,11 +171,7 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
   }
   const vocabularyTerm = (component) => {
     const task = component.tasks?.[0];
-    if (!task) return null;
-    for (const [term, concept] of Object.entries(vocabulary)) {
-      if (concept.primary === task || (concept.related ?? []).includes(task)) return term;
-    }
-    return null;
+    return task ? vocabularyTermForTask(task) : null;
   };
   const withTerm = (component) => hasUniqueTask(component) && vocabularyTerm(component);
   const vocabularyRepresentatives = [...byLayer.values()]
