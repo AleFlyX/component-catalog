@@ -6,6 +6,7 @@
 
 - CLI：`0.4.0`
 - Skill revision：`12`
+- Config schema：`2`
 - Catalog schema：`7`
 - Node：`>=22`
 - 唯一运行依赖：TypeScript `5.9.3`

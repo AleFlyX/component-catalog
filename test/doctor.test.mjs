@@ -27,6 +27,8 @@ test("installation doctor works before configuration and rejects mismatched skil
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
   assert.equal(version.version, "0.4.0");
+  assert.equal(version.configSchemaVersion, 2);
+  assert.equal(version.catalogSchemaVersion, 7);
   const good = json(run(cwd, ["doctor", "--installation", "--expect-version", version.version]));
   assert.equal(good.status, "pass");
   assert.equal(good.config, null);

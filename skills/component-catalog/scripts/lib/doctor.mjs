@@ -1,8 +1,11 @@
 import fs from "node:fs";
-import { loadConfig, validateGenerationPaths } from "./config.mjs";
+import { loadConfig, template, validateGenerationPaths } from "./config.mjs";
 import { loadCatalog } from "./catalog.mjs";
 
 const manifest = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+const catalogSchema = JSON.parse(
+  fs.readFileSync(new URL("../schema/catalog.schema.json", import.meta.url), "utf8"),
+);
 function readSkillRevision() {
   try {
     const source = fs.readFileSync(new URL("../../SKILL.md", import.meta.url), "utf8");
@@ -17,6 +20,8 @@ export const versionInfo = {
   name: manifest.name,
   version: manifest.version,
   skillRevision: readSkillRevision(),
+  configSchemaVersion: template.configVersion,
+  catalogSchemaVersion: catalogSchema.properties.schemaVersion.const,
 };
 
 // Explicit, read-only readiness diagnosis. Never installs dependencies, runs
