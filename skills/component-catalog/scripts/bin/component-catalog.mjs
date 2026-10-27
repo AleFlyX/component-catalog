@@ -20,7 +20,7 @@ const usage = {
   search:
     "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback] [--per-layer 1..5]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer; --layer-fallback retries without the filter when that layer has no matches. --per-layer returns the top N from each layer for mixed-intent queries; it overrides --limit so a tail layer is not cut off.\n",
   verify:
-    "component-catalog [--config path] verify (--queries <queries.json> | --suggest) [--out <file.json>] [--limit 1..10]\nRead-only retrieval gate against the saved catalog. Each query must declare expected IDs/exports (and optionally absent IDs or expectNoResults). --suggest prints a starter query array from export names and unique primary tasks; add mixed/missing cases before running. Exit 1 when any query misses; run check first for freshness.\n",
+    "component-catalog [--config path] verify (--queries <queries.json> | --suggest) [--out <file.json>] [--details] [--limit 1..10]\nRead-only retrieval gate against the saved catalog. Each query must declare expected IDs/exports (and optionally absent IDs or expectNoResults). --suggest prints a starter query array from export names and unique primary tasks; add mixed/missing cases before running. Default stdout is failure-focused; --out writes the complete report and --details also prints every passing result. Exit 1 when any query misses; run check first for freshness.\n",
   get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
 };
 const help = `First use: scan a frontend directory, choose public components, configure, annotate, then generate.\nInstalling the skill alone does not configure or mark a project.\n\n${Object.values(usage).join("\n")}\nQueries never generate. Use <command> --help for command help, --version for CLI version JSON.\n`;
@@ -129,7 +129,7 @@ try {
       get: ["config", "include", "prop", "from"],
       audit: ["config", "limit", "offset"],
       check: ["config", "limit", "offset"],
-      verify: ["config", "limit", "queries", "suggest", "out"],
+      verify: ["config", "limit", "queries", "suggest", "out", "details"],
       doctor: ["config", "installation", "expect-version", "expect-skill-revision"],
     };
     diagnosticCommand = ["audit", "check", "doctor", "verify"].includes(command);
@@ -227,7 +227,7 @@ try {
       const config = loadConfig(values.config);
       const regenerate = `component-catalog --config ${shellQuote(config.configPath)} generate`;
       if (command === "verify") {
-        const { verifyCatalog, suggestVerifyQueries } = await import("../lib/verify.mjs");
+        const { verifyCatalog, suggestVerifyQueries, summarizeVerifyResult } = await import("../lib/verify.mjs");
         const catalog = loadCatalog(config.catalog, regenerate);
         const outputPath = values.out ? path.resolve(values.out) : null;
         const writeOutput = (value) => {
@@ -249,9 +249,10 @@ try {
           } catch (error) {
             throw new Error(`Cannot read verify queries at ${queriesPath}: ${error.message}`);
           }
-          result = verifyCatalog(catalog, queries, config.vocabulary, Number(values.limit ?? 5));
-          writeOutput(result);
-          if (!result.ok) process.exitCode = 1;
+          const report = verifyCatalog(catalog, queries, config.vocabulary, Number(values.limit ?? 5));
+          writeOutput(report);
+          result = summarizeVerifyResult(report, { details: values.details ?? false });
+          if (!report.ok) process.exitCode = 1;
         }
       } else if (["audit", "check"].includes(command)) {
         const { auditProject, auditResponse } = await import("../lib/audit.mjs");

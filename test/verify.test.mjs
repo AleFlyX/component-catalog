@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { loadConfig } from "../skills/component-catalog/scripts/lib/config.mjs";
 import { generateCatalog } from "../skills/component-catalog/scripts/lib/generate.mjs";
-import { suggestVerifyQueries, verifyCatalog } from "../skills/component-catalog/scripts/lib/verify.mjs";
+import { suggestVerifyQueries, summarizeVerifyResult, verifyCatalog } from "../skills/component-catalog/scripts/lib/verify.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const config = loadConfig(path.join(root, "examples/basic/component-catalog.config.json"));
@@ -54,6 +54,12 @@ test("verify CLI returns 0/1/2 for pass, miss and invalid invocation", (t) => {
   fs.writeFileSync(queries, JSON.stringify([{ query: "按钮", expectedId: "demo.ui.Button" }]));
   const pass = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries], { encoding: "utf8" });
   assert.equal(pass.status, 0, pass.stderr);
+  const passOutput = JSON.parse(pass.stdout);
+  assert.deepEqual(passOutput.results, []);
+  assert.equal(passOutput.resultsOmitted, 1);
+  const detailed = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries, "--details"], { encoding: "utf8" });
+  assert.equal(detailed.status, 0, detailed.stderr);
+  assert.equal(JSON.parse(detailed.stdout).results.length, 1);
   fs.writeFileSync(queries, JSON.stringify([{ query: "按钮", expectedId: "demo.ui.Missing" }]));
   const miss = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries], { encoding: "utf8" });
   assert.equal(miss.status, 1);
@@ -115,6 +121,19 @@ test("suggested queries pass against all committed airport fixtures", () => {
   }
 });
 
+test("verify summary keeps failures and omits passing details", () => {
+  const full = verifyCatalog(catalog, [
+    { query: "按钮", expectedId: "demo.ui.Button" },
+    { query: "按钮", expectedId: "demo.ui.Missing" },
+  ], config.vocabulary);
+  const summary = summarizeVerifyResult(full);
+  assert.equal(summary.results.length, 1);
+  assert.equal(summary.results[0].ok, false);
+  assert.equal(summary.resultsIncluded, 1);
+  assert.equal(summary.resultsOmitted, 1);
+  assert.equal(summarizeVerifyResult(full, { details: true }).results.length, 2);
+});
+
 test("verify --out writes query suggestions and a report", (t) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-out-"));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
@@ -128,5 +147,7 @@ test("verify --out writes query suggestions and a report", (t) => {
   assert.ok(Array.isArray(JSON.parse(fs.readFileSync(queries, "utf8"))));
   const run = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries, "--out", report], { encoding: "utf8" });
   assert.equal(run.status, 0, run.stderr);
-  assert.equal(JSON.parse(fs.readFileSync(report, "utf8")).ok, true);
+  const reportData = JSON.parse(fs.readFileSync(report, "utf8"));
+  assert.equal(reportData.ok, true);
+  assert.equal(reportData.results.length, 3);
 });

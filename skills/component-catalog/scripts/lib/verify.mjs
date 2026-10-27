@@ -151,3 +151,17 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
   }
   return queries;
 }
+
+/**
+ * CLI stdout is failure-focused by default; --out retains the complete report.
+ */
+export function summarizeVerifyResult(result, { details = false } = {}) {
+  if (details) return result;
+  const failures = result.results.filter((item) => !item.ok);
+  return {
+    ...result,
+    results: failures,
+    resultsIncluded: failures.length,
+    resultsOmitted: result.results.length - failures.length,
+  };
+}
