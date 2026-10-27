@@ -114,3 +114,19 @@ test("suggested queries pass against all committed airport fixtures", () => {
     assert.ok(queries.some((item) => item.scope === "mixed-auto"));
   }
 });
+
+test("verify --out writes query suggestions and a report", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-out-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const cli = path.join(root, "bin/component-catalog.mjs");
+  const configPath = path.join(root, "examples/basic/component-catalog.config.json");
+  const queries = path.join(dir, "queries.json");
+  const report = path.join(dir, "report.json");
+  const suggest = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--suggest", "--out", queries], { encoding: "utf8" });
+  assert.equal(suggest.status, 0, suggest.stderr);
+  assert.equal(JSON.parse(suggest.stdout).queries, 3);
+  assert.ok(Array.isArray(JSON.parse(fs.readFileSync(queries, "utf8"))));
+  const run = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries, "--out", report], { encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr);
+  assert.equal(JSON.parse(fs.readFileSync(report, "utf8")).ok, true);
+});
