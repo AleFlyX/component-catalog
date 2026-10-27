@@ -3,7 +3,7 @@
 本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
 
 - CLI：`0.3.0`
-- Skill revision：`10`
+- Skill revision：`11`
 - Catalog schema：`7`
 - Node：`>=22`
 - 唯一运行依赖：TypeScript `5.9.3`
@@ -14,7 +14,7 @@
 
 ```bash
 npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
+node bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 11
 node bin/component-catalog.mjs scan examples/basic/src --summary
 
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
@@ -110,7 +110,7 @@ component-catalog --config component-catalog.config.json verify --queries compon
 | 小/中型，只依赖项目内 UI | `typeScope: "project"`（默认） |
 | 大型 monorepo，依赖服务端/lib 图 | `typeScope: "componentRoots"` |
 
-`componentRoots` 只保留组件根内的类型图，根外导入使用内存内浅层 stub。它把 Documenso 30 条目录的生成从 >4 GB/OOM 降到默认 2 GB heap 可完成。代价是根外继承的 Prop 类型可能为 `any`/partial；本地声明的 Props 不受影响。`generate`、`audit` 和 `check` 会报告 `typeScope`、`typeCheck`、`suppressedTypeDiagnostics` 和可选的 `suppressedTypeCodes`。只会抑制**导入了根外 stub 的文件中的语义诊断**；语法错误、未解析导入以及没有 stub 依赖的文件错误仍然失败。`typeCheck: "partial"` 仍表示不能当作完整类型检查通过。
+`componentRoots` 只保留组件根内的类型图，根外导入使用内存内浅层 stub。它把 Documenso 30 条目录的生成从 >4 GB/OOM 降到默认 2 GB heap 可完成。代价是根外继承的 Prop 类型可能为 `any`/partial；本地声明的 Props 不受影响。`generate`、`audit` 和 `check` 会报告 `typeScope`、`typeCheck`、`suppressedTypeDiagnostics` 和可选的 `suppressedTypeCodes`。默认只抑制**导入了根外 stub 的文件中的语义诊断**；语法错误、未解析导入以及没有 stub 依赖的文件错误仍然失败。设置 `typeCheck: "strict"` 会关闭这层抑制，但根外 stub 造成的错误也会让生成失败；此时应把必要共享包纳入 `componentRoots`。`typeCheck: "partial"` 仍表示不能当作完整类型检查通过。
 
 出现 OOM 时不要用 `--max-old-space-size` 掩盖，也不要添加 `@ts-nocheck`、手写 stub 或改写 import；切换 `typeScope` 后重新 `generate`、`audit`、`check`，并在交付中说明类型范围。
 
@@ -162,7 +162,7 @@ export function BusinessForm(props: { disabled?: boolean }) { /* ... */ }
 ```bash
 npm ci --prefix "<skill-directory>/scripts" --ignore-scripts --no-audit --no-fund
 node "<skill-directory>/scripts/bin/component-catalog.mjs" \
-  doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
+  doctor --installation --expect-version 0.3.0 --expect-skill-revision 11
 ```
 
 skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。

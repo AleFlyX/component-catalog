@@ -474,7 +474,7 @@ export function generateCatalog(config, options = {}) {
   let diagnostics = allDiagnostics;
   let suppressedDiagnostics = 0;
   let suppressedTypeCodes = {};
-  if (config.typeScope === "componentRoots") {
+  if (config.typeScope === "componentRoots" && config.typeCheck !== "strict") {
     // Imports outside the component roots are shallow any-stubs. A source file
     // that imports one is "tainted": secondary semantic errors there may be
     // stub artifacts. Keep syntax errors and unresolved imports fatal; suppress
@@ -576,7 +576,12 @@ export function generateCatalog(config, options = {}) {
   Object.defineProperty(catalog, "generation", {
     value: {
       typeScope: config.typeScope ?? "project",
-      typeCheck: config.typeScope === "componentRoots" ? "partial" : "full",
+      typeCheck:
+        config.typeScope === "componentRoots"
+          ? config.typeCheck === "strict"
+            ? "strict"
+            : "partial"
+          : "full",
       suppressedTypeDiagnostics: suppressedDiagnostics,
       ...(Object.keys(suppressedTypeCodes).length ? { suppressedTypeCodes } : {}),
     },

@@ -1,7 +1,7 @@
 ---
 name: component-catalog
 metadata:
-  revision: "10"
+  revision: "11"
 description: Configure, query and maintain a local React component catalog from JavaScript or TypeScript. Use for requested catalog setup, reusable component selection, or component changes in configured roots. Unrelated business work does not require catalog setup or migration.
 ---
 
@@ -70,7 +70,7 @@ Choose `typeScope` before the first `generate`; it is a config decision, not a q
 | Small/medium React project, components import only project UI | `typeScope: "project"` (default) | Full dependency types and inherited Props |
 | Large monorepo where components import a server/lib/trpc/Prisma graph | `typeScope: "componentRoots"` | Loads only the component-root type graph; imports outside roots become shallow any-types |
 
-If `generate` runs out of memory, approaches 2 GB, or its compiler program pulls server packages into a UI catalog, do not raise `--max-old-space-size` as the fix and do not add `@ts-nocheck`, manual stub files, or rewrite imports. Set `typeScope: "componentRoots"`, regenerate, then `audit` and `check` under the default Node heap. Report the tradeoff explicitly: local Props remain typed, but Props inherited from modules outside the roots may be `any`/partial. `generate`, `audit` and `check` report `typeScope`, `typeCheck`, `suppressedTypeDiagnostics` and optional `suppressedTypeCodes`. Only semantic diagnostics in files that imported a root-external stub are suppressed; syntax errors, unresolved imports and files without stub imports still fail. A pass with `typeCheck: "partial"` still does not prove full type checking. If those inherited types are essential, bring the shared primitive package into `componentRoots` instead of claiming full fidelity.
+If `generate` runs out of memory, approaches 2 GB, or its compiler program pulls server packages into a UI catalog, do not raise `--max-old-space-size` as the fix and do not add `@ts-nocheck`, manual stub files, or rewrite imports. Set `typeScope: "componentRoots"`, regenerate, then `audit` and `check` under the default Node heap. Report the tradeoff explicitly: local Props remain typed, but Props inherited from modules outside the roots may be `any`/partial. `generate`, `audit` and `check` report `typeScope`, `typeCheck`, `suppressedTypeDiagnostics` and optional `suppressedTypeCodes`. By default only semantic diagnostics in files that imported a root-external stub are suppressed; syntax errors, unresolved imports and files without stub imports still fail. Set `typeCheck: "strict"` to disable even that suppression; then root-external stub errors also fail, so bring required shared packages into `componentRoots`. A pass with `typeCheck: "partial"` still does not prove full type checking. If those inherited types are essential, bring the shared primitive package into `componentRoots` instead of claiming full fidelity.
 
 ## Decision consistency
 
@@ -83,10 +83,10 @@ For setup, decide in this order: component roots and enrollment, `typeScope`, vo
 
 ## Installation and upgrade diagnosis
 
-Skill revision **10** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
+Skill revision **11** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
 
 ```bash
-node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 10
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 11
 ```
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.

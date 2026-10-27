@@ -9,6 +9,7 @@ export const template = {
   catalog: "component-catalog.json",
   importPathStyle: "direct",
   typeScope: "project",
+  typeCheck: "partial",
   componentRoots: [
     {
       path: "src/components",
@@ -87,6 +88,9 @@ export function loadConfig(argument, cwd = process.cwd()) {
   const typeScope = raw.typeScope ?? "project";
   if (!["project", "componentRoots"].includes(typeScope))
     throw new Error("typeScope must be project or componentRoots");
+  const typeCheck = raw.typeCheck ?? "partial";
+  if (!["partial", "strict"].includes(typeCheck))
+    throw new Error("typeCheck must be partial or strict");
   if (!Array.isArray(raw.componentRoots) || !raw.componentRoots.length)
     throw new Error("componentRoots must be nonempty");
   const componentRoots = raw.componentRoots.map((root) => {
@@ -192,6 +196,7 @@ export function loadConfig(argument, cwd = process.cwd()) {
     catalog,
     importPathStyle,
     typeScope,
+    typeCheck,
     componentRoots,
     ...lists,
     vocabulary,

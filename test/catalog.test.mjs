@@ -362,6 +362,9 @@ test("config validation rejects mistakes and ambiguous roots", (t) => {
       c.typeScope = "everything";
     },
     (c) => {
+      c.typeCheck = "sometimes";
+    },
+    (c) => {
       c.exclude = ["src"];
     },
     (c) => {
@@ -790,6 +793,14 @@ export function Foo(props: { label: string }) {
   assert.equal(output.typeScope, "componentRoots");
   assert.equal(output.typeCheck, "partial");
   assert.ok(output.suppressedTypeDiagnostics > 0);
+
+  config.typeCheck = "strict";
+  fs.writeFileSync(configFile, JSON.stringify(config));
+  const strict = run(args, dir);
+  assert.notEqual(strict.status, 0);
+  assert.match(strict.stderr, /not a number|TS2322/);
+  config.typeCheck = "partial";
+  fs.writeFileSync(configFile, JSON.stringify(config));
 
   // A file that does not import any stubbed module must still fail on a real type error.
   write("src/components/Foo.ts", `/**\n * Test component.\n * @componentCatalog\n * @catalogStatus experimental\n * @catalogTask foo\n * @catalogConstraint none\n * @catalogExample production src/example.ts | example\n */\nexport function Foo(props: { label: string }) {\n  const broken: number = "not a number";\n  return null;\n}\n`);
