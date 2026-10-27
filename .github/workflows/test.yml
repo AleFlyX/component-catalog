@@ -29,3 +29,26 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm pack --cache .trial/npm-cache --pack-destination "$RUNNER_TEMP"
+      - name: Install packed tarball and diagnose
+        run: |
+          EXPECTED=$(node -p "require('./package.json').version")
+          REVISION=$(node -e 'const fs=require("fs");const s=fs.readFileSync("skills/component-catalog/SKILL.md","utf8");console.log(/revision:\s*"([0-9]+)"/.exec(s)[1])')
+          TARBALL=$(find "$RUNNER_TEMP" -maxdepth 1 -name 'component-catalog-*.tgz' -print -quit)
+          mkdir -p "$RUNNER_TEMP/consumer"
+          cd "$RUNNER_TEMP/consumer"
+          npm init -y >/dev/null
+          npm install "$TARBALL" --ignore-scripts --no-audit --no-fund
+          ./node_modules/.bin/component-catalog --version
+          ./node_modules/.bin/component-catalog doctor --installation --expect-version "$EXPECTED" --expect-skill-revision "$REVISION"
