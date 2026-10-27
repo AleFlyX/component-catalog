@@ -474,27 +474,39 @@ export function generateCatalog(config, options = {}) {
   let diagnostics = allDiagnostics;
   let suppressedDiagnostics = 0;
   let suppressedTypeCodes = {};
+  let suppressedTypeFiles = [];
+  let suppressedTypeFileCount = 0;
   if (config.typeScope === "componentRoots" && config.typeCheck !== "strict") {
     // Imports outside the component roots are shallow any-stubs. A source file
     // that imports one is "tainted": secondary semantic errors there may be
     // stub artifacts. Keep syntax errors and unresolved imports fatal; suppress
-    // only semantic diagnostics in tainted files, and report the count/codes.
+    // only semantic diagnostics in tainted files, and report the count/codes/files.
     const stubbedFiles = host?.stubbedFiles ?? new Set();
-    diagnostics = allDiagnostics.filter(
+    const suppressedItems = allDiagnostics.filter(
       (item) =>
-        !item.file ||
-        !stubbedFiles.has(item.file.fileName) ||
-        item.code === 2307 ||
-        (item.code >= 1000 && item.code < 2000),
+        item.file &&
+        stubbedFiles.has(item.file.fileName) &&
+        item.code !== 2307 &&
+        !(item.code >= 1000 && item.code < 2000),
     );
-    suppressedDiagnostics = allDiagnostics.length - diagnostics.length;
+    const suppressed = new Set(suppressedItems);
+    diagnostics = allDiagnostics.filter((item) => !suppressed.has(item));
+    suppressedDiagnostics = suppressedItems.length;
+    const byCode = new Map();
+    const byFile = new Map();
+    for (const item of suppressedItems) {
+      byCode.set(item.code, (byCode.get(item.code) ?? 0) + 1);
+      const sourcePath = relative(item.file.fileName);
+      byFile.set(sourcePath, (byFile.get(sourcePath) ?? 0) + 1);
+    }
     suppressedTypeCodes = Object.fromEntries(
-      [...new Set(allDiagnostics
-        .filter((item) => !diagnostics.includes(item))
-        .map((item) => item.code))]
-        .map((code) => [code, allDiagnostics.filter((item) => item.code === code && !diagnostics.includes(item)).length])
-        .sort((a, b) => b[1] - a[1]),
+      [...byCode.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0]),
     );
+    suppressedTypeFileCount = byFile.size;
+    suppressedTypeFiles = [...byFile.entries()]
+      .map(([sourcePath, count]) => ({ sourcePath, count }))
+      .sort((a, b) => b.count - a.count || compare(a.sourcePath, b.sourcePath))
+      .slice(0, 10);
   }
   // unresolved imports and metadata are still checked below.
   if (diagnostics.length) throw new Error(ts.formatDiagnostics(diagnostics, diagnosticHost));
@@ -584,6 +596,9 @@ export function generateCatalog(config, options = {}) {
           : "full",
       suppressedTypeDiagnostics: suppressedDiagnostics,
       ...(Object.keys(suppressedTypeCodes).length ? { suppressedTypeCodes } : {}),
+      ...(suppressedTypeFileCount
+        ? { suppressedTypeFileCount, suppressedTypeFiles }
+        : {}),
     },
     enumerable: false,
   });

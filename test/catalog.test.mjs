@@ -826,6 +826,10 @@ export function Foo(props: { label: string }) {
   assert.equal(output.typeScope, "componentRoots");
   assert.equal(output.typeCheck, "partial");
   assert.ok(output.suppressedTypeDiagnostics > 0);
+  assert.equal(output.suppressedTypeFileCount, 1);
+  assert.deepEqual(output.suppressedTypeFiles, [
+    { sourcePath: "src/components/Foo.ts", count: output.suppressedTypeDiagnostics },
+  ]);
 
   config.typeCheck = "strict";
   fs.writeFileSync(configFile, JSON.stringify(config));

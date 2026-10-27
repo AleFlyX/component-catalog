@@ -93,6 +93,12 @@ export function auditResponse(result, { command = "audit", offset = 0, limit = 2
           ...(result.generation.suppressedTypeCodes
             ? { suppressedTypeCodes: result.generation.suppressedTypeCodes }
             : {}),
+          ...(result.generation.suppressedTypeFileCount
+            ? {
+                suppressedTypeFileCount: result.generation.suppressedTypeFileCount,
+                suppressedTypeFiles: result.generation.suppressedTypeFiles,
+              }
+            : {}),
         }
       : {}),
     discovery: {

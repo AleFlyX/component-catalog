@@ -297,6 +297,12 @@ try {
                 ...(catalog.generation.suppressedTypeCodes
                   ? { suppressedTypeCodes: catalog.generation.suppressedTypeCodes }
                   : {}),
+                ...(catalog.generation.suppressedTypeFileCount
+                  ? {
+                      suppressedTypeFileCount: catalog.generation.suppressedTypeFileCount,
+                      suppressedTypeFiles: catalog.generation.suppressedTypeFiles,
+                    }
+                  : {}),
               }
             : {}),
         };
