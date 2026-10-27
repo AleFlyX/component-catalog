@@ -54,7 +54,7 @@ component-catalog --config component-catalog.config.json check
 component-catalog --config component-catalog.config.json verify --suggest --out component-catalog.verify.json
 ```
 
-它会为每个组件生成导出名查询，为 primary task 唯一的组件生成 task/vocabulary 查询，并生成一条**精确导出名 mixed 查询**验证两个角色能同时出现。自然语言 mixed 和 missing 查询仍需人工补。然后运行：
+它会为每个组件生成导出名查询，为 primary task 唯一的组件生成 task/vocabulary 查询，并生成一条**精确导出名 mixed 查询**；如果存在两个唯一 primary task，还会生成一条**task-based mixed 查询**。自然语言 mixed 和 missing 查询仍需人工补。然后运行：
 
 ```json
 [

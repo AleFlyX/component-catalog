@@ -149,6 +149,21 @@ export function suggestVerifyQueries(catalog, vocabulary = {}) {
       expectedIds: pair.map((component) => component.id),
     });
   }
+  const hasUniqueTask = (component) => component.tasks?.[0] && taskCounts.get(component.tasks[0]) === 1;
+  const taskRepresentatives = [...byLayer.values()]
+    .map((items) => items.find(hasUniqueTask))
+    .filter(Boolean);
+  const taskPair =
+    taskRepresentatives.length >= 2
+      ? taskRepresentatives.slice(0, 2)
+      : components.filter(hasUniqueTask).slice(0, 2);
+  if (taskPair.length === 2) {
+    add({
+      scope: "mixed-task-auto",
+      query: taskPair.map((component) => component.tasks[0]).join(" "),
+      expectedIds: taskPair.map((component) => component.id),
+    });
+  }
   return queries;
 }
 
