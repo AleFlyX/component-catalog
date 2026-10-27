@@ -329,6 +329,14 @@ try {
       ...(command === "get"
         ? { componentIds: inputs.map((value) => value.trim()) }
         : {}),
+      ...(command === "verify"
+        ? {
+            verifyOk: typeof result?.ok === "boolean" ? result.ok : null,
+            verifyQueries: result?.counts?.queries ?? result?.queries ?? null,
+            verifyFailed: result?.counts?.failed ?? null,
+            verifyResultsOmitted: result?.resultsOmitted ?? null,
+          }
+        : {}),
       config: values.config ?? null,
       options: {
         limit: values.limit ?? null,

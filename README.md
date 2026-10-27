@@ -134,7 +134,7 @@ component-catalog get ui.forms.BusinessForm --from src/features/orders/Page.tsx
 - 没有专用组件但同域通用组件可承担角色时，返回通用组件并说明 caveat；只有连通用角色都不存在时才 `missing`。
 - 空结果或结果不佳时再换词/`--brief`/`--limit 10`/`scan`，不要用无依据的 ID 调 `get`。
 
-输出上限：search 4 KiB，get 16 KiB；`truncated` 只表示字节裁剪，匹配数超出 limit 看 `omitted.byLimit`。设置 `COMPONENT_CATALOG_LOG=<path>` 可写本地 JSONL 使用日志；日志不记录源码内容。
+输出上限：search 4 KiB，get 16 KiB；`truncated` 只表示字节裁剪，匹配数超出 limit 看 `omitted.byLimit`。设置 `COMPONENT_CATALOG_LOG=<path>` 可写本地 JSONL 使用日志；日志不记录源码内容，verify 会额外记录 `verifyOk`、`verifyQueries`、`verifyFailed` 和 `verifyResultsOmitted`。
 
 ## 标记组件
 

@@ -52,11 +52,20 @@ test("verify CLI returns 0/1/2 for pass, miss and invalid invocation", (t) => {
   const cli = path.join(root, "bin/component-catalog.mjs");
   const configPath = path.join(root, "examples/basic/component-catalog.config.json");
   fs.writeFileSync(queries, JSON.stringify([{ query: "按钮", expectedId: "demo.ui.Button" }]));
-  const pass = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries], { encoding: "utf8" });
+  const log = path.join(dir, "usage.jsonl");
+  const pass = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries], {
+    encoding: "utf8",
+    env: { ...process.env, COMPONENT_CATALOG_LOG: log },
+  });
   assert.equal(pass.status, 0, pass.stderr);
   const passOutput = JSON.parse(pass.stdout);
   assert.deepEqual(passOutput.results, []);
   assert.equal(passOutput.resultsOmitted, 1);
+  const logEntry = JSON.parse(fs.readFileSync(log, "utf8").trim());
+  assert.equal(logEntry.verifyOk, true);
+  assert.equal(logEntry.verifyQueries, 1);
+  assert.equal(logEntry.verifyFailed, 0);
+  assert.equal(logEntry.verifyResultsOmitted, 1);
   const detailed = spawnSync(process.execPath, [cli, "--config", configPath, "verify", "--queries", queries, "--details"], { encoding: "utf8" });
   assert.equal(detailed.status, 0, detailed.stderr);
   assert.equal(JSON.parse(detailed.stdout).results.length, 1);
