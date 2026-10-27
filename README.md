@@ -182,6 +182,7 @@ npm run build
 
 - `test/fixtures/` 保留最小查询回归 fixture，以及多 componentRoot、primitives、stub 和 ignore/exclude 的生成 fixture。
 - GitHub Actions 在 Node 22/24 运行测试与打包；独立 package job 会实际安装 tarball，执行 `--version` 和 `doctor --installation`。
+- Documenso 51 条、85 条查询的 trial 是本地验证，不进入 CI；CI 用 `test/fixtures/multi-root` 覆盖等价的多根目录/stub 结构。
 - `test/baselines/` 保留开源基线目录。
 - `test/audits/`、`docs/optimization-notes.md` 和 `.trial/` 是本地评测/试验材料，不提交到公开仓库。
 - 修改查询行为、`typeScope` 或配置字段时，补充对应回归测试并同步 skill/references。
