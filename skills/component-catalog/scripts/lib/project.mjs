@@ -77,7 +77,10 @@ function createScopedTypeHost(workspace, options, config, files) {
     if (virtual.has(key)) return virtual.get(key);
     const hash = crypto.createHash("sha1").update(key).digest("hex");
     const file = path.join(workspace, ".component-catalog-stubs", `${hash}.d.ts`);
-    const names = [...(stubNames.get(key) ?? [])].filter((name) => name !== "default");
+    const reserved = new Set(["break","case","catch","class","const","continue","debugger","default","delete","do","else","enum","export","extends","false","finally","for","function","if","import","in","instanceof","new","null","return","super","switch","this","throw","true","try","typeof","var","void","while","with","yield","let","static","implements","interface","package","private","protected","public","await"]);
+    const names = [...(stubNames.get(key) ?? [])].filter(
+      (name) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name) && !reserved.has(name),
+    );
     const content = [
       ...names.map((name) => `export const ${name}: any;`),
       ...names.map((name) => `export type ${name} = any;`),

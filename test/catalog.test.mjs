@@ -724,6 +724,39 @@ test("opt-in usage log records command metadata without changing output", (t) =>
   assert.match(failure.error, /search/i);
 });
 
+test("componentRoots stub host ignores non-identifier import specifiers", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-stub-names-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const write = (file, content) => {
+    const target = path.join(dir, file);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content);
+  };
+  write("tsconfig.json", JSON.stringify({ compilerOptions: { target: "ES2020", module: "ESNext", moduleResolution: "Bundler", skipLibCheck: true, noEmit: true }, include: ["src/**/*.ts"] }));
+  write("node_modules/external-lib/package.json", JSON.stringify({ name: "external-lib", types: "index.d.ts" }));
+  write("node_modules/external-lib/index.d.ts", "export const x: any;\n");
+  write("src/components/Foo.ts", `import * as ext from "external-lib";
+/**
+ * Test component.
+ * @componentCatalog
+ * @catalogStatus experimental
+ * @catalogTask foo
+ * @catalogConstraint none
+ * @catalogExample production src/example.ts | example
+ */
+export function Foo() {
+  if (ext instanceof ext) return null;
+  return null;
+}
+`);
+  write("src/example.ts", `import { Foo } from "./components/Foo";\nexport const example = Foo();\n`);
+  const config = { configVersion: 2, projectRoot: ".", sourceRoot: "src", tsconfig: "tsconfig.json", catalog: "generated/component-catalog.json", typeScope: "componentRoots", componentRoots: [{ path: "src/components", idPrefix: "ui", importPrefix: null, layer: "shared", enrollment: "public", reuse: { scope: "project" } }] };
+  const file = path.join(dir, "component-catalog.config.json");
+  fs.writeFileSync(file, JSON.stringify(config));
+  const result = run(["--config", file, "generate"], dir);
+  assert.equal(result.status, 0, result.stderr);
+});
+
 test("componentRoots typeScope reports suppressed diagnostics instead of silently passing", (t) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "component-catalog-scope-"));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
