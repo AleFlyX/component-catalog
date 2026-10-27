@@ -1,6 +1,10 @@
-# Component Catalog
+# Component Catalog — React/TypeScript Component Discovery for AI Coding Agents
 
 [![test](https://github.com/AleFlyX/component-catalog/actions/workflows/test.yml/badge.svg)](https://github.com/AleFlyX/component-catalog/actions/workflows/test.yml)
+
+**A local, bounded component catalog CLI for React/TypeScript codebases.** Component Catalog indexes components from source declarations and inline JSDoc, then lets an AI coding agent retrieve only the component, import path, Props, constraints and usage it needs—without reading the whole repository.
+
+It is **not** a UI documentation site, a runtime component library, or an MCP server. It is a shell CLI with a saved JSON catalog.
 
 本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
 
@@ -12,6 +16,29 @@
 - 唯一运行依赖：TypeScript `5.9.3`
 
 > 本仓库尚未发布 npm 包，也尚未选择开源许可证。请从明确的 git checkout 或本地 tarball 使用，不要按未发布的包名直接 `npx`。
+
+## Why use it
+
+AI coding agents are good at writing components and expensive at rediscovering an existing design system. Component Catalog gives them a bounded, project-specific index:
+
+- **Find the existing component before creating a duplicate** — search by export name, task tag, vocabulary alias or Prop.
+- **Get the integration facts, not the whole file** — ID, export, import path, required Props, constraints and usage counts.
+- **Bound context in large monorepos** — query output is capped; `typeScope: "componentRoots"` avoids loading the server/lib/Prisma graph.
+- **Keep the index verifiable** — `audit`, `check` and `verify` cover enrollment, freshness and representative queries.
+
+Typical searches this project is designed for: *React component catalog*, *component discovery for AI agents*, *TypeScript component search*, *find component import path and props*, *bounded codebase context*.
+
+## How it works
+
+```text
+scan candidates → annotate public components → generate JSON catalog
+                                      ↓
+                         search / get (bounded output)
+                                      ↓
+                         audit / check / verify in CI
+```
+
+The catalog is generated at build/setup time. Queries read the saved snapshot; they do not scan or modify source files.
 
 ## 快速开始
 
@@ -170,6 +197,8 @@ node "<skill-directory>/scripts/bin/component-catalog.mjs" \
 
 skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。
 
+机器可读的项目摘要：[llms.txt](llms.txt)，用于 AI 搜索/爬虫快速理解项目定位、用法和边界。
+
 跨 agent/模型评测方法见 [evaluation.md](skills/component-catalog/references/evaluation.md)。具体任务、答案和 fixture 路径不写入 SKILL；测试数据保留在本地 `test/audits/`（已 gitignore）。
 
 ## 测试与开发
@@ -186,6 +215,32 @@ npm run build
 - `test/baselines/` 保留开源基线目录。
 - `test/audits/`、`docs/optimization-notes.md` 和 `.trial/` 是本地评测/试验材料，不提交到公开仓库。
 - 修改查询行为、`typeScope` 或配置字段时，补充对应回归测试并同步 skill/references。
+
+## FAQ
+
+### Is this a Storybook or a component documentation site?
+
+No. Storybook is a UI explorer and documentation surface. Component Catalog is a CLI that turns selected component declarations into a compact JSON index for coding agents. It does not render components or replace runtime checks.
+
+### Is this an MCP server?
+
+No. It is a shell CLI with local files and bounded JSON output. It can be invoked by any agent or script that can run a command; no editor extension or MCP transport is bundled.
+
+### Does it work with Claude Code, Cursor, Codex or other coding agents?
+
+It is agent-agnostic: the integration surface is the CLI plus the bundled [SKILL.md](skills/component-catalog/SKILL.md). Agent-specific installation and permissions are managed by the host.
+
+### Does it reduce token usage?
+
+In the local airport benchmark (5 tasks, 3 runs), reading source used about **462.8K total tokens**, while `catalog-details` used about **100.2K**—roughly **78% fewer** in that setting. This is a local benchmark with a 30-entry scoped catalog, not a universal guarantee; setup cost and task shape matter. Benchmark data is intentionally kept out of the public repo.
+
+### Does it index the entire repository?
+
+No. It indexes supported JS/JSX/TS/TSX declarations in explicitly configured component roots, and requires a decision for candidates. Routes, pages, unsupported formats and unselected components may be excluded; `discovery.status=partial` reports acknowledged gaps.
+
+### Does querying modify source or the catalog?
+
+No. `search` and `get` are read-only. `generate` writes the catalog; `audit`, `check` and `verify` do not regenerate it.
 
 ## 已知限制
 

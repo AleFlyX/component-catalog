@@ -1,0 +1,44 @@
+# Component Catalog
+
+> Local, bounded React/TypeScript component discovery CLI for AI coding agents. It indexes explicitly marked components and returns IDs, import paths, Props, constraints and usage without loading the whole repository.
+
+Canonical repository: https://github.com/AleFlyX/component-catalog
+
+## What it does
+
+Component Catalog scans JS/JSX/TS/TSX component roots, reads inline JSDoc metadata, generates a JSON catalog, and serves bounded `search` and `get` queries. It does not start a server, render components, or replace runtime tests.
+
+## Best for
+
+- Finding an existing project component before creating a duplicate
+- Getting the correct import path, required Props and constraints
+- Reducing context spent reading a large component library
+- Verifying catalog enrollment, freshness and representative queries in CI
+
+## Not
+
+- A Storybook replacement or UI explorer
+- An MCP server or editor extension
+- A full-repository index
+- A guarantee of token savings for every task
+
+## Quick start
+
+```bash
+npm ci
+node bin/component-catalog.mjs doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
+node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
+node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json search 按钮
+```
+
+## Agent integration
+
+The CLI is agent-agnostic. The bundled agent instructions are in `skills/component-catalog/SKILL.md`; any agent with shell access can run the commands.
+
+## Validation
+
+`npm test` currently runs 107 tests. GitHub Actions runs Node 22/24, packaging, and an installed-tarball smoke test. Documenso 51-entry and airport token benchmarks are local maintainer trials, not public CI benchmarks.
+
+## Status
+
+CLI 0.4.0, skill revision 12, config schema 2, catalog schema 7. No npm release or open-source license has been selected yet; use a pinned checkout or local tarball.

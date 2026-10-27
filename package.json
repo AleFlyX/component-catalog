@@ -2,7 +2,26 @@
   "name": "component-catalog",
   "version": "0.4.0",
   "private": true,
-  "description": "Local, bounded component discovery for coding agents",
+  "description": "React/TypeScript component discovery and bounded codebase context for AI coding agents",
+  "keywords": [
+    "react",
+    "typescript",
+    "component-catalog",
+    "component-discovery",
+    "ai-agents",
+    "coding-agents",
+    "codebase-search",
+    "jsdoc",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleFlyX/component-catalog.git"
+  },
+  "homepage": "https://github.com/AleFlyX/component-catalog#readme",
+  "bugs": {
+    "url": "https://github.com/AleFlyX/component-catalog/issues"
+  },
   "bin": {
     "component-catalog": "bin/component-catalog.mjs"
   },
