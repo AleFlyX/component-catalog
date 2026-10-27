@@ -13,6 +13,9 @@ import { suggestVerifyQueries, summarizeVerifyResult, verifyCatalog } from "../s
 const root = fileURLToPath(new URL("..", import.meta.url));
 const config = loadConfig(path.join(root, "examples/basic/component-catalog.config.json"));
 const catalog = generateCatalog(config);
+// CLI tests need the saved snapshot; it is gitignored, so create it in clean checkouts.
+fs.mkdirSync(path.dirname(config.catalog), { recursive: true });
+fs.writeFileSync(config.catalog, JSON.stringify(catalog, null, 2) + "\n");
 
 test("verify accepts expected IDs, exports and absent IDs", () => {
   const result = verifyCatalog(catalog, [
