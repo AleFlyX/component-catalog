@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import zlib from "node:zlib";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -98,4 +99,18 @@ test("suggest adds one same-layer mixed query", () => {
   const mixed = suggestions.find((item) => item.scope === "mixed-auto");
   assert.deepEqual(mixed.expectedIds.sort(), ["demo.ui.Button", "demo.ui.Other"]);
   assert.equal(mixed.query, "Button Other");
+});
+
+test("suggested queries pass against all committed airport fixtures", () => {
+  for (const size of ["30", "40", "55", "57"]) {
+    const dir = path.join(root, `test/fixtures/airport-${size}`);
+    const fixtureConfig = JSON.parse(fs.readFileSync(path.join(dir, "trial-config.json"), "utf8"));
+    const fixtureCatalog = JSON.parse(
+      zlib.gunzipSync(fs.readFileSync(path.join(dir, "catalog.json.gz"))).toString("utf8"),
+    );
+    const queries = suggestVerifyQueries(fixtureCatalog, fixtureConfig.vocabulary);
+    const result = verifyCatalog(fixtureCatalog, queries, fixtureConfig.vocabulary);
+    assert.equal(result.ok, true, `airport-${size}: ${JSON.stringify(result.results.filter((item) => !item.ok))}`);
+    assert.ok(queries.some((item) => item.scope === "mixed-auto"));
+  }
 });
