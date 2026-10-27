@@ -41,4 +41,4 @@ The CLI is agent-agnostic. The bundled agent instructions are in `skills/compone
 
 ## Status
 
-CLI 0.4.0, skill revision 12, config schema 2, catalog schema 7. No npm release or open-source license has been selected yet; use a pinned checkout or local tarball.
+CLI 0.4.0, skill revision 12, config schema 2, catalog schema 7. Licensed under MIT. No npm release yet; use a pinned checkout or local tarball.

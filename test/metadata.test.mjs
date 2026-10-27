@@ -31,3 +31,14 @@ test("package, locks, SKILL revision and README stay in sync", () => {
     new RegExp(`doctor --installation --expect-version ${pkg.version.replaceAll(".", "\\.")} --expect-skill-revision ${revision}`),
   );
 });
+
+test("license stays consistent across LICENSE, package and README", () => {
+  const pkg = json("package.json");
+  const license = read("LICENSE");
+  assert.equal(pkg.license, "MIT");
+  assert.equal(json("package-lock.json").packages[""].license, "MIT");
+  assert.match(license, /^MIT License\n/);
+  const readmeText = read("README.md");
+  assert.match(readmeText, /License：`?\[MIT\]\(LICENSE\)`?/);
+  assert.match(readmeText, /## License\n\n\[MIT\]\(LICENSE\)/);
+});

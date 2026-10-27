@@ -2,6 +2,7 @@
   "name": "component-catalog",
   "version": "0.4.0",
   "private": true,
+  "license": "MIT",
   "description": "React/TypeScript component discovery and bounded codebase context for AI coding agents",
   "keywords": [
     "react",

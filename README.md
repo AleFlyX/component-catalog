@@ -14,8 +14,9 @@ It is **not** a UI documentation site, a runtime component library, or an MCP se
 - Catalog schema：`7`
 - Node：`>=22`
 - 唯一运行依赖：TypeScript `5.9.3`
+- License：[MIT](LICENSE)
 
-> 本仓库尚未发布 npm 包，也尚未选择开源许可证。请从明确的 git checkout 或本地 tarball 使用，不要按未发布的包名直接 `npx`。
+> 本仓库尚未发布 npm 包。请从明确的 git checkout 或本地 tarball 使用，不要按未发布的包名直接 `npx`。
 
 ## Why use it
 
@@ -250,3 +251,7 @@ No. `search` and `get` are read-only. `generate` writes the catalog; `audit`, `c
 - 组件目录是发现辅助；项目架构、运行时代码和项目自身检查仍是权威。
 
 更完整的安装、配置、边界和故障排查见 [setup.md](skills/component-catalog/references/setup.md)。
+
+## License
+
+[MIT](LICENSE) © 2026 AleFlyX
