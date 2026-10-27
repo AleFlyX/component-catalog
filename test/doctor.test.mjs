@@ -70,9 +70,9 @@ test("doctor diagnoses absent tool dependencies without failing at module startu
 test("doctor distinguishes instruction revisions even when CLI versions match", (t) => {
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
-  assert.equal(version.skillRevision, 11);
+  assert.equal(version.skillRevision, 12);
   const args = ["doctor", "--installation", "--expect-version", "0.3.0", "--expect-skill-revision"];
-  assert.equal(json(run(cwd, [...args, "11"])).status, "pass");
+  assert.equal(json(run(cwd, [...args, "12"])).status, "pass");
   const mismatch = json(run(cwd, [...args, "1"]), 1);
   assert.equal(mismatch.checks.find((c) => c.id === "cli-version").status, "pass");
   assert.equal(mismatch.checks.find((c) => c.id === "skill-revision").status, "fail");
