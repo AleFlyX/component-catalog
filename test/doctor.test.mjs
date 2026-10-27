@@ -26,7 +26,7 @@ function json(result, status = 0) {
 test("installation doctor works before configuration and rejects mismatched skill versions", (t) => {
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
-  assert.equal(version.version, "0.3.0");
+  assert.equal(version.version, "0.4.0");
   const good = json(run(cwd, ["doctor", "--installation", "--expect-version", version.version]));
   assert.equal(good.status, "pass");
   assert.equal(good.config, null);
@@ -40,7 +40,7 @@ test("installation doctor works before configuration and rejects mismatched skil
   assert.deepEqual(fs.readdirSync(cwd), []);
   for (const args of [
     ["doctor", "--installation", "--config", "absent.json"],
-    ["doctor", "--expect-version", ">=0.3.0"],
+    ["doctor", "--expect-version", ">=0.4.0"],
     ["doctor", "--expect-version", "1".repeat(100) + ".0.0"],
     ["doctor", "--bad"],
     ["doctor", "--limit", "1"],
@@ -71,7 +71,7 @@ test("doctor distinguishes instruction revisions even when CLI versions match", 
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
   assert.equal(version.skillRevision, 12);
-  const args = ["doctor", "--installation", "--expect-version", "0.3.0", "--expect-skill-revision"];
+  const args = ["doctor", "--installation", "--expect-version", "0.4.0", "--expect-skill-revision"];
   assert.equal(json(run(cwd, [...args, "12"])).status, "pass");
   const mismatch = json(run(cwd, [...args, "1"]), 1);
   assert.equal(mismatch.checks.find((c) => c.id === "cli-version").status, "pass");

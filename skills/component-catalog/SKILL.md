@@ -83,10 +83,10 @@ For setup, decide in this order: component roots and enrollment, `typeScope`, vo
 
 ## Installation and upgrade diagnosis
 
-Skill revision **12** targets CLI **0.3.0**. For authorized installation/upgrade, use the active bundled entry:
+Skill revision **12** targets CLI **0.4.0**. For authorized installation/upgrade, use the active bundled entry:
 
 ```bash
-node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 12
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
 ```
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.

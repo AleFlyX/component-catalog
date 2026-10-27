@@ -2,7 +2,7 @@
 
 本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
 
-- CLI：`0.3.0`
+- CLI：`0.4.0`
 - Skill revision：`12`
 - Catalog schema：`7`
 - Node：`>=22`
@@ -14,7 +14,7 @@
 
 ```bash
 npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.3.0 --expect-skill-revision 12
+node bin/component-catalog.mjs doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
 node bin/component-catalog.mjs scan examples/basic/src --summary
 
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
@@ -162,7 +162,7 @@ export function BusinessForm(props: { disabled?: boolean }) { /* ... */ }
 ```bash
 npm ci --prefix "<skill-directory>/scripts" --ignore-scripts --no-audit --no-fund
 node "<skill-directory>/scripts/bin/component-catalog.mjs" \
-  doctor --installation --expect-version 0.3.0 --expect-skill-revision 12
+  doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
 ```
 
 skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。

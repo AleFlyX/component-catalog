@@ -170,7 +170,7 @@ try {
       (values["expect-version"].length > 64 ||
         !/^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(values["expect-version"]))
     )
-      throw new Error("--expect-version requires an exact release version such as 0.3.0");
+      throw new Error("--expect-version requires an exact release version such as 0.4.0");
     const maxLimit = command === "scan" || (diagnosticCommand && command !== "verify") ? 50 : 10;
     if (
       values.limit !== undefined &&
