@@ -16,7 +16,7 @@ It is **not** a UI documentation site, a runtime component library, or an MCP se
 - 唯一运行依赖：TypeScript `5.9.3`
 - License：[MIT](LICENSE)
 
-> 本仓库尚未发布 npm 包。请从明确的 git checkout 或本地 tarball 使用，不要按未发布的包名直接 `npx`。
+> 尚未发布到 npmjs registry；当前通过 GitHub Release tarball 分发。不要按未发布的 npm 包名直接 `npx`。
 
 ## Why use it
 
@@ -57,6 +57,15 @@ npm test
 ```
 
 `npm run build` 检查 npm 打包清单；源码直接以 ESM 运行，不需要编译。`examples/basic` 只用于验证提取 API，不含 UI 运行依赖。
+
+## 从 GitHub Release 安装
+
+```bash
+npm install https://github.com/AleFlyX/component-catalog/releases/download/v0.4.0/aleflyx-component-catalog-0.4.0.tgz
+./node_modules/.bin/component-catalog --version
+```
+
+这是 GitHub Release 分发的 npm tarball；不依赖 npmjs registry。CI 会在 `v*` tag 上运行测试、校验 tag 与包版本、打包并创建 Release。
 
 ## 接入新项目
 

@@ -1,7 +1,8 @@
 {
-  "name": "component-catalog",
+  "name": "@aleflyx/component-catalog",
   "version": "0.4.0",
   "private": true,
+  "license": "MIT",
   "description": "Local, bounded component discovery for coding agents",
   "bin": {
     "component-catalog": "bin/component-catalog.mjs"
