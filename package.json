@@ -1,6 +1,6 @@
 {
-  "name": "@aleflyx/component-catalog",
-  "version": "0.4.0",
+  "name": "@codecantbuild/component-catalog",
+  "version": "0.4.1",
   "private": false,
   "license": "MIT",
   "publishConfig": {

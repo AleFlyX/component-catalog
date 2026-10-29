@@ -8,15 +8,15 @@ It is **not** a UI documentation site, a runtime component library, or an MCP se
 
 本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
 
-- CLI：`0.4.0`
-- Skill revision：`12`
+- CLI：`0.4.1`
+- Skill revision：`13`
 - Config schema：`2`
 - Catalog schema：`7`
 - Node：`>=22`
 - 唯一运行依赖：TypeScript `5.9.3`
 - License：[MIT](LICENSE)
 
-> 尚未发布到 npmjs registry；当前通过 GitHub Release tarball 分发。不要按未发布的 npm 包名直接 `npx`。
+> 已发布到 npmjs registry：[@codecantbuild/component-catalog](https://www.npmjs.com/package/@codecantbuild/component-catalog)。同时继续通过 GitHub Release tarball 分发。
 
 ## Why use it
 
@@ -45,7 +45,7 @@ The catalog is generated at build/setup time. Queries read the saved snapshot; t
 
 ```bash
 npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
+node bin/component-catalog.mjs doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
 node bin/component-catalog.mjs scan examples/basic/src --summary
 
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
@@ -58,14 +58,23 @@ npm test
 
 `npm run build` 检查 npm 打包清单；源码直接以 ESM 运行，不需要编译。`examples/basic` 只用于验证提取 API，不含 UI 运行依赖。
 
-## 从 GitHub Release 安装
+## 安装
+
+已发布到 npmjs registry（公开 scoped 包）：
 
 ```bash
-npm install https://github.com/AleFlyX/component-catalog/releases/download/v0.4.0/aleflyx-component-catalog-0.4.0.tgz
+npm install @codecantbuild/component-catalog
+npx @codecantbuild/component-catalog --version
+```
+
+也可以安装 GitHub Release 分发的 tarball（内容与 npm 包一致，不依赖 registry）：
+
+```bash
+npm install https://github.com/AleFlyX/component-catalog/releases/download/v0.4.1/codecantbuild-component-catalog-0.4.1.tgz
 ./node_modules/.bin/component-catalog --version
 ```
 
-这是 GitHub Release 分发的 npm tarball；不依赖 npmjs registry。CI 会在 `v*` tag 上运行测试、校验 tag 与包版本、打包并创建 Release。
+CI 会在 `v*` tag 上运行测试、校验 tag 与包版本、打包并创建 Release；npm 包从本仓库主分支手动发布。
 
 ## 接入新项目
 
@@ -202,7 +211,7 @@ export function BusinessForm(props: { disabled?: boolean }) { /* ... */ }
 ```bash
 npm ci --prefix "<skill-directory>/scripts" --ignore-scripts --no-audit --no-fund
 node "<skill-directory>/scripts/bin/component-catalog.mjs" \
-  doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
+  doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
 ```
 
 skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。

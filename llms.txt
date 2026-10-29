@@ -26,7 +26,7 @@ Component Catalog scans JS/JSX/TS/TSX component roots, reads inline JSDoc metada
 
 ```bash
 npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.4.0 --expect-skill-revision 12
+node bin/component-catalog.mjs doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
 node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json search 按钮
 ```
@@ -37,8 +37,8 @@ The CLI is agent-agnostic. The bundled agent instructions are in `skills/compone
 
 ## Validation
 
-`npm test` currently runs 107 tests. GitHub Actions runs Node 22/24, packaging, and an installed-tarball smoke test. Documenso 51-entry and airport token benchmarks are local maintainer trials, not public CI benchmarks.
+`npm test` currently runs 108 tests. GitHub Actions runs Node 22/24, packaging, and an installed-tarball smoke test. Documenso 51-entry and airport token benchmarks are local maintainer trials, not public CI benchmarks.
 
 ## Status
 
-CLI 0.4.0, skill revision 12, config schema 2, catalog schema 7. Licensed under MIT. Distributed as a GitHub Release npm tarball, not through the npmjs registry yet.
+CLI 0.4.1, skill revision 13, config schema 2, catalog schema 7. Licensed under MIT. Published to the npmjs registry as @codecantbuild/component-catalog and also distributed as GitHub Release tarballs.

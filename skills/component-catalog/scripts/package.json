@@ -1,6 +1,6 @@
 {
-  "name": "@aleflyx/component-catalog",
-  "version": "0.4.0",
+  "name": "@codecantbuild/component-catalog",
+  "version": "0.4.1",
   "private": true,
   "license": "MIT",
   "description": "Local, bounded component discovery for coding agents",

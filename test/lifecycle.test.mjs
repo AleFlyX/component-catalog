@@ -695,7 +695,7 @@ test("doctor diagnoses project readiness without requiring enrollment or changin
   f.write("client/ui/Card.ts", "export function Card() {}\n");
   const before = fs.readFileSync(f.configPath);
   const timestamp = fs.statSync(f.configPath).mtimeMs;
-  const report = json(f.run(["doctor", "--expect-version", "0.4.0"]));
+  const report = json(f.run(["doctor", "--expect-version", "0.4.1"]));
   assert.equal(report.scope, "project");
   assert.equal(report.checks.find((item) => item.id === "catalog").status, "not_run");
   assert.equal(fs.existsSync(path.join(f.root, f.raw.catalog)), false);
