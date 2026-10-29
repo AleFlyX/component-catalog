@@ -45,7 +45,7 @@ jobs:
         run: |
           EXPECTED=$(node -p "require('./package.json').version")
           REVISION=$(node -e 'const fs=require("fs");const s=fs.readFileSync("skills/component-catalog/SKILL.md","utf8");console.log(/revision:\s*"([0-9]+)"/.exec(s)[1])')
-          TARBALL=$(find "$RUNNER_TEMP" -maxdepth 1 -name 'component-catalog-*.tgz' -print -quit)
+          TARBALL=$(find "$RUNNER_TEMP" -maxdepth 1 -name '*component-catalog-*.tgz' -print -quit)
           mkdir -p "$RUNNER_TEMP/consumer"
           cd "$RUNNER_TEMP/consumer"
           npm init -y >/dev/null
