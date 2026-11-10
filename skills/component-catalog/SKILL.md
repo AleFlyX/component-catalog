@@ -1,7 +1,7 @@
 ---
 name: component-catalog
 metadata:
-  revision: "13"
+  revision: "14"
 description: Configure, query and maintain a local React component catalog from JavaScript or TypeScript. Use for requested catalog setup, reusable component selection, or component changes in configured roots. Unrelated business work does not require catalog setup or migration.
 ---
 
@@ -15,14 +15,14 @@ Use the catalog as a discovery aid; project architecture and runtime source rema
 | --- | --- |
 | Select an existing component or answer an API question | Use the query workflow below. No installation, generation or migration for a read-only request. |
 | Add/change/move/delete a component in configured roots, or change its examples | Read [maintenance.md](references/maintenance.md), maintain affected metadata and verify freshness. A known-file fix can skip discovery. |
-| Requested first setup, scope expansion or migration | Read [setup.md](references/setup.md). Inspect first; the Agent configures and annotates the selected scope. |
+| Requested first setup, scope expansion or migration | Read [setup.md](references/setup.md). Inspect first; the Agent configures and annotates the selected scope. Seed the template with `init --locale en` or `init --locale zh-CN` matching the language users actually type; `init` never guesses it. |
 | Unrelated business work or an explicit pause of catalog work | Stay within the requested scope; do not initiate catalog setup, upgrade or migration. Existing project checks may still require catalog maintenance. Report such failures without disabling checks or claiming they passed. |
 
 Read supporting instructions for the selected workflow; ordinary queries need neither setup nor maintenance instructions. Missing configuration is not permission to initialize a catalog. Respect an explicit pause of catalog work rather than treating this skill as authority to resume it.
 
 ## Query existing components
 
-Find the nearest `component-catalog.config.json`, or use the project's explicit config path. Read that small configuration and relevant package scripts. `projectRoot` is relative to the config; other configured paths are relative to projectRoot.
+Find the nearest `component-catalog.config.json`, or use the project's explicit config path. Read that small configuration and relevant package scripts once, before the first query in a project, so `projectRoot` and the configured paths resolve correctly; `projectRoot` is relative to the config and every other configured path is relative to projectRoot. Re-read it when a query fails on paths or when you need to explain catalog behavior. Do not re-inspect it during routine queries.
 
 Search by task, export name or Prop name, get an exact returned ID, then read the necessary source and recommended example:
 
@@ -37,9 +37,14 @@ component-catalog --config <config-path> get <exact-id> --from src/features/Targ
 
 Substitute the actual local command. Use silent package-runner output when JSON is needed, for example `npm --silent run component -- ...` or `pnpm --silent component ...`. Do not routinely read the full generated catalog.
 
-Keep the query budget small: start with one search; if its `importPath` and `requiredProps` answer the task, do not call get. Get only when you need constraints, examples or type details that are absent from the search response, and reuse that response instead of fetching the same ID again. Do not call get merely to confirm an ID, importPath or requiredProps that `--details` already returned; that is a budget failure. When several components need details, pass 2–5 IDs to one get command. Use `--details` on a search when the first constraint or production/preview/test usage counts are needed; use `--include props` only when you need the prop-name index and `--prop` for one property. Do not inspect the config, run `--help`, or explore with shell commands during a normal query; invoke the documented CLI command directly. When a catalog mixes shared UI with feature components, use `--layer feature` for page/feature tasks and `--layer shared-ui` for primitives to avoid unrelated candidates. If unsure which layer to use, pass `--layer auto` only for single-intent queries; for mixed-intent queries use `--per-layer 3` to see the top results from each layer; in a single-layer catalog that default automatically expands to 5 so a same-layer second role is not cut off. Use `--per-layer 5` explicitly when a multi-layer catalog has more than three strong candidates in one layer. For a mixed request, enumerate the requested roles before answering. Every role must have a component ID or an explicit missing marker in a `components` array; never answer only the first component when the query asks for several. If the exact role has no dedicated component but a general component clearly serves that role in the same domain (e.g. a general traveler-booking detail screen for a special-passenger booking detail), return the general component with an explicit caveat. Mark missing only when no catalog component serves the role, or only a narrower/different domain remains. Add `--layer-fallback` when the layer guess may be wrong; the response marks `layerFallback: true` if it retried without the filter.
+- **Budget:** one search first. If its `importPath` and `requiredProps` answer the task, do not call get. Get only for constraints, examples or type details the search response lacks, and never re-get an ID you already have. `--details` exists so one search can replace a follow-up get.
+- **Batching:** when several components need details, pass 2–5 IDs to one get command. Use `--include props` only for the prop-name index, and `--prop` for one property.
+- **Layer selection:** for a catalog that mixes shared UI with feature components, use `--layer feature` for page tasks and `--layer shared-ui` for primitives. `--layer auto` is for single-intent queries only; for mixed intent use `--per-layer 3`. In a single-layer catalog that default expands to 5 so a same-layer second role is not starved; use `--per-layer 5` explicitly when a multi-layer catalog has more than three strong candidates in one layer. Add `--layer-fallback` when the layer guess may be wrong; the response marks `layerFallback: true` if it retried without the filter.
+- **Mixed requests:** enumerate the requested roles before answering. Every role needs a component ID or an explicit missing marker in a `components` array; never answer only the first component. If the exact role has no dedicated component but a general one clearly serves it in the same domain (a general traveler-booking detail screen for a special-passenger booking detail), return the general component with an explicit caveat. Mark missing only when no catalog component serves the role, or only a narrower or different domain remains.
 
-- Search is limited to 4 KiB; detail to 16 KiB; batch detail shares the 16 KiB budget across 1–5 IDs. `truncated` means the response lost fields/items to the byte cap; more matches than `--limit` appear as `omitted.byLimit`, not `truncated`. Respect `omitted`, `selection.partial`, inheritedTypes and partial/unsupported schemaStatus. An absent catalog Prop may be inherited or untyped; `any`/`unknown` and empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
+- Search is capped at 4 KiB and detail at 16 KiB; batch detail shares the 16 KiB across 1–5 IDs. `truncated` means the response lost fields or items to the byte cap, while more matches than `--limit` appear as `omitted.byLimit`; they are different signals.
+- Respect `omitted`, `selection.partial`, `inheritedTypes` and a partial or unsupported `schemaStatus`. An absent catalog Prop may be inherited or untyped, and `any`/`unknown` or empty extracted fields do not prove the component accepts no Props. Inspect source before declaring an API unavailable.
+- Each result reports `matched`: `name` (exact or substring of ID/export name), `task` (task tag, including expanded vocabulary), `summary` (the word merely appeared in prose), or `prop` (a Prop name). Treat `summary` as the weakest signal: it does not prove the component serves the task, so widen the query or scan source before recommending it. A single weak hit is not a confirmed candidate.
 - `--prop` is exact and case-sensitive, mutually exclusive with `--include`. Namespace entries use members, not Props.
 - If importPath is null, use `get --from <caller-file>` to derive the relative import. The caller path is relative to projectRoot, not the current shell directory, and may name a planned file. Respect importContext and exportKind. This only computes a path from the saved snapshot; it does not check freshness, read the caller, enforce ownership, or prove bundler/runtime compatibility. Existing module aliases remain unchanged when --from is supplied.
 - Compare `reuse` with the target module and project rules: `project` still respects architecture, `module` requires the same owner, `unspecified` means unknown. Search neither filters by caller nor enforces imports.
@@ -70,7 +75,7 @@ Choose `typeScope` before the first `generate`; it is a config decision, not a q
 | Small/medium React project, components import only project UI | `typeScope: "project"` (default) | Full dependency types and inherited Props |
 | Large monorepo where components import a server/lib/trpc/Prisma graph | `typeScope: "componentRoots"` | Loads only the component-root type graph; imports outside roots become shallow any-types |
 
-If `generate` runs out of memory, approaches 2 GB, or its compiler program pulls server packages into a UI catalog, do not raise `--max-old-space-size` as the fix and do not add `@ts-nocheck`, manual stub files, or rewrite imports. Set `typeScope: "componentRoots"`, regenerate, then `audit` and `check` under the default Node heap. Report the tradeoff explicitly: local Props remain typed, but Props inherited from modules outside the roots may be `any`/partial. `generate`, `audit` and `check` report `typeScope`, `typeCheck`, `suppressedTypeDiagnostics` and optional `suppressedTypeCodes` / `suppressedTypeFiles` (capped at 10, with `suppressedTypeFileCount`). By default only semantic diagnostics in files that imported a root-external stub are suppressed; syntax errors, unresolved imports and files without stub imports still fail. Set `typeCheck: "strict"` to disable even that suppression; then root-external stub errors also fail, so bring required shared packages into `componentRoots`. A pass with `typeCheck: "partial"` still does not prove full type checking. If those inherited types are essential, bring the shared primitive package into `componentRoots` instead of claiming full fidelity.
+If `generate` runs out of memory, approaches 2 GB, or its compiler program pulls server packages into a UI catalog, switch to `componentRoots` and regenerate under the default Node heap. The remediation contract, the suppression defaults, `typeCheck` tradeoffs and the report fields live in [setup.md](references/setup.md#large-repository-type-scope). Report the tradeoff explicitly: local Props stay typed, Props inherited from modules outside the roots may be `any`/partial.
 
 ## Decision consistency
 
@@ -83,11 +88,13 @@ For setup, decide in this order: component roots and enrollment, `typeScope`, vo
 
 ## Installation and upgrade diagnosis
 
-Skill revision **13** targets CLI **0.4.1**. For authorized installation/upgrade, use the active bundled entry:
+Skill revision **14** targets CLI **0.5.0**. For authorized installation/upgrade, use the active bundled entry:
 
 ```bash
-node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
+node <skill-directory>/scripts/bin/component-catalog.mjs doctor --installation --expect-version 0.5.0 --expect-skill-revision 14 --expect-skill-content sha256:<digest>
 ```
+
+`--expect-skill-content` pins the digest of the bundled instruction files (`SKILL.md` plus `references/*.md`). Revision numbers are shared names: a fork that splits a section into a new reference file keeps the number while changing the instructions, and `--expect-skill-revision` cannot tell the two apart. Pin the digest whenever a downstream copy may be locally adapted, and record it beside the checkout.
 
 With configuration, replace `--installation` with `--config <config-path>`. Doctor is read-only: readiness does not prove enrollment, freshness or routine-check integration. Keep CLI and instructions from one pinned source; do not change revision numbers to bypass a mismatch. For missing dependencies or an incomplete copy, follow [setup.md](references/setup.md#install-and-diagnose) within authorized installation work.
 
