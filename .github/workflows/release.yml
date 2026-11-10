@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm test
@@ -41,3 +41,37 @@ jobs:
           gh release create "$GITHUB_REF_NAME" dist/*.tgz \
             --title "$GITHUB_REF_NAME" \
             --generate-notes
+
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: release
+    # Trusted publishing (OIDC) needs id-token: write on the job that publishes,
+    # and a Node whose bundled npm is >= 11.5.1. Job-level permissions replace
+    # the workflow-level set, so id-token must be granted again here.
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          # Official guidance: never cache dependencies in a release build,
+          # otherwise a poisoned cache can alter what gets published.
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm test
+      - name: Verify tag matches package version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          test "$GITHUB_REF_NAME" = "v$VERSION" || {
+            echo "Tag $GITHUB_REF_NAME does not match package version $VERSION"
+            exit 1
+          }
+      # --provenance is the OIDC switch: it signs the build origin and requires
+      # id-token: write. Dropping it silently falls back to token auth, which
+      # fails once the npm account disallows tokens.
+      - name: Publish to npm
+        run: npm publish --provenance --access public
