@@ -5,6 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { loadConfig } from "../skills/component-catalog/scripts/lib/config.mjs";
 import { scan } from "../skills/component-catalog/scripts/lib/scan.mjs";
 
 const cli = fileURLToPath(new URL("../bin/component-catalog.mjs", import.meta.url));
@@ -461,6 +462,33 @@ test("new users can follow help and errors from inventory through annotation and
   assert.equal(ok(run([...prefix, "generate", "--check"])).command, "check");
   fs.appendFileSync(file, "\n// changed\n");
   fail(run([...prefix, "generate", "--check"]), /stale.*--config.*with space.json.*generate/);
+});
+
+test("init seeds an English template and selects a locale on request", (t) => {
+  const f = fixture(t);
+  // The default example term is English, matching the English summaries and
+  // task tags the tool ships with.
+  const english = ok(run(["init"]));
+  assert.deepEqual(english.vocabulary, { button: { primary: "button", related: [] } });
+  const chinese = ok(run(["init", "--locale", "zh-CN"]));
+  assert.deepEqual(chinese.vocabulary, { 按钮: { primary: "button", related: [] } });
+  // Locale only seeds the vocabulary example; everything else is identical.
+  assert.deepEqual({ ...chinese, vocabulary: english.vocabulary }, english);
+  // An unsupported locale is an invalid invocation, not a silent fallback.
+  fail(run(["init", "--locale", "fr"]), /Unknown locale; choose en, zh-CN/);
+  fail(run(["init", "--locale"]), /component-catalog:/)
+  // The default-locale hint is a terminal affordance only: a captured run must
+  // keep stdout pure JSON and stderr empty, which every caller asserts.
+  const captured = run(["init"]);
+  assert.equal(captured.status, 0);
+  assert.equal(captured.stderr, "");
+  assert.deepEqual(JSON.parse(captured.stdout).vocabulary, { button: { primary: "button", related: [] } });;
+  // Both templates must remain loadable configurations.
+  for (const template of [english, chinese]) {
+    const config = { ...template, sourceRoot: "src", tsconfig: "tsconfig.json" };
+    const configFile = f.write(`init-${Object.keys(template.vocabulary)[0]}.json`, config);
+    assert.equal(loadConfig(configFile).configVersion, 2);
+  }
 });
 
 test("scan metadata presence does not masquerade as generation readiness", (t) => {

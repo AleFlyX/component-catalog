@@ -2,24 +2,24 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { loadConfig, template, validateGenerationPaths } from "../lib/config.mjs";
+import { loadConfig, templateFor, templateLocales, validateGenerationPaths } from "../lib/config.mjs";
 import { loadCatalog } from "../lib/catalog.mjs";
 import { writeFileAtomic } from "../lib/files.mjs";
 import { search, get, getMany } from "../lib/query.mjs";
 
 const usage = {
   doctor:
-    "component-catalog [--config path] doctor [--installation] [--expect-version x.y.z] [--expect-skill-revision 1..999999]\nRead-only installation, bundled skill revision, version, config and dependency diagnosis. --installation skips project checks. Exit 1 for findings, 2 for invalid invocation. Does not audit enrollment or freshness.\n",
+    "component-catalog [--config path] doctor [--installation] [--expect-version x.y.z] [--expect-skill-revision 1..999999] [--expect-skill-content sha256:hex]\nRead-only installation, bundled skill revision, version, config and dependency diagnosis. --installation skips project checks. Exit 1 for findings, 2 for invalid invocation. Does not audit enrollment or freshness. --expect-skill-content pins the digest of the bundled instruction files, which distinguishes checkouts that share a revision number but not instructions.\n",
   audit:
     "component-catalog [--config path] audit [--limit 1..50] [--offset n]\nRead-only enrollment and metadata audit; requires explicit v2 policies. Exit 1 for findings, 2 if unable to check.\n",
   check:
     "component-catalog [--config path] check [--limit 1..50] [--offset n]\nAudit enrollment and verify generated catalog freshness without writing.\n",
   scan: "component-catalog scan <directory> [--summary | --query text | --brief] [--limit 1..50] [--offset n]\nRead-only JS/JSX/TS/TSX candidate inventory; no config or markers required. --summary groups by immediate child directory. --brief returns only name/path/line/marked/supportedShape so more items fit per bounded page. --query filters names, paths, JSDoc summaries and task tags (all whitespace-separated terms); no vocabulary expansion. Does not enroll components.\n",
-  init: "component-catalog init\nPrints a JSON template only. Adapt paths and save it as component-catalog.config.json.\n",
+  init: "component-catalog init [--locale en|zh-CN]\nPrints a JSON template only. Adapt paths and save it as component-catalog.config.json. --locale seeds the example vocabulary term in that language; summaries and task tags stay English either way.\n",
   generate:
     "component-catalog [--config path] generate [--check]\nGenerate explicitly marked components; --check compares without writing. Unmarked candidates need annotation first.\n",
   search:
-    "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback] [--per-layer 1..5]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer; --layer-fallback retries without the filter when that layer has no matches. --per-layer returns the top N from each layer for mixed-intent queries; it overrides --limit so a tail layer is not cut off.\n",
+    "component-catalog [--config path] search <query> [--limit 1..10] [--brief] [--details] [--layer name] [--layer-fallback] [--per-layer 1..5]\nRead the existing catalog; default limit 5. Try an export name, task tag or Prop name. --brief omits summaries so more items fit the 4 KiB page. --details adds the first constraint and usage counts to reduce a separate get. --layer restricts results to one configured layer; --layer auto uses the top-ranked result layer; --layer-fallback retries without the filter when that layer has no matches. --per-layer returns the top N from each layer for mixed-intent queries; it overrides --limit so a tail layer is not cut off, and in a single-layer catalog the default 3 expands to 5 so a same-layer second role is not starved.\n",
   verify:
     "component-catalog [--config path] verify (--queries <queries.json> | --suggest) [--out <file.json>] [--details] [--limit 1..10]\nRead-only retrieval gate against the saved catalog. Each query must declare expected IDs/exports (and optionally absent IDs or expectNoResults). --suggest prints a starter query array from export names and unique primary tasks on a nonempty generated catalog; it accepts only --config/--out, so add mixed/missing cases before running with --queries. Default stdout is failure-focused; --out writes the complete report and --details also prints every passing result. Exit 1 when any query misses; run check first for freshness.\n",
   get: "component-catalog [--config path] get <id> [<id> ...] [--include props,members,constraints,examples,usage | --prop name] [--from project/relative/caller.tsx]\nUse exact IDs from search. Accepts 1–5 IDs; multiple IDs return components[] and never combine with --prop or --from. --prop is case-sensitive; namespaces use members. --from derives a relative import from the saved catalog without reading caller/source files.\n",
@@ -72,6 +72,8 @@ const cliOptions = {
   installation: { type: "boolean" },
   "expect-version": { type: "string" },
   "expect-skill-revision": { type: "string" },
+  "expect-skill-content": { type: "string" },
+  locale: { type: "string" },
 };
 try {
   // Retain the diagnostic exit code even if parsing fails on a missing option
@@ -123,7 +125,7 @@ try {
     activeCommand = command;
     activeInputs = inputs;
     const allowed = {
-      init: [],
+      init: ["locale"],
       scan: ["limit", "offset", "summary", "query", "brief"],
       generate: ["config", "check"],
       search: ["config", "limit", "brief", "details", "layer", "layer-fallback", "per-layer"],
@@ -131,7 +133,7 @@ try {
       audit: ["config", "limit", "offset"],
       check: ["config", "limit", "offset"],
       verify: ["config", "limit", "queries", "suggest", "out", "details"],
-      doctor: ["config", "installation", "expect-version", "expect-skill-revision"],
+      doctor: ["config", "installation", "expect-version", "expect-skill-revision", "expect-skill-content"],
     };
     diagnosticCommand = ["audit", "check", "doctor", "verify"].includes(command);
     if (!Object.hasOwn(allowed, command)) throw new Error("Unknown or missing command; use --help");
@@ -171,7 +173,7 @@ try {
       (values["expect-version"].length > 64 ||
         !/^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(values["expect-version"]))
     )
-      throw new Error("--expect-version requires an exact release version such as 0.4.0");
+      throw new Error("--expect-version requires an exact release version such as 0.5.0");
     const maxLimit = command === "scan" || (diagnosticCommand && command !== "verify") ? 50 : 10;
     if (
       values.limit !== undefined &&
@@ -204,7 +206,23 @@ try {
       !/^[1-9][0-9]{0,5}$/.test(values["expect-skill-revision"])
     )
       throw new Error("--expect-skill-revision must be 1..999999");
-    if (command === "init") result = template;
+    if (
+      values["expect-skill-content"] !== undefined &&
+      !/^sha256:[a-f0-9]{8,64}$/.test(values["expect-skill-content"])
+    )
+      throw new Error("--expect-skill-content must look like sha256:<hex>");
+    if (command === "init") {
+      result = templateFor(values.locale ?? "en");
+      // A Chinese-first project silently receives an English example term and
+      // never learns `--locale` exists, because the only documentation lives in
+      // setup.md. stdout must stay pure JSON and stderr is the error channel, so
+      // this hint appears only when stderr is a terminal: a pipe or capture keeps
+      // both streams exactly as before, and redirecting stdout alone still shows it.
+      if (values.locale === undefined && process.stderr.isTTY)
+        process.stderr.write(
+          "component-catalog: seeded the English example term; pass --locale zh-CN when users will type Chinese.\n",
+        );
+    }
     else if (command === "scan") {
       const { scan } = await import("../lib/scan.mjs");
       result = scan(input, {
@@ -224,6 +242,7 @@ try {
           values["expect-skill-revision"] === undefined
             ? undefined
             : Number(values["expect-skill-revision"]),
+        expectSkillContent: values["expect-skill-content"],
       });
       if (result.status === "fail") process.exitCode = 1;
     } else {

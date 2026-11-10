@@ -1,6 +1,6 @@
 {
   "name": "@codecantbuild/component-catalog",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": false,
   "license": "MIT",
   "publishConfig": {
@@ -32,7 +32,8 @@
   "files": [
     "bin",
     "skills",
-    "README.md"
+    "README.md",
+    "README.zh.md"
   ],
   "type": "module",
   "scripts": {

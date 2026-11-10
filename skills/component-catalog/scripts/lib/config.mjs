@@ -1,6 +1,17 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// `init` seeds one vocabulary entry so the template is syntactically valid and
+// shows the term-to-task shape. Component summaries and task tags are English,
+// so the default example is English too; a Chinese-first project asks for
+// `init --locale zh-CN` instead of editing the seeded term by hand.
+const templateVocabulary = {
+  en: { button: { primary: "button", related: [] } },
+  "zh-CN": { 按钮: { primary: "button", related: [] } },
+};
+
+export const templateLocales = Object.keys(templateVocabulary);
+
 export const template = {
   configVersion: 2,
   projectRoot: ".",
@@ -22,8 +33,18 @@ export const template = {
   exclude: [],
   previewRoots: [],
   testRoots: [],
-  vocabulary: { 按钮: { primary: "button", related: [] } },
+  vocabulary: { ...templateVocabulary.en },
 };
+
+/**
+ * Build the init template for a locale.
+ * @param locale - one of {@link templateLocales}; omit for the English default.
+ */
+export function templateFor(locale = "en") {
+  if (!Object.hasOwn(templateVocabulary, locale))
+    throw new Error(`Unknown locale; choose ${templateLocales.join(", ")}`);
+  return { ...structuredClone(template), vocabulary: structuredClone(templateVocabulary[locale]) };
+}
 
 export const inside = (root, file) => file === root || file.startsWith(root + path.sep);
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);

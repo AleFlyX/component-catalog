@@ -26,7 +26,7 @@ function json(result, status = 0) {
 test("installation doctor works before configuration and rejects mismatched skill versions", (t) => {
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
-  assert.equal(version.version, "0.4.1");
+  assert.equal(version.version, "0.5.0");
   assert.equal(version.configSchemaVersion, 2);
   assert.equal(version.catalogSchemaVersion, 7);
   const good = json(run(cwd, ["doctor", "--installation", "--expect-version", version.version]));
@@ -42,7 +42,7 @@ test("installation doctor works before configuration and rejects mismatched skil
   assert.deepEqual(fs.readdirSync(cwd), []);
   for (const args of [
     ["doctor", "--installation", "--config", "absent.json"],
-    ["doctor", "--expect-version", ">=0.4.1"],
+    ["doctor", "--expect-version", ">=0.5.0"],
     ["doctor", "--expect-version", "1".repeat(100) + ".0.0"],
     ["doctor", "--bad"],
     ["doctor", "--limit", "1"],
@@ -72,9 +72,9 @@ test("doctor diagnoses absent tool dependencies without failing at module startu
 test("doctor distinguishes instruction revisions even when CLI versions match", (t) => {
   const cwd = fixture(t);
   const version = json(run(cwd, ["--version"]));
-  assert.equal(version.skillRevision, 13);
-  const args = ["doctor", "--installation", "--expect-version", "0.4.1", "--expect-skill-revision"];
-  assert.equal(json(run(cwd, [...args, "13"])).status, "pass");
+  assert.ok(Number.isInteger(version.skillRevision), "bundled SKILL.md must declare a numeric revision");
+  const args = ["doctor", "--installation", "--expect-version", "0.5.0", "--expect-skill-revision"];
+  assert.equal(json(run(cwd, [...args, String(version.skillRevision)])).status, "pass");
   const mismatch = json(run(cwd, [...args, "1"]), 1);
   assert.equal(mismatch.checks.find((c) => c.id === "cli-version").status, "pass");
   assert.equal(mismatch.checks.find((c) => c.id === "skill-revision").status, "fail");
@@ -95,6 +95,51 @@ test("doctor distinguishes instruction revisions even when CLI versions match", 
   assert.equal(old.checks.find((c) => c.id === "skill-revision").status, "fail");
   fs.unlinkSync(path.join(isolated, "SKILL.md"));
   assert.equal(json(run(cwd, ["--version"], entry)).skillRevision, null);
+});
+
+test("content digest separates checkouts that share a revision number", (t) => {
+  const cwd = fixture(t);
+  const version = json(run(cwd, ["--version"]));
+  assert.match(version.skillContent, /^sha256:[a-f0-9]{16}$/);
+  const args = ["doctor", "--installation", "--expect-skill-content"];
+  assert.equal(json(run(cwd, [...args, version.skillContent])).status, "pass");
+  const mismatch = json(run(cwd, [...args, "sha256:" + "0".repeat(16)]), 1);
+  assert.equal(mismatch.checks.find((c) => c.id === "skill-content").status, "fail");
+  assert.match(
+    mismatch.checks.find((c) => c.id === "skill-content").message,
+    /matching revision number does not prove matching instructions/,
+  );
+  // A fork can keep the revision number and change the prose; only the digest
+  // notices. This is the regression the numeric check alone could not catch.
+  const isolated = path.join(cwd, "fork");
+  fs.cpSync(path.join(tool, "skills/component-catalog"), isolated, {
+    recursive: true,
+    filter: (file) => path.basename(file) !== "node_modules",
+  });
+  const entry = path.join(isolated, "scripts/bin/component-catalog.mjs");
+  const revision = json(run(cwd, ["--version"], entry)).skillRevision;
+  // The isolated copy carries no node_modules, so doctor always exits 1 here;
+  // only the per-check status matters.
+  const before = json(
+    run(cwd, ["doctor", "--installation", "--expect-skill-revision", String(revision)], entry),
+    1,
+  );
+  assert.equal(before.checks.find((c) => c.id === "skill-revision").status, "pass");
+  assert.equal(before.checks.find((c) => c.id === "skill-content").status, "pass");
+  fs.writeFileSync(path.join(isolated, "SKILL.md"), "---\nname: component-catalog\ndescription: Forked prose\n---\n");
+  const forked = json(
+    run(
+      cwd,
+      ["doctor", "--installation", "--expect-skill-content", version.skillContent],
+      entry,
+    ),
+    1,
+  );
+  assert.equal(forked.checks.find((c) => c.id === "skill-revision").status, "fail");
+  assert.equal(forked.checks.find((c) => c.id === "skill-content").status, "fail");
+  // An omitted pin never fails; the digest is informational by default.
+  assert.equal(json(run(cwd, ["doctor", "--installation"])).status, "pass");
+  assert.equal(run(cwd, [...args, "not-a-digest"]).status, 2);
 });
 
 test("oversized configuration diagnostics stay bounded and preserve failure status", (t) => {

@@ -1,4 +1,7 @@
+import { createHash } from "node:crypto";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadConfig, template, validateGenerationPaths } from "./config.mjs";
 import { loadCatalog } from "./catalog.mjs";
 
@@ -16,10 +19,51 @@ function readSkillRevision() {
     return null;
   }
 }
+const skillDirectory = fileURLToPath(new URL("../../", import.meta.url));
+
+/**
+ * Content digest of every bundled instruction file: SKILL.md plus each Markdown
+ * file under references/, keyed by its skill-relative path.
+ *
+ * A revision number is a name, not an identity. Two checkouts can ship the same
+ * revision with different prose — a local fork that splits a section into a new
+ * reference file keeps the number while changing the instructions — and the
+ * numeric comparison cannot tell them apart. This digest can.
+ */
+function readSkillContent() {
+  const files = [];
+  const walk = (directory) => {
+    let entries;
+    try {
+      entries = fs.readdirSync(directory, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
+      const target = path.join(directory, entry.name);
+      // Installed dependencies never contain model-facing instructions.
+      if (entry.isDirectory() && entry.name !== "node_modules") walk(target);
+      else if (entry.name.endsWith(".md")) files.push(target);
+    }
+  };
+  walk(skillDirectory);
+  const digest = createHash("sha256");
+  let counted = 0;
+  for (const file of files) {
+    const relative = path.relative(skillDirectory, file).split(path.sep).join("/");
+    // Skip the tool checkout's own notes; they are not model-facing instructions.
+    if (relative.startsWith("..") || relative === "README.md") continue;
+    digest.update(relative + "\0" + fs.readFileSync(file) + "\n");
+    counted += 1;
+  }
+  return counted ? "sha256:" + digest.digest("hex").slice(0, 16) : null;
+}
+
 export const versionInfo = {
   name: manifest.name,
   version: manifest.version,
   skillRevision: readSkillRevision(),
+  skillContent: readSkillContent(),
   configSchemaVersion: template.configVersion,
   catalogSchemaVersion: catalogSchema.properties.schemaVersion.const,
 };
@@ -31,6 +75,7 @@ export async function doctor({
   installation = false,
   expectVersion,
   expectSkillRevision,
+  expectSkillContent,
 } = {}) {
   const checks = [];
   const add = (id, status, message) => checks.push({ id, status, message });
@@ -40,6 +85,7 @@ export async function doctor({
     requiredNode: manifest.engines.node,
     expectedVersion: expectVersion ?? null,
     expectedSkillRevision: expectSkillRevision ?? null,
+    expectedSkillContent: expectSkillContent ?? null,
     typescript: null,
     expectedTypescript: manifest.dependencies.typescript,
   };
@@ -54,6 +100,17 @@ export async function doctor({
     expectVersion && expectVersion !== manifest.version
       ? "CLI and skill versions differ. Install the CLI and copy the skill from the same pinned checkout/package."
       : "Running CLI version matches the requested version, if supplied.",
+  );
+  // Revision numbers collide across forks; only the content digest proves the
+  // installed instructions are the intended ones.
+  add(
+    "skill-content",
+    expectSkillContent === undefined || expectSkillContent === versionInfo.skillContent
+      ? "pass"
+      : "fail",
+    expectSkillContent && expectSkillContent !== versionInfo.skillContent
+      ? `Bundled instructions differ from the pinned content (${versionInfo.skillContent}). A matching revision number does not prove matching instructions; replace the complete skill from the intended source.`
+      : "Content digest of the bundled SKILL.md and references; pass --expect-skill-content to pin it.",
   );
   let ts;
   add(

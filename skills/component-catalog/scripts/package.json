@@ -1,6 +1,6 @@
 {
   "name": "@codecantbuild/component-catalog",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": true,
   "license": "MIT",
   "description": "Local, bounded component discovery for coding agents",
