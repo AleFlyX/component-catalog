@@ -53,18 +53,27 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
           tasks.some((task) => task === primary || related.includes(task)),
         ).length + terms.filter((term) => tasks.some((task) => task.includes(term))).length;
       let rank = 0;
+      let matched = null;
       if (query === id || query === name) rank = 6;
       else if (taskMatches) rank = 5;
       else if (terms.some((term) => id.includes(term) || name.includes(term))) rank = 4;
       else if (terms.some((term) => summary.includes(term))) rank = 3;
       else if (apiNames.includes(query)) rank = 2;
       else if (apiNames.some((name) => terms.some((term) => name.includes(term)))) rank = 1;
+      // Describe which signal produced the hit so a caller can tell a real
+      // candidate from a coincidental substring in prose. A summary hit is the
+      // weakest evidence: the word appeared in a description, not in an ID,
+      // task tag or prop name.
+      if (rank === 6 || rank === 4) matched = "name";
+      else if (rank === 5) matched = "task";
+      else if (rank === 3) matched = "summary";
+      else if (rank === 2 || rank === 1) matched = "prop";
       const conceptPrimaryMatches = concepts.filter(({ primary }) => tasks[0] === primary).length;
       const primaryMatches =
         conceptPrimaryMatches +
         terms.filter((term) => tasks[0].includes(term)).length;
       const relatedMatches = concepts.filter(({ related }) => related.includes(tasks[0])).length;
-      return { item, rank, taskMatches, conceptPrimaryMatches, primaryMatches, relatedMatches };
+      return { item, rank, matched, taskMatches, conceptPrimaryMatches, primaryMatches, relatedMatches };
     })
     .filter(({ rank }) => rank > 0)
     .sort(
@@ -109,12 +118,13 @@ export function search(catalog, input, limit = 5, vocabulary = {}, brief = false
   // truncate the tail layer (e.g. 2 layers × 3 = 6 items).
   const items = scoped
     .slice(0, perLayer == null ? limit : scoped.length)
-    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage } }) => ({
+    .map(({ item: { id, exportName, kind, summary, tasks, status, reuse, importPath, layer, props, constraints, usage }, matched }) => ({
       id,
       exportName,
       kind,
       importPath,
       layer,
+      matched,
       ...(kind === "component"
         ? { requiredProps: props.items.filter(({ required }) => required).map(({ name }) => name) }
         : {}),

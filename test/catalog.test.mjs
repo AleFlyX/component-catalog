@@ -196,6 +196,41 @@ test("specific vocabulary phrases override contained terms without losing indepe
   );
 });
 
+test("every hit reports which signal produced it", () => {
+  const base = baseCatalog.components[0];
+  const catalog = {
+    ...baseCatalog,
+    components: [
+      { id: "ui.Exact", exportName: "Exact" },
+      { id: "ui.Tagged", exportName: "Tagged", tasks: ["widget"] },
+      { id: "ui.Prose", exportName: "Prose", summary: "widget prose" },
+      {
+        id: "ui.Propped",
+        exportName: "Propped",
+        props: { ...base.props, items: [{ ...base.props.items[0], name: "widgetSize" }] },
+      },
+    ].map((item) => ({ ...base, summary: "Unrelated", tasks: ["unrelated"], ...item })),
+  };
+  const matched = (query, vocabulary = {}) =>
+    Object.fromEntries(
+      search(catalog, query, 10, vocabulary).items.map((item) => [item.exportName, item.matched]),
+    );
+  // An exact export name outranks everything else and reports the name signal.
+  assert.equal(matched("Exact").Exact, "name");
+  // A task-tag hit is the honest "this component does the job" signal.
+  assert.equal(matched("widget").Tagged, "task");
+  // A word in prose is the weakest signal and must be labelled as such.
+  assert.equal(matched("widget").Prose, "summary");
+  // A prop name answers an API question, not a component-selection request.
+  assert.equal(matched("widgetSize").Propped, "prop");
+  // Vocabulary expansion still reports the underlying task signal.
+  assert.equal(matched("组件", { 组件: { primary: "widget", related: [] } }).Tagged, "task");
+  // Every returned item carries the field, so callers never need a fallback.
+  assert.ok(
+    search(catalog, "widget", 10).items.every((item) => typeof item.matched === "string"),
+  );
+});
+
 test("bounded UTF-8 JSON, omissions and mandatory focused context", () => {
   const base = structuredClone(baseCatalog.components[0]);
   const huge = "大".repeat(10000);
