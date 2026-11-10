@@ -695,7 +695,7 @@ test("doctor diagnoses project readiness without requiring enrollment or changin
   f.write("client/ui/Card.ts", "export function Card() {}\n");
   const before = fs.readFileSync(f.configPath);
   const timestamp = fs.statSync(f.configPath).mtimeMs;
-  const report = json(f.run(["doctor", "--expect-version", "0.4.1"]));
+  const report = json(f.run(["doctor", "--expect-version", "0.5.0"]));
   assert.equal(report.scope, "project");
   assert.equal(report.checks.find((item) => item.id === "catalog").status, "not_run");
   assert.equal(fs.existsSync(path.join(f.root, f.raw.catalog)), false);
@@ -790,6 +790,31 @@ test("audit is bounded but hidden findings and pagination still fail", (t) => {
   });
   assert.ok(Buffer.byteLength(JSON.stringify(oversized) + "\n") <= 8192);
   assert.deepEqual(oversized.omitted.fields, ["issues[0].message"]);
+});
+
+test("audit reports primary tasks no vocabulary term can reach without failing", (t) => {
+  const f = fixture(t);
+  f.add("Selector");
+  f.add("Pager");
+  // Every component uses the same primary task, which has no vocabulary entry.
+  json(f.run(["generate"]));
+  const bare = json(f.run(["audit"]));
+  assert.equal(bare.status, "pass");
+  assert.deepEqual(bare.discovery.unreachablePrimaryTasks, ["display"]);
+  assert.match(bare.discovery.note, /no vocabulary term/);
+  // Adding a term that reaches the task clears the advisory without an issue.
+  f.raw.vocabulary = { 展示: { primary: "display", related: [] } };
+  f.write("component-catalog.config.json", f.raw);
+  const covered = json(f.run(["audit"]));
+  assert.equal(covered.status, "pass");
+  assert.equal(covered.discovery.unreachablePrimaryTasks, undefined);
+  assert.doesNotMatch(covered.discovery.note, /no vocabulary term/);
+  // A related-only mapping also reaches the task.
+  f.raw.vocabulary = { 展示: { primary: "something-else", related: ["display"] } };
+  f.write("component-catalog.config.json", f.raw);
+  assert.equal(json(f.run(["audit"])).discovery.unreachablePrimaryTasks, undefined);
+  // The advisory never becomes an issue, so it cannot change the exit code.
+  assert.deepEqual(json(f.run(["audit"], 0)).issues, []);
 });
 
 test("v1 remains usable and cannot silently claim enrollment coverage", (t) => {

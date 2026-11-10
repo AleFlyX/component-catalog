@@ -6,6 +6,33 @@ import { loadCatalog } from "./catalog.mjs";
 import { compare } from "./source.mjs";
 import { validateGenerationPaths } from "./config.mjs";
 
+/**
+ * Primary tasks no configured vocabulary term can reach.
+ *
+ * `verify --suggest` only builds vocabulary queries for terms that already
+ * exist, so a component whose primary task has no term is never exercised and
+ * every check still passes. Reporting the gap here keeps "all green" from
+ * implying "reachable by an ordinary query". This is advisory: it does not add
+ * an issue or change the exit code, because a new component is allowed to
+ * land with its English task tag before an alias is chosen.
+ */
+export function unreachablePrimaryTasks(catalog, vocabulary = {}) {
+  const targets = new Set();
+  for (const concept of Object.values(vocabulary)) {
+    if (!concept || typeof concept !== "object") continue;
+    if (typeof concept.primary === "string") targets.add(concept.primary);
+    for (const related of concept.related ?? [])
+      if (typeof related === "string") targets.add(related);
+  }
+  const uncovered = [];
+  for (const component of catalog?.components ?? []) {
+    const [primary] = component.tasks ?? [];
+    if (primary && !targets.has(primary))
+      uncovered.push({ id: component.id, primary, sourcePath: component.sourcePath });
+  }
+  return uncovered;
+}
+
 export function auditProject(config, { stored = true, freshness = false } = {}) {
   if (config.configVersion !== 2)
     throw new Error(
@@ -73,6 +100,7 @@ export function auditProject(config, { stored = true, freshness = false } = {}) 
     catalog,
     expected,
     generation: catalog?.generation ?? null,
+    unreachable: catalog ? unreachablePrimaryTasks(catalog, config.vocabulary) : [],
   };
 }
 
@@ -111,7 +139,18 @@ export function auditResponse(result, { command = "audit", offset = 0, limit = 2
             : "empty",
       searchable: result.counts.generated,
       excludedUnsupported: result.counts.ignoredUnsupported,
-      note: "Based on current-source generation, not the saved query snapshot. Audit pass validates decisions, not useful search coverage or routine-check integration. Verify representative tasks against the generated snapshot.",
+      ...(result.unreachable?.length
+        ? {
+            unreachablePrimaryTasks: [
+              ...new Set(result.unreachable.map((entry) => entry.primary)),
+            ].sort(),
+          }
+        : {}),
+      note:
+        "Based on current-source generation, not the saved query snapshot. Audit pass validates decisions, not useful search coverage or routine-check integration. Verify representative tasks against the generated snapshot." +
+        (result.unreachable?.length
+          ? " Some primary tasks have no vocabulary term, so an ordinary-language query cannot reach them; add a vocabulary entry or accept English-only discovery."
+          : ""),
     },
     counts: result.counts,
     issues,
