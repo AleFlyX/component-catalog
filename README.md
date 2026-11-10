@@ -1,22 +1,41 @@
 # Component Catalog — React/TypeScript Component Discovery for AI Coding Agents
 
 [![test](https://github.com/AleFlyX/component-catalog/actions/workflows/test.yml/badge.svg)](https://github.com/AleFlyX/component-catalog/actions/workflows/test.yml)
+[![npm](https://img.shields.io/npm/v/@codecantbuild/component-catalog.svg)](https://www.npmjs.com/package/@codecantbuild/component-catalog)
+[![license](https://img.shields.io/npm/l/@codecantbuild/component-catalog.svg)](LICENSE)
 
-**A local, bounded component catalog CLI for React/TypeScript codebases.** Component Catalog indexes components from source declarations and inline JSDoc, then lets an AI coding agent retrieve only the component, import path, Props, constraints and usage it needs—without reading the whole repository.
+**English** · [简体中文](README.zh.md)
 
-It is **not** a UI documentation site, a runtime component library, or an MCP server. It is a shell CLI with a saved JSON catalog.
+A local, bounded component catalog CLI for React/TypeScript codebases. It indexes components from source declarations and inline JSDoc, then lets an AI coding agent retrieve only the component, import path, Props, constraints and usage it needs — without reading the whole repository.
 
-本地 React/TypeScript 组件发现 CLI，面向编码 Agent 和开发者。它从组件声明与就地 JSDoc 生成目录，查询时只返回所需组件或单个 Prop；不启动服务，也不进入浏览器运行时。
+It is **not** a UI documentation site, a runtime component library, or an MCP server. It is a shell CLI over a saved JSON catalog.
 
-- CLI：`0.4.1`
-- Skill revision：`13`
-- Config schema：`2`
-- Catalog schema：`7`
-- Node：`>=22`
-- 唯一运行依赖：TypeScript `5.9.3`
-- License：[MIT](LICENSE)
+| | |
+| --- | --- |
+| CLI | `0.5.0` |
+| Skill revision | `14` |
+| Config schema | `2` |
+| Catalog schema | `7` |
+| Node | `>=22` |
+| Runtime dependency | TypeScript `5.9.3` only |
+| License | [MIT](LICENSE) |
 
-> 已发布到 npmjs registry：[@codecantbuild/component-catalog](https://www.npmjs.com/package/@codecantbuild/component-catalog)。同时继续通过 GitHub Release tarball 分发。
+<details>
+<summary><b>Table of contents</b></summary>
+
+- [Why use it](#why-use-it)
+- [Install](#install)
+- [Quick start](#quick-start)
+- [Query existing components](#query-existing-components)
+- [Annotate components](#annotate-components)
+- [Agent integration](#agent-integration)
+- [Large repositories: `typeScope`](#large-repositories-typescope)
+- [FAQ](#faq)
+- [Known limitations](#known-limitations)
+- [Development](#development)
+- [License](#license)
+
+</details>
 
 ## Why use it
 
@@ -29,144 +48,89 @@ AI coding agents are good at writing components and expensive at rediscovering a
 
 Typical searches this project is designed for: *React component catalog*, *component discovery for AI agents*, *TypeScript component search*, *find component import path and props*, *bounded codebase context*.
 
-## How it works
+## Install
 
-```text
-scan candidates → annotate public components → generate JSON catalog
-                                      ↓
-                         search / get (bounded output)
-                                      ↓
-                         audit / check / verify in CI
-```
-
-The catalog is generated at build/setup time. Queries read the saved snapshot; they do not scan or modify source files.
-
-## 快速开始
-
-```bash
-npm ci
-node bin/component-catalog.mjs doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
-node bin/component-catalog.mjs scan examples/basic/src --summary
-
-node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
-node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json check
-node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json search 按钮
-node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json get demo.ui.Button --prop disabled
-
-npm test
-```
-
-`npm run build` 检查 npm 打包清单；源码直接以 ESM 运行，不需要编译。`examples/basic` 只用于验证提取 API，不含 UI 运行依赖。
-
-## 安装
-
-已发布到 npmjs registry（公开 scoped 包）：
+Published to the npm registry as a public scoped package:
 
 ```bash
 npm install @codecantbuild/component-catalog
 npx @codecantbuild/component-catalog --version
 ```
 
-也可以安装 GitHub Release 分发的 tarball（内容与 npm 包一致，不依赖 registry）：
+Or install the GitHub Release tarball, which has identical contents and needs no registry:
 
 ```bash
-npm install https://github.com/AleFlyX/component-catalog/releases/download/v0.4.1/codecantbuild-component-catalog-0.4.1.tgz
+npm install https://github.com/AleFlyX/component-catalog/releases/download/v0.5.0/codecantbuild-component-catalog-0.5.0.tgz
 ./node_modules/.bin/component-catalog --version
 ```
 
-CI 会在 `v*` tag 上运行测试、校验 tag 与包版本、打包并创建 Release；npm 包从本仓库主分支手动发布。
+CI runs tests on every `v*` tag, verifies the tag matches the package version, packs and creates the Release. The npm package is published manually from the main branch.
 
-## 接入新项目
+## Quick start
 
-1. 只读扫描候选目录：
-
-   ```bash
-   component-catalog scan <frontend-directory> --summary
-   component-catalog scan <component-directory> --limit 20
-   ```
-
-2. 用 `component-catalog init` 生成配置模板，保存为项目内的 `component-catalog.config.json`。
-3. 只给选定的公共组件添加 `@componentCatalog` 与必要 JSDoc。
-4. 依次运行 `audit → generate → check`，再用代表性任务验证搜索命中。
+Five minutes from a checkout to a queryable catalog. `examples/basic` is a minimal project that needs no browser runtime.
 
 ```bash
-component-catalog --config component-catalog.config.json audit
-component-catalog --config component-catalog.config.json generate
-component-catalog --config component-catalog.config.json check
+npm ci
+node bin/component-catalog.mjs doctor --installation --expect-version 0.5.0 --expect-skill-revision 14
+node bin/component-catalog.mjs scan examples/basic/src --summary
+node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json generate
+node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json search 按钮
 ```
 
-`audit` 检查候选、收录决定、元数据、示例和替代关系；`check` 额外检查生成目录是否漂移。两者都不修改目录。首次接入允许尚无目录，但存在未处理候选时 `generate` 会失败。
-
-目录生成/检查通过后，可以先生成一版自检查询，再补 mixed/missing 场景：
-
-```bash
-component-catalog --config component-catalog.config.json verify --suggest --out component-catalog.verify.json
-```
-
-它会为每个组件生成导出名查询，为 primary task 唯一的组件生成 task/vocabulary 查询（vocabulary 选择按最短词、再按字典序，保证与配置 key 顺序无关），并生成一条**精确导出名 mixed 查询**；如果存在两个唯一 primary task，还会生成 **task-based** 和（有对应词汇时）**vocabulary-based mixed 查询**。missing 查询仍需人工补。`--suggest` 只接受 `--config/--out`；`--limit`/`--details` 属于执行阶段。然后运行：
-
-```json
-[
-  { "scope": "single", "query": "按钮", "expectedId": "ui.Button" },
-  { "scope": "mixed", "query": "登录页 顶部导航栏", "expectedIds": ["auth.SignInPage", "ui.UiNavBar"] },
-  { "scope": "outside", "query": "图片查看器", "absentIds": ["ui.UiImageViewer"] }
-]
-```
-
-```bash
-component-catalog --config component-catalog.config.json verify --queries component-catalog.verify.json --out component-catalog.verify-report.json
-```
-
-`expectedIds` 必须全部出现在结果中，`absentIds` 必须不出现，`expectNoResults` 要求空结果；返回非零表示有查询未通过。stdout 默认只列出失败项（`resultsOmitted` 记录省略的通过数），`--details` 打印全部结果；`--out` 始终保存完整报告。`verify` 不重新生成目录；只有显式 `--out` 会写查询或报告文件，且拒绝覆盖 config、catalog 或输入 queries 文件。先运行 `check` 确认快照不是旧的。`generate` 写 catalog 和 `verify --out` 写报告都使用同目录临时文件后原子替换，进程中断不会留下半截 JSON。
-
-### 配置要点
+`search` returns one bounded JSON object. Every item names the signal that matched it:
 
 ```json
 {
-  "configVersion": 2,
-  "projectRoot": ".",
-  "sourceRoot": "src",
-  "tsconfig": "tsconfig.json",
-  "catalog": "generated/component-catalog.json",
-  "typeScope": "project",
-  "componentRoots": [
+  "items": [
     {
-      "path": "src/components",
-      "idPrefix": "ui",
-      "importPrefix": "@/components",
-      "layer": "shared-ui",
-      "enrollment": "public",
+      "id": "demo.ui.Button",
+      "exportName": "Button",
+      "importPath": "@demo/ui/Button",
+      "layer": "shared",
+      "matched": "task",
+      "requiredProps": ["label"],
+      "tasks": ["button"],
+      "status": "stable",
       "reuse": { "scope": "project" }
     }
   ],
-  "vocabulary": {
-    "按钮": { "primary": "button", "related": [] }
-  }
+  "truncated": false,
+  "omitted": { "items": 0, "byLimit": 0, "byBytes": 0 }
 }
 ```
 
-- `componentRoots` 必须互不重叠，`idPrefix` 不重复；`enrollment` 在 v2 必填：`public` 或 `review`。
-- `vocabulary` 把用户术语映射到已有英文 task tag；中英混合项目应同时覆盖两种写法。
-- `typeScope` 默认 `project`；大型单仓见下节。
-- 完整字段、示例和边界见 [setup.md](skills/component-catalog/references/setup.md)。
+`matched` is the important field: `task` means a task tag matched, `name` an ID or export name, `prop` a Prop name, and `summary` only that the word appeared in prose. Treat `summary` as the weakest signal.
 
-### 大型仓库：`typeScope`
-
-如果组件导入 server/lib/trpc/Prisma 等完整依赖图，`generate` 可能把无关类型全部载入内存：
-
-| 项目 | 使用 |
-| --- | --- |
-| 小/中型，只依赖项目内 UI | `typeScope: "project"`（默认） |
-| 大型 monorepo，依赖服务端/lib 图 | `typeScope: "componentRoots"` |
-
-`componentRoots` 只保留组件根内的类型图，根外导入使用内存内浅层 stub。它把 Documenso 51 条目录的生成从 >4 GB/OOM 降到默认 2 GB heap 可完成；`verify --suggest` 生成的 85 条自检查询全部通过。代价是根外继承的 Prop 类型可能为 `any`/partial；本地声明的 Props 不受影响。`generate`、`audit` 和 `check` 会报告 `typeScope`、`typeCheck`、`suppressedTypeDiagnostics`，以及可选的 `suppressedTypeCodes` / `suppressedTypeFiles`（最多列前 10 个文件，并给出 `suppressedTypeFileCount`）。默认只抑制**导入了根外 stub 的文件中的语义诊断**；语法错误、未解析导入以及没有 stub 依赖的文件错误仍然失败。设置 `typeCheck: "strict"` 会关闭这层抑制，但根外 stub 造成的错误也会让生成失败；此时应把必要共享包纳入 `componentRoots`。`typeCheck: "partial"` 仍表示不能当作完整类型检查通过。
-
-出现 OOM 时不要用 `--max-old-space-size` 掩盖，也不要添加 `@ts-nocheck`、手写 stub 或改写 import；切换 `typeScope` 后重新 `generate`、`audit`、`check`，并在交付中说明类型范围。
-
-## 查询
+When you need one API detail, ask for that detail rather than the whole component:
 
 ```bash
-component-catalog search "表单" --limit 5
+node bin/component-catalog.mjs --config examples/basic/component-catalog.config.json \
+  get demo.ui.Button --prop disabled
+```
+
+```json
+{
+  "component": {
+    "id": "demo.ui.Button",
+    "importPath": "@demo/ui/Button",
+    "constraints": ["Supply a short, actionable label."],
+    "prop": {
+      "name": "disabled",
+      "displayType": "boolean | undefined",
+      "required": false,
+      "defaultValue": "false",
+      "schemaStatus": "complete"
+    }
+  },
+  "selection": { "kind": "prop", "name": "disabled", "partial": true }
+}
+```
+
+## Query existing components
+
+```bash
+component-catalog search "form" --limit 5
 component-catalog search rowKey --details
 component-catalog get ui.forms.BusinessForm
 component-catalog get ui.forms.BusinessForm ui.forms.CustomerPicker
@@ -174,101 +138,115 @@ component-catalog get ui.forms.BusinessForm --prop disabled
 component-catalog get ui.forms.BusinessForm --from src/features/orders/Page.tsx
 ```
 
-常用规则：
+Rules that keep queries cheap and honest:
 
-- 先一次 `search`；`--details` 已给出 `importPath`、`requiredProps` 和首条约束时，不要再 `get` 确认。
-- 只有需要 constraints、示例、完整 Prop 上下文时才 `get`；多个 ID 可放在一次 `get`，但不要和 `--prop`/`--from` 组合。
-- 混合意图用 `--per-layer 3`；单层目录会自动扩到 5。多层级且同层候选很多时才显式用 `--per-layer 5`。
-- `--layer auto` 只适合单意图；mixed 查询要求 `components` 数组覆盖每个角色，缺失角色要显式标记。
-- 没有专用组件但同域通用组件可承担角色时，返回通用组件并说明 caveat；只有连通用角色都不存在时才 `missing`。
-- 空结果或结果不佳时再换词/`--brief`/`--limit 10`/`scan`，不要用无依据的 ID 调 `get`。
+- Run one `search` first. When `--details` already returned `importPath`, `requiredProps` and the first constraint, do not call `get` to confirm them.
+- Use `get` only for constraints, examples or full Prop context. Several IDs belong in one `get`, but never combine them with `--prop` or `--from`.
+- For mixed intent use `--per-layer 3`; a single-layer catalog expands that default to 5. Use `--per-layer 5` only when a multi-layer catalog has many strong candidates in one layer.
+- `--layer auto` suits single-intent queries only. A mixed query must return a `components` array covering every role, with missing roles marked explicitly.
+- When no dedicated component exists but a general one clearly serves the role, return the general component with a caveat. Mark `missing` only when nothing in the domain serves it.
+- On a weak or empty result, change the wording, use `--brief` or `--limit 10`, or fall back to `scan`. Never call `get` with a guessed ID.
 
-输出上限：search 4 KiB，get 16 KiB；`truncated` 只表示字节裁剪，匹配数超出 limit 看 `omitted.byLimit`。设置 `COMPONENT_CATALOG_LOG=<path>` 可写本地 JSONL 使用日志；日志不记录源码内容，verify 会额外记录 `verifyOk`、`verifyQueries`、`verifyFailed` 和 `verifyResultsOmitted`。
+Output is capped at 4 KiB for search and 16 KiB for `get`. `truncated` means byte capping; more matches than the limit appear as `omitted.byLimit`. Set `COMPONENT_CATALOG_LOG=<path>` to write a local JSONL usage log; it never records source content.
 
-## 标记组件
+## Annotate components
 
 ```ts
 /**
- * 简短说明组件适用场景。
+ * Renders the order form shell used by the orders feature.
  * @componentCatalog
  * @catalogStatus experimental
  * @catalogTask business-form
- * @catalogConstraint 提交状态由调用方管理。
- * @catalogExample production src/features/orders/Form.tsx | 订单表单
+ * @catalogConstraint Submit state is owned by the caller.
+ * @catalogExample production src/features/orders/Form.tsx | Order form
  */
 export function BusinessForm(props: { disabled?: boolean }) { /* ... */ }
 ```
 
-- `summary`、`status`、至少一个 task/constraint/example 必填。
-- `experimental` 可以没有稳定示例；`stable` 需要 production 或 preview 示例。
-- 不收录的候选使用 `@componentCatalogIgnore internal|non-component|unsupported: 原因`，不要静默删除标记。
-- 新增、修改、移动或删除组件时，运行 `audit → generate → check`；详细流程见 [maintenance.md](skills/component-catalog/references/maintenance.md)。
+- `summary`, `status`, and at least one task, constraint and example are required.
+- `experimental` may have no stable example; `stable` needs a production or preview example.
+- Excluded candidates use `@componentCatalogIgnore internal|non-component|unsupported: <reason>`. Do not delete markers silently.
+- After adding, changing, moving or deleting a component, run `audit → generate → check`. The full lifecycle lives in [maintenance.md](skills/component-catalog/references/maintenance.md).
 
-## Agent skill
+## Agent integration
 
-把 [skills/component-catalog](skills/component-catalog/SKILL.md) **整个目录**复制到 Agent 的 skill 位置，不要只复制 SKILL.md。该目录包含 CLI、schema、references 与依赖清单。
+Copy the **whole** [skills/component-catalog](skills/component-catalog/SKILL.md) directory into the agent's skill location — not just `SKILL.md`. The directory carries the CLI, schema, references and dependency manifest.
 
 ```bash
 npm ci --prefix "<skill-directory>/scripts" --ignore-scripts --no-audit --no-fund
 node "<skill-directory>/scripts/bin/component-catalog.mjs" \
-  doctor --installation --expect-version 0.4.1 --expect-skill-revision 13
+  doctor --installation --expect-version 0.5.0 --expect-skill-revision 14
 ```
 
-skill 按查询、维护、接入分流：普通查询不需要加载完整 setup 说明；缺失配置不等于允许自动初始化。范围不明确时，先给出候选目录、数量和推荐理由，再让用户选择。
+The skill routes by intent: an ordinary query never loads the setup workflow, and a missing configuration is not permission to initialize a catalog. When scope is unclear the agent presents candidate directories, counts and a recommendation before asking.
 
-机器可读的项目摘要：[llms.txt](llms.txt)，用于 AI 搜索/爬虫快速理解项目定位、用法和边界。
+For setup in a project whose users type Chinese, seed the template with `init --locale zh-CN`; summaries and task tags stay English either way. `init` never guesses a language.
 
-跨 agent/模型评测方法见 [evaluation.md](skills/component-catalog/references/evaluation.md)。具体任务、答案和 fixture 路径不写入 SKILL；测试数据保留在本地 `test/audits/`（已 gitignore）。
+Machine-readable project summary for crawlers: [llms.txt](llms.txt).
 
-## 测试与开发
+## Large repositories: `typeScope`
 
-```bash
-npm test
-npm run check
-npm run build
-```
+Choose `typeScope` before the first `generate`; it is a configuration decision, not a query flag.
 
-- `test/fixtures/` 保留最小查询回归 fixture，以及多 componentRoot、primitives、stub 和 ignore/exclude 的生成 fixture。
-- GitHub Actions 在 Node 22/24 运行测试与打包；独立 package job 会实际安装 tarball，执行 `--version` 和 `doctor --installation`。
-- Documenso 51 条、85 条查询的 trial 是本地验证，不进入 CI；CI 用 `test/fixtures/multi-root` 覆盖等价的多根目录/stub 结构。
-- `test/baselines/` 保留开源基线目录。
-- `test/audits/`、`docs/optimization-notes.md` 和 `.trial/` 是本地评测/试验材料，不提交到公开仓库。
-- 修改查询行为、`typeScope` 或配置字段时，补充对应回归测试并同步 skill/references。
+| Project shape | Use |
+| --- | --- |
+| Small/medium, components import only project UI | `typeScope: "project"` (default) |
+| Large monorepo importing a server/lib/trpc/Prisma graph | `typeScope: "componentRoots"` |
+
+`componentRoots` loads only the component-root type graph; imports outside the roots become shallow `any` types. Local Props stay typed, inherited ones may be `any`/partial.
+
+The full remediation contract — suppression defaults, `typeCheck` semantics and the `suppressedType*` report fields — is owned by [setup.md § Large-repository type scope](skills/component-catalog/references/setup.md#large-repository-type-scope). When generation runs out of memory, switch `typeScope` and regenerate rather than raising the heap, and state the type-fidelity tradeoff in your handoff.
 
 ## FAQ
 
-### Is this a Storybook or a component documentation site?
+**Is this a Storybook or a component documentation site?**
 
 No. Storybook is a UI explorer and documentation surface. Component Catalog is a CLI that turns selected component declarations into a compact JSON index for coding agents. It does not render components or replace runtime checks.
 
-### Is this an MCP server?
+**Is this an MCP server?**
 
 No. It is a shell CLI with local files and bounded JSON output. It can be invoked by any agent or script that can run a command; no editor extension or MCP transport is bundled.
 
-### Does it work with Claude Code, Cursor, Codex or other coding agents?
+**Does it work with Claude Code, Cursor, Codex or other coding agents?**
 
 It is agent-agnostic: the integration surface is the CLI plus the bundled [SKILL.md](skills/component-catalog/SKILL.md). Agent-specific installation and permissions are managed by the host.
 
-### Does it reduce token usage?
+**Does it reduce token usage?**
 
-In the local airport benchmark (5 tasks, 3 runs), reading source used about **462.8K total tokens**, while `catalog-details` used about **100.2K**—roughly **78% fewer** in that setting. This is a local benchmark with a 30-entry scoped catalog, not a universal guarantee; setup cost and task shape matter. Benchmark data is intentionally kept out of the public repo.
+In the local airport benchmark (5 tasks, 3 runs), reading source used about **462.8K total tokens**, while `catalog-details` used about **100.2K** — roughly **78% fewer** in that setting. This is a local benchmark with a 30-entry scoped catalog, not a universal guarantee; setup cost and task shape matter. Benchmark data is intentionally kept out of the public repo.
 
-### Does it index the entire repository?
+**Does it index the entire repository?**
 
 No. It indexes supported JS/JSX/TS/TSX declarations in explicitly configured component roots, and requires a decision for candidates. Routes, pages, unsupported formats and unselected components may be excluded; `discovery.status=partial` reports acknowledged gaps.
 
-### Does querying modify source or the catalog?
+**Does querying modify source or the catalog?**
 
 No. `search` and `get` are read-only. `generate` writes the catalog; `audit`, `check` and `verify` do not regenerate it.
 
-## 已知限制
+**Why did a component get enrolled but stay unfindable in Chinese?**
 
-- 只扫描 JS/JSX/TS/TSX 的 PascalCase 值导出、default 导出和显式目录标记；Vue、Svelte、MDX、跨文件 HOC、匿名 default 等可能不支持。
-- Props 提取依赖 TypeScript；复杂泛型/联合类型/继承可能为 partial/unsupported，`any` 或空字段不代表组件没有 Props。
-- `typeScope: "componentRoots"` 是内存与类型保真度的显式权衡，不是完整类型检查。
-- 组件目录是发现辅助；项目架构、运行时代码和项目自身检查仍是权威。
+Because enrollment and vocabulary are separate concerns. A component is searchable by its English task tag immediately, while an ordinary-language query needs a `vocabulary` entry mapping that wording to the tag. `audit` reports such tasks under `discovery.unreachablePrimaryTasks`; it is advisory, so nothing fails.
 
-更完整的安装、配置、边界和故障排查见 [setup.md](skills/component-catalog/references/setup.md)。
+## Known limitations
+
+- Only PascalCase value exports, default exports and explicitly marked declarations in JS/JSX/TS/TSX are scanned. Vue, Svelte, MDX, cross-file HOCs and anonymous default exports may be unsupported.
+- Props extraction depends on TypeScript. Complex generics, unions and inheritance may be `partial`/`unsupported`; `any` or empty fields do not prove a component accepts no Props.
+- `typeScope: "componentRoots"` is an explicit memory/fidelity tradeoff, not a full type check.
+- The catalog is a discovery aid; project architecture, runtime code and the project's own checks remain authoritative.
+
+For installation detail, configuration contract, boundaries and troubleshooting, see [setup.md](skills/component-catalog/references/setup.md).
+
+## Development
+
+```bash
+npm test        # 117 tests
+npm run check   # syntax + tests
+npm run build   # packaging manifest
+```
+
+Contribution rules, fixture layout and release steps live in [CONTRIBUTING.md](CONTRIBUTING.md). Documentation ownership and the single-source-of-truth map live in [AGENTS.md](AGENTS.md).
+
+Cross-agent evaluation method: [evaluation.md](skills/component-catalog/references/evaluation.md). Concrete tasks, answers and fixture paths stay outside the SKILL; evaluation data lives in the gitignored `test/audits/`.
 
 ## License
 

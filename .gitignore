@@ -39,7 +39,7 @@ Thumbs.db
 
 # Local evaluation evidence and private trial artifacts (keep minimal fixtures in test/fixtures)
 /test/audits/
-/docs/optimization-notes.md
+/docs/
 /test/baselines/**/*.patch
 
 # Keep only the reusable baseline catalog; evaluation reports/outputs are local
